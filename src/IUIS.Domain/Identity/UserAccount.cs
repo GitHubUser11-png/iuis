@@ -26,6 +26,12 @@ namespace IUIS.Domain.Identity
             string createdByUserId)
             : base(id, createdAtUtc, createdByUserId)
         {
+            var parsedId = InstitutionIdentifier.Parse(id);
+            if (!StringComparer.Ordinal.Equals(parsedId.Prefix, "USR"))
+            {
+                throw new DomainValidationException("User account IDs must use the USR prefix.");
+            }
+
             LoginId = NormalizeLoginId(loginId);
             PrimaryRole = primaryRole;
             PersonRecordKind = personRecordKind;
@@ -81,9 +87,14 @@ namespace IUIS.Domain.Identity
                 throw new DomainValidationException("Student accounts must reference a Student record.");
             }
 
-            if (PrimaryRole == PrimaryRole.EmployeeFaculty && PersonRecordKind != PersonRecordKind.Employee)
+            if (PrimaryRole == PrimaryRole.EmployeeFaculty && PersonRecordKind != PersonRecordKind.EmployeeFaculty)
             {
-                throw new DomainValidationException("Employee/Faculty accounts must reference an Employee record.");
+                throw new DomainValidationException("Employee/Faculty accounts must reference an Employee/Faculty record.");
+            }
+
+            if (PrimaryRole == PrimaryRole.Administrator && PersonRecordKind == PersonRecordKind.Student)
+            {
+                throw new DomainValidationException("Administrator accounts cannot reference Student records.");
             }
         }
 
