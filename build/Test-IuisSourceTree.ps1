@@ -30,8 +30,12 @@ if (-not (Test-Path -LiteralPath $propsPath -PathType Leaf)) {
     $errors.Add('Directory.Build.props is missing.')
 } else {
     [xml]$propsXml = Get-Content -LiteralPath $propsPath -Raw
-    $targetFramework = [string]($propsXml.Project.PropertyGroup.TargetFrameworkVersion | Select-Object -First 1)
-    $languageVersion = [string]($propsXml.Project.PropertyGroup.LangVersion | Select-Object -First 1)
+    $propsNamespaceManager = New-Object System.Xml.XmlNamespaceManager($propsXml.NameTable)
+    $propsNamespaceManager.AddNamespace('msb', 'http://schemas.microsoft.com/developer/msbuild/2003')
+    $targetFrameworkNode = $propsXml.SelectSingleNode('//msb:TargetFrameworkVersion', $propsNamespaceManager)
+    $languageVersionNode = $propsXml.SelectSingleNode('//msb:LangVersion', $propsNamespaceManager)
+    $targetFramework = if ($null -eq $targetFrameworkNode) { '' } else { $targetFrameworkNode.InnerText }
+    $languageVersion = if ($null -eq $languageVersionNode) { '' } else { $languageVersionNode.InnerText }
     if ($targetFramework -ne 'v4.8') {
         $errors.Add("Directory.Build.props TargetFrameworkVersion is '$targetFramework', expected 'v4.8'.")
     }
@@ -111,7 +115,7 @@ $report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $reportPath -Encodi
 
 if ($errors.Count -gt 0) {
     foreach ($validationError in $errors) {
-        Write-Error $validationError
+        Write-Host "VALIDATION ERROR: $validationError"
     }
     throw "Source-tree validation failed with $($errors.Count) error(s)."
 }
