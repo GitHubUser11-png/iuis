@@ -74,15 +74,15 @@ The compatibility policy preserves the separate executable boundary: Student and
 - monetary rounding, arithmetic, currency mismatch, and nonnegative guards;
 - role and application compatibility.
 
-The pre-existing three solution-foundation tests remain in place, bringing the pull-request suite to 25 tests.
+The pre-existing three solution-foundation tests remain in place, bringing the suite to 25 tests.
 
 ## Compiler correction
 
 The first Windows run, `29565314840`, compiled and passed all 25 tests but reported one CS1718 warning in a test that compared a date variable to itself. The test was corrected to compare two distinct equal `InstitutionLocalDate` values. No production behavior changed.
 
-## Verified pull-request evidence
+## Final pull-request evidence
 
-GitHub Actions run `29565491487` validated commit `585a6c00c1f01d3418323b93d49635ce6fe04447`.
+GitHub Actions run `29565661053` validated final documented head `c25c9f93118b08d933650c1d8b66997237671c46`.
 
 - source-tree and architecture validation: passed
 - NuGet restoration: passed
@@ -98,10 +98,20 @@ GitHub Actions run `29565491487` validated commit `585a6c00c1f01d3418323b93d4963
 
 Evidence artifact:
 
-- name: `iuis-windows-build-evidence-21`
-- artifact ID: `8400936460`
-- SHA-256: `d672faf38b50911f2dcc5fa6b51862f6afca76f5ff99bebaf2ee27129c820d1c`
+- name: `iuis-windows-build-evidence-23`
+- artifact ID: `8401004874`
+- SHA-256: `d9adc62863d26fcf5e5079b47f7e79888d2bd2886324651ea269fa0ab4bb3596`
 - expiration: 2026-07-31
+
+## Integration result
+
+PR #5 was squash-merged into `develop`.
+
+- merge commit: `0ce0595df6142d3a2f75a292dada161141fdcd5d`
+- merged source: production Domain foundations and all 25 tests
+- source PR state: closed and merged
+
+A closure branch was created from the merged `develop` commit to perform a final post-merge Windows validation and correct the authoritative implementation-state record.
 
 ## Compatibility boundary
 
@@ -121,6 +131,6 @@ All added source is written for C# 7.3 and .NET Framework 4.8. Domain references
 
 Pass 3 establishes compile-verified and test-verified Domain foundations only. It does not establish complete production aggregates, persistence, authentication, business modules, operational recovery, deployment readiness, or release certification.
 
-## Merge gate
+## Closure gate
 
-The final documented pull-request head must pass the same Windows workflow before PR #5 is merged into `develop`.
+The Pass 3 closure pull request must validate the merged Domain tree and closure-only documentation before the next construction pass begins.
