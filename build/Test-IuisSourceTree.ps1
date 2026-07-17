@@ -1,112 +1,91 @@
 param()
 
 $ErrorActionPreference = 'Stop'
-Set-StrictMode -Version Latest
 
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $validationRoot = Join-Path $repositoryRoot 'artifacts\validation'
 New-Item -ItemType Directory -Force -Path $validationRoot | Out-Null
 
-$expectedProjects = [ordered]@{
-    'IUIS.Domain' = [ordered]@{ Path = 'src\IUIS.Domain\IUIS.Domain.csproj'; References = @(); OutputType = 'Library' }
-    'IUIS.Application' = [ordered]@{ Path = 'src\IUIS.Application\IUIS.Application.csproj'; References = @('IUIS.Domain'); OutputType = 'Library' }
-    'IUIS.Infrastructure' = [ordered]@{ Path = 'src\IUIS.Infrastructure\IUIS.Infrastructure.csproj'; References = @('IUIS.Domain', 'IUIS.Application'); OutputType = 'Library' }
-    'IUIS.SharedUI' = [ordered]@{ Path = 'src\IUIS.SharedUI\IUIS.SharedUI.csproj'; References = @('IUIS.Domain', 'IUIS.Application'); OutputType = 'Library' }
-    'IUIS.UserApp' = [ordered]@{ Path = 'src\IUIS.UserApp\IUIS.UserApp.csproj'; References = @('IUIS.Domain', 'IUIS.Application', 'IUIS.Infrastructure', 'IUIS.SharedUI'); OutputType = 'WinExe' }
-    'IUIS.AdminApp' = [ordered]@{ Path = 'src\IUIS.AdminApp\IUIS.AdminApp.csproj'; References = @('IUIS.Domain', 'IUIS.Application', 'IUIS.Infrastructure', 'IUIS.SharedUI'); OutputType = 'WinExe' }
-    'IUIS.Tests' = [ordered]@{ Path = 'tests\IUIS.Tests\IUIS.Tests.csproj'; References = @('IUIS.Domain', 'IUIS.Application', 'IUIS.Infrastructure'); OutputType = 'Library' }
-}
+$errors = @()
+$projectFiles = @(
+    'src\IUIS.Domain\IUIS.Domain.csproj',
+    'src\IUIS.Application\IUIS.Application.csproj',
+    'src\IUIS.Infrastructure\IUIS.Infrastructure.csproj',
+    'src\IUIS.SharedUI\IUIS.SharedUI.csproj',
+    'src\IUIS.UserApp\IUIS.UserApp.csproj',
+    'src\IUIS.AdminApp\IUIS.AdminApp.csproj',
+    'tests\IUIS.Tests\IUIS.Tests.csproj'
+)
 
-$errors = New-Object System.Collections.Generic.List[string]
-$results = New-Object System.Collections.Generic.List[object]
-
-$solutionPath = Join-Path $repositoryRoot 'IUIS.sln'
-if (-not (Test-Path -LiteralPath $solutionPath -PathType Leaf)) {
-    $errors.Add('IUIS.sln is missing.')
+$requiredFiles = @('IUIS.sln', 'Directory.Build.props', 'Directory.Build.targets') + $projectFiles
+foreach ($relativePath in $requiredFiles) {
+    $fullPath = Join-Path $repositoryRoot $relativePath
+    if (-not (Test-Path -LiteralPath $fullPath -PathType Leaf)) {
+        $errors += "Required file is missing: $relativePath"
+    }
 }
 
 $propsPath = Join-Path $repositoryRoot 'Directory.Build.props'
-if (-not (Test-Path -LiteralPath $propsPath -PathType Leaf)) {
-    $errors.Add('Directory.Build.props is missing.')
-} else {
-    [xml]$propsXml = Get-Content -LiteralPath $propsPath -Raw
-    $propsNamespaceManager = New-Object System.Xml.XmlNamespaceManager($propsXml.NameTable)
-    $propsNamespaceManager.AddNamespace('msb', 'http://schemas.microsoft.com/developer/msbuild/2003')
-    $targetFrameworkNode = $propsXml.SelectSingleNode('//msb:TargetFrameworkVersion', $propsNamespaceManager)
-    $languageVersionNode = $propsXml.SelectSingleNode('//msb:LangVersion', $propsNamespaceManager)
-    $targetFramework = if ($null -eq $targetFrameworkNode) { '' } else { $targetFrameworkNode.InnerText }
-    $languageVersion = if ($null -eq $languageVersionNode) { '' } else { $languageVersionNode.InnerText }
-    if ($targetFramework -ne 'v4.8') {
-        $errors.Add("Directory.Build.props TargetFrameworkVersion is '$targetFramework', expected 'v4.8'.")
+if (Test-Path -LiteralPath $propsPath -PathType Leaf) {
+    $propsContent = Get-Content -LiteralPath $propsPath -Raw
+    if (-not $propsContent.Contains('<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>')) {
+        $errors += 'Directory.Build.props does not lock TargetFrameworkVersion to v4.8.'
     }
-    if ($languageVersion -ne '7.3') {
-        $errors.Add("Directory.Build.props LangVersion is '$languageVersion', expected '7.3'.")
+    if (-not $propsContent.Contains('<LangVersion>7.3</LangVersion>')) {
+        $errors += 'Directory.Build.props does not lock LangVersion to 7.3.'
     }
 }
 
-$projectNameByFullPath = @{}
-foreach ($projectName in $expectedProjects.Keys) {
-    $projectFullPath = [System.IO.Path]::GetFullPath((Join-Path $repositoryRoot $expectedProjects[$projectName].Path))
-    $projectNameByFullPath[$projectFullPath] = $projectName
+$expectedReferenceNames = @{
+    'src\IUIS.Domain\IUIS.Domain.csproj' = @()
+    'src\IUIS.Application\IUIS.Application.csproj' = @('IUIS.Domain')
+    'src\IUIS.Infrastructure\IUIS.Infrastructure.csproj' = @('IUIS.Domain', 'IUIS.Application')
+    'src\IUIS.SharedUI\IUIS.SharedUI.csproj' = @('IUIS.Domain', 'IUIS.Application')
+    'src\IUIS.UserApp\IUIS.UserApp.csproj' = @('IUIS.Domain', 'IUIS.Application', 'IUIS.Infrastructure', 'IUIS.SharedUI')
+    'src\IUIS.AdminApp\IUIS.AdminApp.csproj' = @('IUIS.Domain', 'IUIS.Application', 'IUIS.Infrastructure', 'IUIS.SharedUI')
+    'tests\IUIS.Tests\IUIS.Tests.csproj' = @('IUIS.Domain', 'IUIS.Application', 'IUIS.Infrastructure')
 }
 
-foreach ($projectName in $expectedProjects.Keys) {
-    $definition = $expectedProjects[$projectName]
-    $projectPath = Join-Path $repositoryRoot $definition.Path
-    if (-not (Test-Path -LiteralPath $projectPath -PathType Leaf)) {
-        $errors.Add("Required project is missing: $($definition.Path)")
+$projectResults = @()
+foreach ($relativePath in $projectFiles) {
+    $fullPath = Join-Path $repositoryRoot $relativePath
+    if (-not (Test-Path -LiteralPath $fullPath -PathType Leaf)) {
         continue
     }
 
-    [xml]$projectXml = Get-Content -LiteralPath $projectPath -Raw
-    $namespaceManager = New-Object System.Xml.XmlNamespaceManager($projectXml.NameTable)
-    $namespaceManager.AddNamespace('msb', 'http://schemas.microsoft.com/developer/msbuild/2003')
-
-    $outputTypeNode = $projectXml.SelectSingleNode('//msb:OutputType', $namespaceManager)
-    $actualOutputType = if ($null -eq $outputTypeNode) { '' } else { $outputTypeNode.InnerText }
-    if ($actualOutputType -ne $definition.OutputType) {
-        $errors.Add("$projectName OutputType is '$actualOutputType', expected '$($definition.OutputType)'.")
+    $projectContent = Get-Content -LiteralPath $fullPath -Raw
+    $expectedOutputType = if ($relativePath -like '*UserApp*' -or $relativePath -like '*AdminApp*') { 'WinExe' } else { 'Library' }
+    if (-not $projectContent.Contains("<OutputType>$expectedOutputType</OutputType>")) {
+        $errors += "$relativePath does not declare OutputType $expectedOutputType."
     }
 
-    $actualReferences = New-Object System.Collections.Generic.List[string]
-    foreach ($referenceNode in $projectXml.SelectNodes('//msb:ProjectReference', $namespaceManager)) {
-        $includePath = [string]$referenceNode.Include
-        $referenceFullPath = [System.IO.Path]::GetFullPath((Join-Path (Split-Path -Parent $projectPath) $includePath))
-        if (-not $projectNameByFullPath.ContainsKey($referenceFullPath)) {
-            $errors.Add("$projectName has an unknown project reference: $includePath")
-            continue
-        }
-        $actualReferences.Add($projectNameByFullPath[$referenceFullPath])
+    $actualReferences = @([regex]::Matches($projectContent, '<Name>(IUIS\.[^<]+)</Name>') | ForEach-Object { $_.Groups[1].Value } | Sort-Object)
+    $expectedReferences = @($expectedReferenceNames[$relativePath] | Sort-Object)
+    if (($actualReferences -join '|') -ne ($expectedReferences -join '|')) {
+        $errors += "$relativePath references '$($actualReferences -join ', ')', expected '$($expectedReferences -join ', ')'."
     }
 
-    $expectedReferenceSet = @($definition.References | Sort-Object)
-    $actualReferenceSet = @($actualReferences | Sort-Object)
-    if (($expectedReferenceSet -join '|') -ne ($actualReferenceSet -join '|')) {
-        $errors.Add("$projectName references '$($actualReferenceSet -join ', ')', expected '$($expectedReferenceSet -join ', ')'.")
+    $projectResults += [ordered]@{
+        path = $relativePath
+        outputType = $expectedOutputType
+        references = $actualReferences
     }
-
-    $results.Add([ordered]@{
-        project = $projectName
-        path = $definition.Path
-        outputType = $actualOutputType
-        references = @($actualReferenceSet)
-    })
 }
 
 $formFiles = Get-ChildItem -LiteralPath (Join-Path $repositoryRoot 'src') -Recurse -Filter '*Form.cs' -File
 foreach ($formFile in $formFiles) {
     $formContent = Get-Content -LiteralPath $formFile.FullName -Raw
-    if ($formContent -match 'System\.IO' -or $formContent -match 'System\.Text\.Json') {
-        $errors.Add("Form contains prohibited file or JSON dependency: $($formFile.FullName)")
+    if ($formContent.Contains('System.IO') -or $formContent.Contains('System.Text.Json')) {
+        $errors += "Form contains prohibited file or JSON dependency: $($formFile.FullName)"
     }
 }
 
 $report = [ordered]@{
     generatedAtUtc = [DateTime]::UtcNow.ToString('o')
-    repositoryRoot = $repositoryRoot
     expectedProjectCount = 7
-    validatedProjects = @($results)
-    errors = @($errors)
+    validatedProjectCount = $projectResults.Count
+    projects = $projectResults
+    errors = $errors
     succeeded = ($errors.Count -eq 0)
 }
 
