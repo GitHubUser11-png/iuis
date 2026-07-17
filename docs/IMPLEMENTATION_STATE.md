@@ -36,9 +36,11 @@ The project uses the following evidence levels. These terms are not interchangea
 | Build scripts | Created, executed, and merged | source-tree validation and Release build/test scripts |
 | Test framework integration | Created, executed, and merged | MSTest framework and adapter 3.6.4 |
 | Pass 2 automated tests | 3 passed | Domain, Application, and Infrastructure canonical marker tests |
-| Pass 3 branch | Created | `build/pass-03-domain-foundations` |
-| Production Domain foundations | Created on Pass 3 branch | entity contracts, value objects, monetary rules, identity enums, and compatibility policy |
-| Pass 3 Domain tests | 22 created | awaiting Windows execution |
+| Pass 3 branch | Created and validated | `build/pass-03-domain-foundations`; PR #5 |
+| Production Domain foundations | Created, compiled, and tested on Pass 3 branch | entity contracts, value objects, monetary rules, identity enums, and compatibility policy |
+| Pass 3 test suite | Successful | 25 executed, 25 passed, 0 failed |
+| Pass 3 Release compilation | Successful | run `29565491487`; commit `585a6c00c1f01d3418323b93d49635ce6fe04447`; 0 warnings, 0 errors |
+| Pass 3 evidence artifact | Verified | `iuis-windows-build-evidence-21`, artifact `8400936460`, SHA-256 `d672faf38b50911f2dcc5fa6b51862f6afca76f5ff99bebaf2ee27129c820d1c` |
 | Production JSON templates | 0 created | scheduled after repository contracts |
 | Executable certification | Not achieved | final release gate only |
 
@@ -64,13 +66,13 @@ The project uses the following evidence levels. These terms are not interchangea
 | 1 | Seven-project Visual Studio solution foundation | Completed, compiled, tested, and merged through PR #1 |
 | 2 | Windows build, NuGet, MSBuild, MSTest, and artifact foundation | Completed, compiled, tested, and merged through PR #2 and PR #1 |
 | 2 Closure | Final evidence, ordered integration, and post-merge validation | Completed, validated, and merged through PR #3 and PR #4 |
-| 3 | Production Domain foundations | Created and committed on pass branch; compilation and tests pending pull-request workflow |
+| 3 | Production Domain foundations | Created, compiled, and tested on PR #5; final documented-head validation and merge pending |
 | 4+ | Domain aggregates, Application, Infrastructure, UI, modules, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-Passes 1 and 2 are integrated into `develop` and remain compile-verified and test-verified. Pass 3 production Domain foundations now exist on `build/pass-03-domain-foundations`, including entity/versioning contracts, person and contact value objects, institution-local dates, monetary rules, canonical identity enumerations, and 22 new MSTest methods. These Pass 3 sources are not yet described as compiled or tested because the pull-request Windows workflow has not completed. No production aggregate set, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
+Passes 1 and 2 are integrated into `develop` and remain compile-verified and test-verified. Pass 3 production Domain foundations exist on `build/pass-03-domain-foundations` and have completed a Windows Release build with zero warnings and zero errors. The full 25-test suite passed with TRX and artifact evidence. Pass 3 is not yet merged into `develop`, and the final documentation commits remain subject to the same workflow. No complete production aggregate set, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
 
 ## Exact next gate
 
-Open the first Domain pull request into `develop`, execute the Windows Release build and all 25 tests, correct any C# 7.3 or .NET Framework 4.8 diagnostics, record final evidence, and merge only after the final documented head passes.
+Validate the final documented PR #5 head, update the pull-request evidence, merge into `develop`, refetch the merged Domain sources and implementation state, and establish the next Domain-aggregate construction boundary.
