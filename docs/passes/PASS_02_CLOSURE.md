@@ -61,21 +61,33 @@ The combined Pass 1 and Pass 2 integration candidate was independently validated
 - artifact ID: `8396004598`
 - artifact SHA-256: `903bac5c0127a7f31e96934465e60a0e0ca48a7711019bc274b2c845c5396db6`
 
-## Post-merge validation method
+## Post-merge Windows validation
 
-This closure branch was created from `develop` only after merge commit `7f61d529380923b04a959d655320150940f3549a` existed. Its pull-request workflow therefore validates the actual integrated code baseline plus closure-only documentation changes. No production source is altered by this closure pass.
+This closure branch was created from `develop` only after merge commit `7f61d529380923b04a959d655320150940f3549a` existed. Its pull-request workflow therefore validated the actual integrated code baseline plus closure-only documentation changes. No production source was altered by this closure pass.
 
-The closure pull request must pass the same Windows gates before it is merged:
+GitHub Actions run `29552005590` completed successfully on closure head `e2d4c2e32f4a62f3575c9a085ec24ab6709f6459`.
 
-1. exact source checkout;
-2. seven-project architecture validation;
-3. NuGet restoration;
-4. Release MSBuild;
-5. MSTest discovery and execution;
-6. TRX verification;
-7. evidence artifact publication.
+- checkout: passed
+- source-tree and architecture validation: passed
+- NuGet restoration: passed
+- Release MSBuild: passed
+- warnings: `0`
+- errors: `0`
+- MSTest execution: passed
+- tests executed: `3`
+- tests passed: `3`
+- tests failed: `0`
+- TRX verification: passed
+- artifact publication: passed
 
-The closure result is not complete until the closure pull-request run succeeds and the committed implementation-state record is visible on `develop`.
+The post-merge evidence artifact is:
+
+- name: `iuis-windows-build-evidence-14`
+- artifact ID: `8396072032`
+- artifact SHA-256: `900f7fe14d2d5a2e9f0eeda984c43c6ca0fa823143a8b1a7ffa54d4bdbb321ae`
+- expiration: 2026-07-31
+
+Subsequent commits in this closure branch only finalize evidence wording and remain subject to the same pull-request workflow before merge.
 
 ## Verified structural baseline
 
@@ -107,6 +119,10 @@ The following remain at zero implementation and must not be inferred from the su
 - shared UI framework beyond temporary startup Forms;
 - Student, Employee, Administrator, Registrar, Finance, Library, Counseling, Discipline, Clinic, HR, Attendance, Faculty, and Operations modules;
 - backup, restore, deployment, and final release certification.
+
+## Closure gate
+
+Pass 2 closure may be merged only after the latest closure-head workflow succeeds. After merge, the committed closure record and implementation-state file must be refetched from `develop`.
 
 ## Next construction boundary
 
