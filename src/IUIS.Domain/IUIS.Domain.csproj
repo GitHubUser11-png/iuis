@@ -25,9 +25,15 @@
     <Compile Include="Finance\MoneyRules.cs" />
     <Compile Include="Identity\IdentityEnums.cs" />
     <Compile Include="Identity\IdentityPolicy.cs" />
+    <Compile Include="Identity\InstitutionIdentifier.cs" />
+    <Compile Include="Identity\UserAccount.cs" />
+    <Compile Include="Identity\UserSession.cs" />
     <Compile Include="People\ContactInformation.cs" />
+    <Compile Include="People\EmployeeRecord.cs" />
+    <Compile Include="People\MasterRecordEnums.cs" />
     <Compile Include="People\PersonName.cs" />
     <Compile Include="People\PostalAddress.cs" />
+    <Compile Include="People\StudentRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionFoundation.cs" />
     <Compile Include="Time\InstitutionLocalDate.cs" />
