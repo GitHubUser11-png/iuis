@@ -1,0 +1,60 @@
+# Visual Studio and MSBuild
+.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.csproj.user
+
+# NuGet and packages
+packages/
+*.nupkg
+*.snupkg
+.nuget/
+
+# Test and coverage output
+TestResults/
+coverage/
+*.trx
+*.coverage
+*.coveragexml
+
+# Build artifacts and logs
+artifacts/
+logs/
+*.binlog
+*.buildlog
+*.log
+
+# Runtime repository and operational data
+runtime/
+data/
+backups/
+operations/
+exports/
+quarantine/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+~$*
+
+# Operating systems
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE extensions
+_ReSharper*/
+*.DotSettings.user
+.vscode/
+.idea/
+
+# Keep authoritative repository templates versioned
+!RepositoryTemplates/
+!RepositoryTemplates/**
