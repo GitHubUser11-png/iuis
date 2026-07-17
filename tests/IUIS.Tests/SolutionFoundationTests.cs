@@ -1,25 +1,32 @@
-using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IUIS.Tests
 {
-    public static class SolutionFoundationTests
+    [TestClass]
+    public sealed class SolutionFoundationTests
     {
-        public static void AssertProjectNamesAreAvailable()
+        [TestMethod]
+        public void DomainProjectMarkerUsesCanonicalName()
         {
-            if (string.IsNullOrWhiteSpace(IUIS.Domain.SolutionFoundation.ProjectName))
-            {
-                throw new InvalidOperationException("The Domain project marker is unavailable.");
-            }
+            Assert.AreEqual(
+                "IUIS.Domain",
+                Domain.SolutionFoundation.ProjectName);
+        }
 
-            if (string.IsNullOrWhiteSpace(IUIS.Application.SolutionFoundation.ProjectName))
-            {
-                throw new InvalidOperationException("The Application project marker is unavailable.");
-            }
+        [TestMethod]
+        public void ApplicationProjectMarkerUsesCanonicalName()
+        {
+            Assert.AreEqual(
+                "IUIS.Application",
+                Application.SolutionFoundation.ProjectName);
+        }
 
-            if (string.IsNullOrWhiteSpace(IUIS.Infrastructure.SolutionFoundation.ProjectName))
-            {
-                throw new InvalidOperationException("The Infrastructure project marker is unavailable.");
-            }
+        [TestMethod]
+        public void InfrastructureProjectMarkerUsesCanonicalName()
+        {
+            Assert.AreEqual(
+                "IUIS.Infrastructure",
+                Infrastructure.SolutionFoundation.ProjectName);
         }
     }
 }
