@@ -34,9 +34,9 @@ The project uses the following evidence levels. These terms are not interchangea
 | Test framework integration | Created and executed | MSTest framework and adapter 3.6.4 |
 | Initial automated tests | 3 passed | Domain, Application, and Infrastructure canonical marker tests |
 | Production JSON templates | 0 created | Scheduled after repository contracts |
-| Release compilation | Successful | GitHub Actions run `29549975855`; 0 warnings, 0 errors |
+| Release compilation | Successful on final Pass 2 documentation head | Run `29550063410`; commit `7279793ab12adea13e899ca81f5980cd9b68d5b9`; 0 warnings, 0 errors |
 | Automated test execution | Successful | `IUIS.Tests.trx`; 3 executed, 3 passed, 0 failed |
-| Build evidence artifact | Verified | `iuis-windows-build-evidence-6`, SHA-256 `759b84fdf04a7b9f929d60b6c1eacc4fb5d6bed1714992c80116c0bebd1f4b1c` |
+| Build evidence artifact | Verified | `iuis-windows-build-evidence-7`, artifact `8395407334`, SHA-256 `35ab9b87b7158d90f4eb59499045ab40d48f53859d371fedf7a6ea05060bad46` |
 | Executable certification | Not achieved | Final release gate only |
 
 ## Locked implementation target
@@ -58,10 +58,10 @@ The project uses the following evidence levels. These terms are not interchangea
 | Pass | Scope | Status |
 |---:|---|---|
 | 0 | Repository access, initial baseline, governance, and `develop` branch | Completed |
-| 1 | Seven-project Visual Studio solution foundation | Created, compiled through stacked Pass 2 evidence, and awaiting ordered merge |
-| 2 | Windows build, NuGet, MSBuild, MSTest, and artifact foundation | Created, committed, compiled, and tested; PR #2 open |
+| 1 | Seven-project Visual Studio solution foundation | Created and compile-verified through stacked Pass 2 evidence; PR #1 awaiting ordered integration |
+| 2 | Windows build, NuGet, MSBuild, MSTest, and artifact foundation | Created, committed, compiled, tested, and documented; PR #2 awaiting ordered integration |
 | 3+ | Domain, Application, Infrastructure, UI, modules, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-The seven-project source foundation compiles successfully in Release configuration on the Windows GitHub Actions runner. The structural validator, NuGet restoration, MSBuild compilation, MSTest discovery, three initial tests, TRX generation, and evidence-artifact publication have completed successfully. No production Domain model, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
+The seven-project source foundation compiles successfully in Release configuration on the Windows GitHub Actions runner. The structural validator, NuGet restoration, MSBuild compilation, MSTest discovery, three initial tests, TRX generation, and evidence-artifact publication have completed successfully on the final documented Pass 2 branch head. Passes 1 and 2 are not yet integrated into `develop`. No production Domain model, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
