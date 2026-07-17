@@ -26,7 +26,8 @@ The project uses the following evidence levels. These terms are not interchangea
 | Integration branch | Created and updated | `develop` |
 | Pass 1 branch | Integrated | PR #1 |
 | Pass 2 branch | Integrated into Pass 1 | PR #2 |
-| Integrated baseline commit | Created on `develop` | `7f61d529380923b04a959d655320150940f3549a` |
+| Combined foundation commit | Merged into `develop` | `7f61d529380923b04a959d655320150940f3549a` |
+| Pass 2 closure | Completed and merged | PR #3; closure integration commit `494f05dd844cb35ce714bcbc3cb4a00ce7c5a863` |
 | Visual Studio solution | Created and merged | `IUIS.sln` |
 | C# projects | 7 created, compiled, tested, and merged | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
 | Central build properties | Created, enforced, and merged | `Directory.Build.props`, `Directory.Build.targets` |
@@ -36,8 +37,8 @@ The project uses the following evidence levels. These terms are not interchangea
 | Initial automated tests | 3 passed | Domain, Application, and Infrastructure canonical marker tests |
 | Integration-candidate validation | Successful | Run `29551813015`; commit `e0987c88e497982f6b691a7f1181c0b2d0d05925`; 0 warnings, 0 errors |
 | Integration-candidate artifact | Verified | `iuis-windows-build-evidence-12`, artifact `8396004598`, SHA-256 `903bac5c0127a7f31e96934465e60a0e0ca48a7711019bc274b2c845c5396db6` |
-| Post-merge Windows validation | Successful | Run `29552005590`; closure head `e2d4c2e32f4a62f3575c9a085ec24ab6709f6459`; 0 warnings, 0 errors; 3 tests passed |
-| Post-merge evidence artifact | Verified | `iuis-windows-build-evidence-14`, artifact `8396072032`, SHA-256 `900f7fe14d2d5a2e9f0eeda984c43c6ca0fa823143a8b1a7ffa54d4bdbb321ae` |
+| Post-merge Windows validation | Successful | Final closure run `29552079594`; head `1d9728fdd83d91ed53271deae0684e3cf9a4a207`; 0 warnings, 0 errors; 3 tests passed |
+| Final closure evidence artifact | Verified | `iuis-windows-build-evidence-16`, artifact `8396107023`, SHA-256 `79a13c7d0190b5a2b18e73645469ada85a3f56531ae9e0d0e51e5a7caf033eb1` |
 | Production JSON templates | 0 created | Scheduled after repository contracts |
 | Executable certification | Not achieved | Final release gate only |
 
@@ -62,9 +63,13 @@ The project uses the following evidence levels. These terms are not interchangea
 | 0 | Repository access, initial baseline, governance, and `develop` branch | Completed and merged |
 | 1 | Seven-project Visual Studio solution foundation | Completed, compiled, tested, and merged through PR #1 |
 | 2 | Windows build, NuGet, MSBuild, MSTest, and artifact foundation | Completed, compiled, tested, and merged through PR #2 and PR #1 |
-| 2 Closure | Final evidence, ordered integration, and post-merge validation | Post-merge Windows validation passed; closure PR awaiting final validation and merge |
+| 2 Closure | Final evidence, ordered integration, and post-merge validation | Completed, validated, and merged through PR #3 |
 | 3+ | Domain, Application, Infrastructure, UI, modules, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-Passes 1 and 2 are integrated into `develop` at commit `7f61d529380923b04a959d655320150940f3549a`. The integrated seven-project source foundation has been revalidated after merge through a closure branch created from that exact `develop` baseline. Release compilation completed with zero warnings and zero errors, and all three foundation tests passed. The remaining closure commits only finalize evidence documentation and are subject to the same pull-request validation before merge. No production Domain model, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
+Passes 1 and 2, including their final closure record, are integrated into `develop`. The seven-project structural foundation has been validated before integration and revalidated after integration. Release compilation completed with zero warnings and zero errors, and all three foundation tests passed with TRX and artifact evidence. No production Domain model, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
+
+## Exact next starting point
+
+The next implementation branch must be created from the current `develop` branch containing closure integration commit `494f05dd844cb35ce714bcbc3cb4a00ce7c5a863` and this final evidence correction. The next pass begins production Domain foundations and must preserve the existing architecture and compatibility gates.
