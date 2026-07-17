@@ -16,8 +16,21 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\DomainGuard.cs" />
+    <Compile Include="Common\DomainValidationException.cs" />
+    <Compile Include="Common\EntityBase.cs" />
+    <Compile Include="Common\EntityContracts.cs" />
+    <Compile Include="Common\TextNormalizer.cs" />
+    <Compile Include="Finance\Money.cs" />
+    <Compile Include="Finance\MoneyRules.cs" />
+    <Compile Include="Identity\IdentityEnums.cs" />
+    <Compile Include="Identity\IdentityPolicy.cs" />
+    <Compile Include="People\ContactInformation.cs" />
+    <Compile Include="People\PersonName.cs" />
+    <Compile Include="People\PostalAddress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionFoundation.cs" />
+    <Compile Include="Time\InstitutionLocalDate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
