@@ -25,14 +25,17 @@ The project uses the following evidence levels. These terms are not interchangea
 | Default branch | Created | `main` |
 | Integration branch | Created | `develop` |
 | Pass 1 branch | Created | `build/pass-01-solution-foundation` |
+| Pass 2 branch | Created | `build/pass-02-windows-ci` |
 | Visual Studio solution | Created on Pass 1 branch | `IUIS.sln` |
 | C# projects | 7 created on Pass 1 branch | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
 | Central build properties | Created on Pass 1 branch | `Directory.Build.props`, `Directory.Build.targets` |
-| C# source foundation | Created on Pass 1 branch | project markers and minimal startup sources |
-| Windows Forms | 2 minimal startup Forms | Structural placeholders only |
+| Windows CI workflow | Created on Pass 2 branch | `.github/workflows/windows-build.yml` |
+| Build scripts | Created on Pass 2 branch | source-tree validation and Release build/test scripts |
+| Test framework integration | Created on Pass 2 branch | MSTest framework and adapter package contracts |
+| Initial automated tests | 3 created on Pass 2 branch | canonical foundation marker tests |
 | Production JSON templates | 0 created | Scheduled after repository contracts |
-| Automated test-runner integration | Not created | Scheduled for Pass 2 and later test passes |
-| Release compilation | Not executed | Windows build workflow is scheduled for Pass 2 |
+| Release compilation | Pending workflow execution | No successful Windows build evidence recorded yet |
+| Automated test execution | Pending workflow execution | No TRX result recorded yet |
 | Executable certification | Not achieved | Final release gate only |
 
 ## Locked implementation target
@@ -54,10 +57,10 @@ The project uses the following evidence levels. These terms are not interchangea
 | Pass | Scope | Status |
 |---:|---|---|
 | 0 | Repository access, initial baseline, governance, and `develop` branch | Completed |
-| 1 | Seven-project Visual Studio solution foundation | Created and committed on pass branch; pull request pending validation |
-| 2 | Windows build and CI foundation | Not started |
+| 1 | Seven-project Visual Studio solution foundation | Created and committed; PR #1 open |
+| 2 | Windows build, NuGet, MSBuild, MSTest, and artifact foundation | Created on stacked branch; workflow result pending |
 | 3+ | Domain, Application, Infrastructure, UI, modules, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-The seven-project source foundation now exists on `build/pass-01-solution-foundation`. It has not yet been compiled by Windows MSBuild and has not been executed by an automated test runner. No production repository implementation, JSON template set, authentication workflow, business module, or release-certified executable exists yet.
+The seven-project source foundation, Windows workflow, build scripts, pinned MSTest packages, and initial structural tests exist on implementation branches. A successful Release build and automated test result are not yet claimed. No production Domain model, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
