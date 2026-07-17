@@ -23,16 +23,16 @@ The project uses the following evidence levels. These terms are not interchangea
 |---|---|---|
 | Private GitHub repository | Created | `GitHubUser11-png/iuis` |
 | Default branch | Created | `main` |
-| Initial repository commit | Committed | Pass 0 initial commit |
-| Governance baseline | Committed | Pass 0 governance commit |
-| Integration branch | Created | `develop`, based on the verified Pass 0 main baseline |
-| Visual Studio solution | Not created | Scheduled for Pass 1 |
-| C# projects | 0 created | Scheduled for Pass 1 |
-| C# source implementation | 0 files | Begins after solution foundation |
-| Windows Forms | 0 created | Scheduled after shared UI foundation |
-| Production JSON templates | 0 created | Created only after repository contracts exist |
-| Automated tests | 0 created | Test project foundation begins in Pass 1 |
-| Release compilation | Not executed | Requires source and Windows MSBuild workflow |
+| Integration branch | Created | `develop` |
+| Pass 1 branch | Created | `build/pass-01-solution-foundation` |
+| Visual Studio solution | Created on Pass 1 branch | `IUIS.sln` |
+| C# projects | 7 created on Pass 1 branch | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
+| Central build properties | Created on Pass 1 branch | `Directory.Build.props`, `Directory.Build.targets` |
+| C# source foundation | Created on Pass 1 branch | project markers and minimal startup sources |
+| Windows Forms | 2 minimal startup Forms | Structural placeholders only |
+| Production JSON templates | 0 created | Scheduled after repository contracts |
+| Automated test-runner integration | Not created | Scheduled for Pass 2 and later test passes |
+| Release compilation | Not executed | Windows build workflow is scheduled for Pass 2 |
 | Executable certification | Not achieved | Final release gate only |
 
 ## Locked implementation target
@@ -54,10 +54,10 @@ The project uses the following evidence levels. These terms are not interchangea
 | Pass | Scope | Status |
 |---:|---|---|
 | 0 | Repository access, initial baseline, governance, and `develop` branch | Completed |
-| 1 | Seven-project Visual Studio solution foundation | Not started |
+| 1 | Seven-project Visual Studio solution foundation | Created and committed on pass branch; pull request pending validation |
 | 2 | Windows build and CI foundation | Not started |
 | 3+ | Domain, Application, Infrastructure, UI, modules, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-The repository and governance baseline exist. No IUIS application source, executable, repository template, or automated test has yet been implemented. The implementation specifications remain requirements to be translated into source incrementally.
+The seven-project source foundation now exists on `build/pass-01-solution-foundation`. It has not yet been compiled by Windows MSBuild and has not been executed by an automated test runner. No production repository implementation, JSON template set, authentication workflow, business module, or release-certified executable exists yet.
