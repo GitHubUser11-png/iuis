@@ -27,15 +27,16 @@ The project uses the following evidence levels. These terms are not interchangea
 | Pass 1 branch | Created | `build/pass-01-solution-foundation` |
 | Pass 2 branch | Created | `build/pass-02-windows-ci` |
 | Visual Studio solution | Created on Pass 1 branch | `IUIS.sln` |
-| C# projects | 7 created on Pass 1 branch | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
-| Central build properties | Created on Pass 1 branch | `Directory.Build.props`, `Directory.Build.targets` |
-| Windows CI workflow | Created on Pass 2 branch | `.github/workflows/windows-build.yml` |
-| Build scripts | Created on Pass 2 branch | source-tree validation and Release build/test scripts |
-| Test framework integration | Created on Pass 2 branch | MSTest framework and adapter package contracts |
-| Initial automated tests | 3 created on Pass 2 branch | canonical foundation marker tests |
+| C# projects | 7 created and compiled | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
+| Central build properties | Created and enforced | `Directory.Build.props`, `Directory.Build.targets` |
+| Windows CI workflow | Created and executed | `.github/workflows/windows-build.yml` |
+| Build scripts | Created and executed | source-tree validation and Release build/test scripts |
+| Test framework integration | Created and executed | MSTest framework and adapter 3.6.4 |
+| Initial automated tests | 3 passed | Domain, Application, and Infrastructure canonical marker tests |
 | Production JSON templates | 0 created | Scheduled after repository contracts |
-| Release compilation | Pending workflow execution | No successful Windows build evidence recorded yet |
-| Automated test execution | Pending workflow execution | No TRX result recorded yet |
+| Release compilation | Successful | GitHub Actions run `29549975855`; 0 warnings, 0 errors |
+| Automated test execution | Successful | `IUIS.Tests.trx`; 3 executed, 3 passed, 0 failed |
+| Build evidence artifact | Verified | `iuis-windows-build-evidence-6`, SHA-256 `759b84fdf04a7b9f929d60b6c1eacc4fb5d6bed1714992c80116c0bebd1f4b1c` |
 | Executable certification | Not achieved | Final release gate only |
 
 ## Locked implementation target
@@ -57,10 +58,10 @@ The project uses the following evidence levels. These terms are not interchangea
 | Pass | Scope | Status |
 |---:|---|---|
 | 0 | Repository access, initial baseline, governance, and `develop` branch | Completed |
-| 1 | Seven-project Visual Studio solution foundation | Created and committed; PR #1 open |
-| 2 | Windows build, NuGet, MSBuild, MSTest, and artifact foundation | Created on stacked branch; workflow result pending |
+| 1 | Seven-project Visual Studio solution foundation | Created, compiled through stacked Pass 2 evidence, and awaiting ordered merge |
+| 2 | Windows build, NuGet, MSBuild, MSTest, and artifact foundation | Created, committed, compiled, and tested; PR #2 open |
 | 3+ | Domain, Application, Infrastructure, UI, modules, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-The seven-project source foundation, Windows workflow, build scripts, pinned MSTest packages, and initial structural tests exist on implementation branches. A successful Release build and automated test result are not yet claimed. No production Domain model, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
+The seven-project source foundation compiles successfully in Release configuration on the Windows GitHub Actions runner. The structural validator, NuGet restoration, MSBuild compilation, MSTest discovery, three initial tests, TRX generation, and evidence-artifact publication have completed successfully. No production Domain model, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
