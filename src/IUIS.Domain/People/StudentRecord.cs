@@ -38,7 +38,7 @@ namespace IUIS.Domain.People
             Name = name ?? throw new DomainValidationException("Student name is required.");
             Contact = contact ?? throw new DomainValidationException("Student contact information is required.");
             Address = address ?? throw new DomainValidationException("Student address is required.");
-            BirthDate = birthDate ?? throw new DomainValidationException("Student birth date is required.");
+            BirthDate = birthDate;
             CourseId = DomainGuard.RequiredIdentifier(courseId, nameof(courseId));
             Status = status;
         }
