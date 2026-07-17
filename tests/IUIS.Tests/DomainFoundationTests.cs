@@ -189,11 +189,12 @@ namespace IUIS.Tests
         public void InstitutionLocalDateSupportsDeterministicOrdering()
         {
             var earlier = new InstitutionLocalDate(2026, 7, 16);
+            var equal = new InstitutionLocalDate(2026, 7, 16);
             var later = new InstitutionLocalDate(2026, 7, 17);
 
             Assert.IsTrue(earlier < later);
             Assert.IsTrue(later > earlier);
-            Assert.IsTrue(earlier <= earlier);
+            Assert.IsTrue(earlier <= equal);
         }
 
         [TestMethod]
