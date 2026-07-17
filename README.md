@@ -4,17 +4,19 @@ This repository contains the authoritative source implementation of the Integrat
 
 ## Current implementation state
 
-The repository is being built from an empty baseline. The implementation specifications completed before this repository was created are requirements and design contracts; they are not evidence that source code already exists.
+The repository is being constructed from an empty baseline. The implementation specifications completed before this repository was created are requirements and design contracts; they are not evidence that source code already existed.
 
-At this baseline:
+Pass 1 establishes the seven-project Visual Studio solution foundation:
 
-- Visual Studio solution: not yet created
-- C# projects: not yet created
-- Windows Forms: not yet created
-- production JSON repository templates: not yet created
-- automated tests: not yet created
-- Release compilation: not yet executed
-- executable certification: not achieved
+- `IUIS.Domain`
+- `IUIS.Application`
+- `IUIS.Infrastructure`
+- `IUIS.SharedUI`
+- `IUIS.UserApp`
+- `IUIS.AdminApp`
+- `IUIS.Tests`
+
+Minimal startup Forms exist only to prove the intended executable boundaries structurally. Authentication, repositories, modules, production JSON templates, and real automated test-runner integration remain deferred.
 
 Progress is recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md).
 
