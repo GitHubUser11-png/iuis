@@ -38,9 +38,10 @@ The project uses the following evidence levels. These terms are not interchangea
 | Test framework integration | Created, executed, and merged | MSTest framework and adapter 3.6.4 |
 | Production Domain foundations | Created, compiled, tested, and merged | entity contracts, value objects, monetary rules, identity enums, and compatibility policy |
 | Final PR #5 validation | Successful | run `29565661053`; head `c25c9f93118b08d933650c1d8b66997237671c46`; 0 warnings, 0 errors |
-| Pass 3 test suite | Successful | 25 executed, 25 passed, 0 failed |
 | Final PR #5 evidence artifact | Verified | `iuis-windows-build-evidence-23`, artifact `8401004874`, SHA-256 `d9adc62863d26fcf5e5079b47f7e79888d2bd2886324651ea269fa0ab4bb3596` |
-| Pass 3 closure branch | Created from merged `develop` | `build/pass-03-closure` |
+| Pass 3 post-merge validation | Successful | run `29565923026`; closure head `29e58f0e8beb2a90f703f4a641e3709938cbf93b`; 0 warnings, 0 errors; 25 tests passed |
+| Pass 3 post-merge artifact | Verified | `iuis-windows-build-evidence-25`, artifact `8401095750`, SHA-256 `e6c8b1b7546397e5f3f9b1ba4c50dc9c85cfc2efdc94d8f5c3b868dbff342b89` |
+| Pass 3 closure pull request | Validated and awaiting merge | PR #6 |
 | Production JSON templates | 0 created | scheduled after repository contracts |
 | Executable certification | Not achieved | final release gate only |
 
@@ -67,13 +68,13 @@ The project uses the following evidence levels. These terms are not interchangea
 | 2 | Windows build, NuGet, MSBuild, MSTest, and artifact foundation | Completed, compiled, tested, and merged through PR #2 and PR #1 |
 | 2 Closure | Final evidence, ordered integration, and post-merge validation | Completed, validated, and merged through PR #3 and PR #4 |
 | 3 | Production Domain foundations | Completed, compiled, tested, and merged through PR #5 |
-| 3 Closure | Integrated Domain validation and final state correction | Closure branch created; Windows validation and merge pending |
+| 3 Closure | Integrated Domain validation and final state correction | Post-merge validation passed; final documented-head validation and PR #6 merge pending |
 | 4+ | Domain aggregates, Application, Infrastructure, UI, modules, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-Passes 1 through 3 are integrated into `develop`. The first production Domain foundations are now part of the authoritative integration branch and were validated on the final PR #5 head with zero warnings, zero errors, and 25 passing tests. A closure branch created from the merged Domain commit is now validating the actual integrated tree and correcting the final state record. No complete production aggregate set, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
+Passes 1 through 3 are integrated into `develop`. The first production Domain foundations are part of the authoritative integration branch and have passed both final pull-request validation and an independent post-merge Windows validation with zero warnings, zero errors, and 25 passing tests. The final closure documentation is awaiting its own workflow and merge through PR #6. No complete production aggregate set, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
 
 ## Exact next gate
 
-Open and validate the Pass 3 closure pull request, merge the closure documentation into `develop`, refetch representative Domain files from `develop`, and begin the first coherent production aggregate group only after that verification completes.
+Validate the final documented PR #6 head, merge the closure record into `develop`, apply one final state correction identifying PR #6 as merged, refetch representative Domain sources from `develop`, and begin the next production aggregate group.
