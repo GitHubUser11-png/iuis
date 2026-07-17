@@ -11,7 +11,7 @@ Create the first Windows-based evidence pipeline for the IUIS solution. This pas
 - Base commit: `bc957bd3b165f2697ba37eb45758ce6317addebd`
 - Pass branch: `build/pass-02-windows-ci`
 
-Pass 2 is stacked on Pass 1 because the seven-project solution has not yet been merged into `develop`.
+Pass 2 is stacked on Pass 1 because the seven-project solution had not yet been merged into `develop` when this pass began.
 
 ## Created
 
@@ -25,6 +25,8 @@ Pass 2 is stacked on Pass 1 because the seven-project solution has not yet been 
 
 - `tests/IUIS.Tests/IUIS.Tests.csproj`
 - `tests/IUIS.Tests/SolutionFoundationTests.cs`
+- `src/IUIS.UserApp/Program.cs`
+- `src/IUIS.AdminApp/Program.cs`
 - `docs/IMPLEMENTATION_STATE.md`
 
 ## Build workflow
@@ -38,8 +40,10 @@ The Windows workflow performs the following ordered gates:
 5. restore NuGet packages;
 6. execute a Release rebuild through MSBuild;
 7. locate `VSTest.Console.exe` through `vswhere`;
-8. execute the MSTest assembly;
-9. publish build logs, binary logs, TRX results, validation reports, and Release binaries.
+8. locate the restored MSTest adapter assembly;
+9. execute the MSTest assembly;
+10. verify the expected TRX file;
+11. publish build logs, binary logs, TRX results, validation reports, and Release binaries.
 
 ## Test integration
 
@@ -52,9 +56,48 @@ The test project uses:
 
 The initial tests verify the canonical Domain, Application, and Infrastructure foundation markers. The PowerShell structural validator separately verifies project count, output types, dependency direction, central framework/language settings, and the absence of direct `System.IO` or `System.Text.Json` references in Form source files.
 
+## Compiler and pipeline corrections
+
+The first real Windows executions exposed and corrected three implementation defects:
+
+1. the original PowerShell XML-based project validator did not behave consistently on the hosted runner, so it was replaced by deterministic literal project-contract checks;
+2. `Application.EnableVisualStyles()` and related calls conflicted with the referenced `IUIS.Application` namespace, so both executable entry points now use fully qualified `System.Windows.Forms.Application` calls;
+3. rigid VSTest and adapter paths prevented test execution, so the build harness now discovers VSTest through `vswhere`, discovers the MSTest adapter assembly recursively, verifies TRX creation, and writes progressive failure-stage evidence.
+
+## Final branch validation evidence
+
+The final Pass 2 documentation head was validated by GitHub Actions run `29550063410` on commit `7279793ab12adea13e899ca81f5980cd9b68d5b9`.
+
+All workflow stages completed successfully:
+
+- checkout: passed;
+- MSBuild discovery: passed;
+- NuGet discovery: passed;
+- source-tree and architecture validation: passed;
+- NuGet restore: passed;
+- Release compilation: passed;
+- MSTest execution: passed;
+- evidence upload: passed.
+
+The validated build result is:
+
+- Release warnings: `0`;
+- Release errors: `0`;
+- tests executed: `3`;
+- tests passed: `3`;
+- tests failed: `0`;
+- TRX: `artifacts/TestResults/IUIS.Tests.trx`.
+
+The final branch evidence artifact is:
+
+- name: `iuis-windows-build-evidence-7`;
+- artifact ID: `8395407334`;
+- SHA-256: `35ab9b87b7158d90f4eb59499045ab40d48f53859d371fedf7a6ea05060bad46`;
+- expiration: 2026-07-31.
+
 ## Compatibility notes
 
-MSTest 3.6.4 supports .NET Framework 4.6.2 and later, which includes the IUIS .NET Framework 4.8 target. Package versions are pinned so that the first compiler result is reproducible.
+MSTest 3.6.4 supports .NET Framework 4.6.2 and later, which includes the IUIS .NET Framework 4.8 target. Package versions are pinned so that the compiler and test result are reproducible. All committed source remains compatible with C# 7.3.
 
 ## Deliberately deferred
 
@@ -67,4 +110,8 @@ MSTest 3.6.4 supports .NET Framework 4.6.2 and later, which includes the IUIS .N
 
 ## Evidence boundary
 
-The workflow and test integration are created and committed by this pass. Compilation and test success are not claimed until the corresponding GitHub Actions run reaches a completed successful conclusion and its artifacts are inspected.
+Pass 2 establishes a compile-verified and test-verified structural foundation only. It does not certify production Domain behavior, persistence, authentication, business modules, operational recovery, deployment readiness, or final executables.
+
+## Integration gate
+
+PR #2 may be merged into `build/pass-01-solution-foundation` only after this evidence record and the pull-request description reflect the successful final branch validation. PR #1 may then be merged into `develop`, followed by a fresh Windows validation of the integrated `develop` baseline.
