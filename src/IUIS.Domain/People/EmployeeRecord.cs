@@ -41,7 +41,7 @@ namespace IUIS.Domain.People
             Name = name ?? throw new DomainValidationException("Employee name is required.");
             Contact = contact ?? throw new DomainValidationException("Employee contact information is required.");
             Address = address ?? throw new DomainValidationException("Employee address is required.");
-            BirthDate = birthDate ?? throw new DomainValidationException("Employee birth date is required.");
+            BirthDate = birthDate;
             DepartmentId = DomainGuard.RequiredIdentifier(departmentId, nameof(departmentId));
             PositionTitle = TextNormalizer.Required(positionTitle, nameof(positionTitle), 150);
             Status = status;
