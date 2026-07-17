@@ -25,14 +25,18 @@ The project uses the following evidence levels. These terms are not interchangea
 | Default branch | Created | `main` |
 | Integration branch | Created | `develop` |
 | Pass 1 branch | Created | `build/pass-01-solution-foundation` |
+| Pass 2 branch | Created | `build/pass-02-windows-ci` |
 | Visual Studio solution | Created on Pass 1 branch | `IUIS.sln` |
-| C# projects | 7 created on Pass 1 branch | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
-| Central build properties | Created on Pass 1 branch | `Directory.Build.props`, `Directory.Build.targets` |
-| C# source foundation | Created on Pass 1 branch | project markers and minimal startup sources |
-| Windows Forms | 2 minimal startup Forms | Structural placeholders only |
+| C# projects | 7 created and compiled | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
+| Central build properties | Created and enforced | `Directory.Build.props`, `Directory.Build.targets` |
+| Windows CI workflow | Created and executed | `.github/workflows/windows-build.yml` |
+| Build scripts | Created and executed | source-tree validation and Release build/test scripts |
+| Test framework integration | Created and executed | MSTest framework and adapter 3.6.4 |
+| Initial automated tests | 3 passed | Domain, Application, and Infrastructure canonical marker tests |
 | Production JSON templates | 0 created | Scheduled after repository contracts |
-| Automated test-runner integration | Not created | Scheduled for Pass 2 and later test passes |
-| Release compilation | Not executed | Windows build workflow is scheduled for Pass 2 |
+| Release compilation | Successful on validated Pass 2 implementation baseline | Run `29550063410`; commit `7279793ab12adea13e899ca81f5980cd9b68d5b9`; 0 warnings, 0 errors |
+| Automated test execution | Successful | `IUIS.Tests.trx`; 3 executed, 3 passed, 0 failed |
+| Build evidence artifact | Verified | `iuis-windows-build-evidence-7`, artifact `8395407334`, SHA-256 `35ab9b87b7158d90f4eb59499045ab40d48f53859d371fedf7a6ea05060bad46` |
 | Executable certification | Not achieved | Final release gate only |
 
 ## Locked implementation target
@@ -54,10 +58,10 @@ The project uses the following evidence levels. These terms are not interchangea
 | Pass | Scope | Status |
 |---:|---|---|
 | 0 | Repository access, initial baseline, governance, and `develop` branch | Completed |
-| 1 | Seven-project Visual Studio solution foundation | Created and committed on pass branch; pull request pending validation |
-| 2 | Windows build and CI foundation | Not started |
+| 1 | Seven-project Visual Studio solution foundation | Created and compile-verified through stacked Pass 2 evidence; PR #1 awaiting ordered integration |
+| 2 | Windows build, NuGet, MSBuild, MSTest, and artifact foundation | Created, committed, compiled, tested, and documented; PR #2 awaiting ordered integration |
 | 3+ | Domain, Application, Infrastructure, UI, modules, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-The seven-project source foundation now exists on `build/pass-01-solution-foundation`. It has not yet been compiled by Windows MSBuild and has not been executed by an automated test runner. No production repository implementation, JSON template set, authentication workflow, business module, or release-certified executable exists yet.
+The seven-project source foundation compiles successfully in Release configuration on the Windows GitHub Actions runner. The structural validator, NuGet restoration, MSBuild compilation, MSTest discovery, three initial tests, TRX generation, and evidence-artifact publication have completed successfully on the validated Pass 2 implementation baseline. Closure-document amendments remain subject to the pull-request validation check. Passes 1 and 2 are not yet integrated into `develop`. No production Domain model, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.

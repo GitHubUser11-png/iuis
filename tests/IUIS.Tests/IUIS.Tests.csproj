@@ -4,6 +4,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{710C39A2-FB1A-411D-A8E1-C4D9FC0F8307}</ProjectGuid>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <RootNamespace>IUIS.Tests</RootNamespace>
     <AssemblyName>IUIS.Tests</AssemblyName>
@@ -14,15 +15,35 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework">
+      <HintPath>..\..\packages\MSTest.TestFramework.3.6.4\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions">
+      <HintPath>..\..\packages\MSTest.TestFramework.3.6.4\lib\net462\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionFoundationTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\IUIS.Domain\IUIS.Domain.csproj"><Project>{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}</Project><Name>IUIS.Domain</Name></ProjectReference>
-    <ProjectReference Include="..\..\src\IUIS.Application\IUIS.Application.csproj"><Project>{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}</Project><Name>IUIS.Application</Name></ProjectReference>
-    <ProjectReference Include="..\..\src\IUIS.Infrastructure\IUIS.Infrastructure.csproj"><Project>{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}</Project><Name>IUIS.Infrastructure</Name></ProjectReference>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\IUIS.Domain\IUIS.Domain.csproj">
+      <Project>{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}</Project>
+      <Name>IUIS.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\IUIS.Application\IUIS.Application.csproj">
+      <Project>{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}</Project>
+      <Name>IUIS.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\IUIS.Infrastructure\IUIS.Infrastructure.csproj">
+      <Project>{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}</Project>
+      <Name>IUIS.Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Forms;
 
 namespace IUIS.UserApp
 {
@@ -8,9 +7,9 @@ namespace IUIS.UserApp
         [STAThread]
         private static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new UserStartupForm());
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            System.Windows.Forms.Application.Run(new UserStartupForm());
         }
     }
 }
