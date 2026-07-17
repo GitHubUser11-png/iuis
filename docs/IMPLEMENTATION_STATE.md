@@ -26,21 +26,22 @@ The project uses the following evidence levels. These terms are not interchangea
 | Integration branch | Created and updated | `develop` |
 | Pass 1 branch | Integrated | PR #1 |
 | Pass 2 branch | Integrated into Pass 1 | PR #2 |
-| Combined foundation commit | Merged into `develop` | `7f61d529380923b04a959d655320150940f3549a` |
+| Combined solution and CI foundation | Merged into `develop` | Passes 1 and 2 |
 | Pass 2 closure | Completed and merged | PR #3 and final correction PR #4 |
-| Current pre-Pass-3 `develop` head | Verified | `ff5a2ced7dfbfc85078dc7800f94b698ff6de007` |
+| Pass 3 Domain branch | Completed and merged | PR #5 |
+| Pass 3 integration commit | Created on `develop` | `0ce0595df6142d3a2f75a292dada161141fdcd5d` |
 | Visual Studio solution | Created and merged | `IUIS.sln` |
 | C# projects | 7 created, compiled, tested, and merged | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
 | Central build properties | Created, enforced, and merged | `Directory.Build.props`, `Directory.Build.targets` |
 | Windows CI workflow | Created, executed, and merged | `.github/workflows/windows-build.yml` |
 | Build scripts | Created, executed, and merged | source-tree validation and Release build/test scripts |
 | Test framework integration | Created, executed, and merged | MSTest framework and adapter 3.6.4 |
-| Pass 2 automated tests | 3 passed | Domain, Application, and Infrastructure canonical marker tests |
-| Pass 3 branch | Created and validated | `build/pass-03-domain-foundations`; PR #5 |
-| Production Domain foundations | Created, compiled, and tested on Pass 3 branch | entity contracts, value objects, monetary rules, identity enums, and compatibility policy |
-| Pass 3 test suite | Successful | 25 executed, 25 passed, 0 failed |
-| Pass 3 Release compilation | Successful | run `29565491487`; commit `585a6c00c1f01d3418323b93d49635ce6fe04447`; 0 warnings, 0 errors |
-| Pass 3 evidence artifact | Verified | `iuis-windows-build-evidence-21`, artifact `8400936460`, SHA-256 `d672faf38b50911f2dcc5fa6b51862f6afca76f5ff99bebaf2ee27129c820d1c` |
+| Production Domain foundations | Created, compiled, tested, and merged | entity contracts, value objects, monetary rules, identity enums, and compatibility policy |
+| Final PR #5 validation | Successful | run `29565661053`; head `c25c9f93118b08d933650c1d8b66997237671c46`; 0 warnings, 0 errors |
+| Final PR #5 evidence artifact | Verified | `iuis-windows-build-evidence-23`, artifact `8401004874`, SHA-256 `d9adc62863d26fcf5e5079b47f7e79888d2bd2886324651ea269fa0ab4bb3596` |
+| Pass 3 post-merge validation | Successful | run `29565923026`; closure head `29e58f0e8beb2a90f703f4a641e3709938cbf93b`; 0 warnings, 0 errors; 25 tests passed |
+| Pass 3 post-merge artifact | Verified | `iuis-windows-build-evidence-25`, artifact `8401095750`, SHA-256 `e6c8b1b7546397e5f3f9b1ba4c50dc9c85cfc2efdc94d8f5c3b868dbff342b89` |
+| Pass 3 closure pull request | Validated and awaiting merge | PR #6 |
 | Production JSON templates | 0 created | scheduled after repository contracts |
 | Executable certification | Not achieved | final release gate only |
 
@@ -66,13 +67,14 @@ The project uses the following evidence levels. These terms are not interchangea
 | 1 | Seven-project Visual Studio solution foundation | Completed, compiled, tested, and merged through PR #1 |
 | 2 | Windows build, NuGet, MSBuild, MSTest, and artifact foundation | Completed, compiled, tested, and merged through PR #2 and PR #1 |
 | 2 Closure | Final evidence, ordered integration, and post-merge validation | Completed, validated, and merged through PR #3 and PR #4 |
-| 3 | Production Domain foundations | Created, compiled, and tested on PR #5; final documented-head validation and merge pending |
+| 3 | Production Domain foundations | Completed, compiled, tested, and merged through PR #5 |
+| 3 Closure | Integrated Domain validation and final state correction | Post-merge validation passed; final documented-head validation and PR #6 merge pending |
 | 4+ | Domain aggregates, Application, Infrastructure, UI, modules, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-Passes 1 and 2 are integrated into `develop` and remain compile-verified and test-verified. Pass 3 production Domain foundations exist on `build/pass-03-domain-foundations` and have completed a Windows Release build with zero warnings and zero errors. The full 25-test suite passed with TRX and artifact evidence. Pass 3 is not yet merged into `develop`, and the final documentation commits remain subject to the same workflow. No complete production aggregate set, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
+Passes 1 through 3 are integrated into `develop`. The first production Domain foundations are part of the authoritative integration branch and have passed both final pull-request validation and an independent post-merge Windows validation with zero warnings, zero errors, and 25 passing tests. The final closure documentation is awaiting its own workflow and merge through PR #6. No complete production aggregate set, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
 
 ## Exact next gate
 
-Validate the final documented PR #5 head, update the pull-request evidence, merge into `develop`, refetch the merged Domain sources and implementation state, and establish the next Domain-aggregate construction boundary.
+Validate the final documented PR #6 head, merge the closure record into `develop`, apply one final state correction identifying PR #6 as merged, refetch representative Domain sources from `develop`, and begin the next production aggregate group.
