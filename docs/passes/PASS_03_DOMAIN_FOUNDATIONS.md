@@ -10,6 +10,7 @@ Create the first production Domain code for IUIS while preserving the locked arc
 - base branch: `develop`
 - starting `develop` commit: `ff5a2ced7dfbfc85078dc7800f94b698ff6de007`
 - pass branch: `build/pass-03-domain-foundations`
+- pull request: `#5`
 
 ## Created Domain foundations
 
@@ -57,9 +58,9 @@ The monetary contract uses `decimal`, two fractional digits, `MidpointRounding.A
 
 The compatibility policy preserves the separate executable boundary: Student and Employee/Faculty roles use the general User application, while Administrator uses the restricted Administrator application.
 
-## Test coverage created
+## Test coverage
 
-`DomainFoundationTests.cs` covers:
+`DomainFoundationTests.cs` contains 22 tests covering:
 
 - initial entity version and audit metadata;
 - UTC enforcement;
@@ -73,7 +74,34 @@ The compatibility policy preserves the separate executable boundary: Student and
 - monetary rounding, arithmetic, currency mismatch, and nonnegative guards;
 - role and application compatibility.
 
-The pre-existing three solution-foundation tests remain in place.
+The pre-existing three solution-foundation tests remain in place, bringing the pull-request suite to 25 tests.
+
+## Compiler correction
+
+The first Windows run, `29565314840`, compiled and passed all 25 tests but reported one CS1718 warning in a test that compared a date variable to itself. The test was corrected to compare two distinct equal `InstitutionLocalDate` values. No production behavior changed.
+
+## Verified pull-request evidence
+
+GitHub Actions run `29565491487` validated commit `585a6c00c1f01d3418323b93d49635ce6fe04447`.
+
+- source-tree and architecture validation: passed
+- NuGet restoration: passed
+- Release MSBuild: passed
+- warnings: `0`
+- errors: `0`
+- MSTest execution: passed
+- tests executed: `25`
+- tests passed: `25`
+- tests failed: `0`
+- TRX verification: passed
+- artifact publication: passed
+
+Evidence artifact:
+
+- name: `iuis-windows-build-evidence-21`
+- artifact ID: `8400936460`
+- SHA-256: `d672faf38b50911f2dcc5fa6b51862f6afca76f5ff99bebaf2ee27129c820d1c`
+- expiration: 2026-07-31
 
 ## Compatibility boundary
 
@@ -89,6 +117,10 @@ All added source is written for C# 7.3 and .NET Framework 4.8. Domain references
 - authentication and Administrator bootstrap;
 - UI and module services.
 
-## Validation gate
+## Evidence boundary
 
-Pass 3 is not complete until the pull-request Windows workflow completes source-tree validation, NuGet restoration, Release MSBuild, MSTest execution, TRX verification, and evidence artifact publication on the final documented head.
+Pass 3 establishes compile-verified and test-verified Domain foundations only. It does not establish complete production aggregates, persistence, authentication, business modules, operational recovery, deployment readiness, or release certification.
+
+## Merge gate
+
+The final documented pull-request head must pass the same Windows workflow before PR #5 is merged into `develop`.
