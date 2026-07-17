@@ -139,10 +139,18 @@ namespace IUIS.Domain.People
                     parameterName + " contains unsupported characters.");
             }
 
+            if (outputLength == 0 || (outputLength == 1 && output[0] == '+'))
+            {
+                throw new DomainValidationException(
+                    parameterName + " must contain between 7 and 15 digits.");
+            }
+
             var result = new string(output, 0, outputLength);
             var digits = result[0] == '+' ? result.Substring(1) : result;
 
-            if (digits.Length < 7 || digits.Length > 15 || digits.Any(character => !char.IsDigit(character)))
+            if (digits.Length < 7
+                || digits.Length > 15
+                || digits.Any(character => !char.IsDigit(character)))
             {
                 throw new DomainValidationException(
                     parameterName + " must contain between 7 and 15 digits.");
