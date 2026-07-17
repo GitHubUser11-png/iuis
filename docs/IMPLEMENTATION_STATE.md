@@ -34,7 +34,7 @@ The project uses the following evidence levels. These terms are not interchangea
 | Test framework integration | Created and executed | MSTest framework and adapter 3.6.4 |
 | Initial automated tests | 3 passed | Domain, Application, and Infrastructure canonical marker tests |
 | Production JSON templates | 0 created | Scheduled after repository contracts |
-| Release compilation | Successful on final Pass 2 documentation head | Run `29550063410`; commit `7279793ab12adea13e899ca81f5980cd9b68d5b9`; 0 warnings, 0 errors |
+| Release compilation | Successful on validated Pass 2 implementation baseline | Run `29550063410`; commit `7279793ab12adea13e899ca81f5980cd9b68d5b9`; 0 warnings, 0 errors |
 | Automated test execution | Successful | `IUIS.Tests.trx`; 3 executed, 3 passed, 0 failed |
 | Build evidence artifact | Verified | `iuis-windows-build-evidence-7`, artifact `8395407334`, SHA-256 `35ab9b87b7158d90f4eb59499045ab40d48f53859d371fedf7a6ea05060bad46` |
 | Executable certification | Not achieved | Final release gate only |
@@ -64,4 +64,4 @@ The project uses the following evidence levels. These terms are not interchangea
 
 ## Current truthful completion statement
 
-The seven-project source foundation compiles successfully in Release configuration on the Windows GitHub Actions runner. The structural validator, NuGet restoration, MSBuild compilation, MSTest discovery, three initial tests, TRX generation, and evidence-artifact publication have completed successfully on the final documented Pass 2 branch head. Passes 1 and 2 are not yet integrated into `develop`. No production Domain model, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
+The seven-project source foundation compiles successfully in Release configuration on the Windows GitHub Actions runner. The structural validator, NuGet restoration, MSBuild compilation, MSTest discovery, three initial tests, TRX generation, and evidence-artifact publication have completed successfully on the validated Pass 2 implementation baseline. Closure-document amendments remain subject to the pull-request validation check. Passes 1 and 2 are not yet integrated into `develop`. No production Domain model, Application service layer, JSON persistence engine, repository template set, authentication workflow, business module, backup/restore implementation, or release-certified executable exists yet.
