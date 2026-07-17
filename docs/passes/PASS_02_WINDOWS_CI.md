@@ -64,9 +64,9 @@ The first real Windows executions exposed and corrected three implementation def
 2. `Application.EnableVisualStyles()` and related calls conflicted with the referenced `IUIS.Application` namespace, so both executable entry points now use fully qualified `System.Windows.Forms.Application` calls;
 3. rigid VSTest and adapter paths prevented test execution, so the build harness now discovers VSTest through `vswhere`, discovers the MSTest adapter assembly recursively, verifies TRX creation, and writes progressive failure-stage evidence.
 
-## Final branch validation evidence
+## Validated implementation evidence
 
-The final Pass 2 documentation head was validated by GitHub Actions run `29550063410` on commit `7279793ab12adea13e899ca81f5980cd9b68d5b9`.
+The Pass 2 implementation baseline was validated by GitHub Actions run `29550063410` on commit `7279793ab12adea13e899ca81f5980cd9b68d5b9`. Later commits in this branch only finalize evidence documentation and remain subject to the pull-request validation check before merge.
 
 All workflow stages completed successfully:
 
@@ -88,7 +88,7 @@ The validated build result is:
 - tests failed: `0`;
 - TRX: `artifacts/TestResults/IUIS.Tests.trx`.
 
-The final branch evidence artifact is:
+The reference evidence artifact is:
 
 - name: `iuis-windows-build-evidence-7`;
 - artifact ID: `8395407334`;
@@ -114,4 +114,4 @@ Pass 2 establishes a compile-verified and test-verified structural foundation on
 
 ## Integration gate
 
-PR #2 may be merged into `build/pass-01-solution-foundation` only after this evidence record and the pull-request description reflect the successful final branch validation. PR #1 may then be merged into `develop`, followed by a fresh Windows validation of the integrated `develop` baseline.
+PR #2 may be merged into `build/pass-01-solution-foundation` only after the latest pull-request validation succeeds and the pull-request description records the evidence. PR #1 may then be merged into `develop`, followed by a fresh Windows validation of the integrated `develop` baseline.
