@@ -1,24 +1,33 @@
 # Integrated University Information System (IUIS)
 
-This repository contains the authoritative source implementation of the Integrated University Information System specified for the IT332 final project.
+This repository contains the authoritative C# implementation of the Integrated University Information System specified for the IT332 final project.
 
 ## Current implementation state
 
-The repository is being constructed from an empty baseline. The implementation specifications completed before this repository was created are requirements and design contracts; they are not evidence that source code already existed.
+Passes 1 through 7 established and validated:
 
-Pass 1 establishes the seven-project Visual Studio solution foundation:
+- the seven-project Visual Studio solution;
+- Windows Release build and MSTest evidence;
+- Domain foundations and identity/person aggregates;
+- Academic aggregates;
+- Finance aggregates;
+- Student Service Operations aggregates.
 
-- `IUIS.Domain`
-- `IUIS.Application`
-- `IUIS.Infrastructure`
-- `IUIS.SharedUI`
-- `IUIS.UserApp`
-- `IUIS.AdminApp`
-- `IUIS.Tests`
+Pass 8 introduces the first production Infrastructure baseline:
 
-Minimal startup Forms exist only to prove the intended executable boundaries structurally. Authentication, repositories, modules, production JSON templates, and real automated test-runner integration remain deferred.
+- an authoritative 49-repository JSON catalog;
+- 49 initial production JSON templates;
+- `System.Text.Json` repository envelopes and revision checks;
+- central ID sequence allocation;
+- cross-process repository locking;
+- hardened atomic writes;
+- journaled multi-file transactions and recovery;
+- login-attempt tracking and temporary lockout;
+- PBKDF2-HMAC-SHA256 password hashing;
+- forced first-login password change;
+- one-time production bootstrap without a fixed default credential.
 
-Progress is recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md).
+Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md).
 
 ## Locked technical target
 
@@ -29,7 +38,8 @@ Progress is recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STA
 - separate `IUIS.UserApp.exe` and `IUIS.AdminApp.exe`
 - layered seven-project Visual Studio solution
 - shared synchronized JSON persistence
-- exactly 49 authoritative production JSON files after repository-template implementation
+- exactly 49 authoritative production JSON files
+- centralized identifiers and journaled related mutations
 - no direct JSON or file-system access from Forms
 
 ## Branch model
