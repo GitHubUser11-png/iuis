@@ -140,6 +140,31 @@ Evidence artifact:
 - SHA-256: `035fafb86642ab0f0b48e85ef8bdef085fc31393f3af7be7a6b91e1f2f9ab72c`;
 - expiration: 2026-08-02.
 
+## Final implementation-head validation
+
+GitHub Actions run `29686160166` validated final PR head `2e8093cbb13e1f0a6dfd0ba5987c924030c2f1f3` after evidence documentation was added.
+
+- source-tree and architecture validation: passed;
+- NuGet restoration: passed;
+- Release MSBuild: passed;
+- MSTest: passed;
+- TRX verification: passed;
+- artifact publication: passed.
+
+Final-head artifact:
+
+- name: `iuis-windows-build-evidence-55`;
+- artifact ID: `8442130601`;
+- SHA-256: `1cee4df9922bde548090ef487b787943dee89cbbd53621d63f1557af0f6543fd`;
+- expiration: 2026-08-02.
+
+## Integration result
+
+- PR #17 was squash-merged into `develop`.
+- integration commit: `d5b24245009bfc8b6639a5bbdc7fa1e6d7af59eb`.
+- closure branch: `build/pass-06-closure`.
+- independent post-merge validation is recorded in `PASS_06_CLOSURE.md`.
+
 ## Explicitly deferred
 
 - Application DTOs, commands, authorization, and orchestration;
@@ -155,6 +180,6 @@ Evidence artifact:
 - Finance WinForms and reporting screens;
 - backup, restore, recovery, and release certification.
 
-## Current integration state
+## Integration state
 
-The production Finance source compiled successfully with zero warnings and zero errors, and all 72 tests passed. PR #17 remains open until its final documentation head is revalidated and merged into `develop`. This is not release certification.
+Pass 6 is implemented, compile-verified, test-verified, and merged into `develop`. Independent closure validation remains the final administrative gate. This is not release certification.
