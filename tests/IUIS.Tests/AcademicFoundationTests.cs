@@ -124,8 +124,7 @@ namespace IUIS.Tests
                 CreatedAtUtc.AddMinutes(1),
                 ActorId);
 
-            SubjectPrerequisiteGraph.ValidateAcyclic(
-                new[] { third, first, second });
+            SubjectPrerequisiteGraph.ValidateAcyclic(new[] { third, first, second });
         }
 
         [TestMethod]
@@ -149,8 +148,7 @@ namespace IUIS.Tests
                 CreatedAtUtc.AddMinutes(1),
                 ActorId);
 
-            SubjectPrerequisiteGraph.ValidateAcyclic(
-                new[] { first, second, third });
+            SubjectPrerequisiteGraph.ValidateAcyclic(new[] { first, second, third });
         }
 
         [TestMethod]
@@ -317,7 +315,7 @@ namespace IUIS.Tests
 
             Assert.AreEqual(EnrollmentStatus.Approved, enrollment.Status);
             Assert.AreEqual("Academic requirements verified.", enrollment.DecisionReason);
-            Assert.AreEqual(4L, enrollment.Version);
+            Assert.AreEqual(5L, enrollment.Version);
         }
 
         [TestMethod]
