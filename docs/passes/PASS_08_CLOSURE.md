@@ -10,19 +10,19 @@ Independently validate the actual Pass 8 tree merged into `develop`, register cl
 - Pass 8 replacement integration PR: `#28`
 - integrated `develop` commit: `4920f3dec56e584bb3d4aa620b194b5dd31c36ce`
 - closure branch: `build/pass-08-closure`
+- closure pull request: `#30`
 - predecessor PR #27: closed without merge
 - validated implementation commit: `c622287893a2e13011eeae9674fda785c8525f44`
 - replacement-PR validated head: `28c797f7a0c2d453852728fc27d12214cbfdd84e`
 
-## Implementation evidence already established
+## Validation history
 
 ### Original implementation validation
 
 - run: `29691593386`
-- validated commit: `c622287893a2e13011eeae9674fda785c8525f44`
+- commit: `c622287893a2e13011eeae9674fda785c8525f44`
 - result: successful
-- warnings: `0`
-- errors: `0`
+- warnings/errors: `0/0`
 - tests: `110` executed, `110` passed, `0` failed
 - artifact: `iuis-windows-build-evidence-88`
 - artifact ID: `8443750845`
@@ -32,19 +32,36 @@ Independently validate the actual Pass 8 tree merged into `develop`, register cl
 
 - pull request: `#28`
 - run: `29692698528`
-- validated head: `28c797f7a0c2d453852728fc27d12214cbfdd84e`
+- head: `28c797f7a0c2d453852728fc27d12214cbfdd84e`
 - result: successful
-- warnings: `0`
-- errors: `0`
+- warnings/errors: `0/0`
 - tests: `110` executed, `110` passed, `0` failed
 - artifact: `iuis-windows-build-evidence-90`
 - artifact ID: `8444064263`
 - SHA-256: `8955298d4693623d585e62bdae83750106d74a269d5aa0c488b8d6436bc931d3`
+
+### Independent integrated-tree closure validation
+
+- pull request: `#30`
+- run: `29693351179`
+- validated closure head: `525c4db77f9aec30b9d586c898a2acb0a9d62140`
+- source-tree and architecture validation: passed
+- exact 49-template validation: passed
+- NuGet restoration: passed
+- .NET Framework 4.8 Release MSBuild: passed
+- compiler warnings: `0`
+- compiler errors: `0`
+- tests: `110` executed, `110` passed, `0` failed
+- TRX verification: passed
+- artifact publication: passed
+- artifact: `iuis-windows-build-evidence-93`
+- artifact ID: `8444253055`
+- SHA-256: `18b78f3e2d44592e9f9b73dd96522ada56a728afacea76fd4d5faafc21aa9e11`
 - expiration: 2026-08-02
 
-## Integrated baseline under closure validation
+## Integrated baseline validated
 
-The merged tree contains:
+The validated merged tree contains:
 
 - exactly 49 production repository descriptors: 14 principal and 35 supporting;
 - exactly 49 initial JSON templates;
@@ -59,20 +76,9 @@ The merged tree contains:
 - one-time production bootstrap without a built-in credential;
 - 14 Infrastructure tests and 96 pre-existing tests.
 
-## Closure validation gate
+## Remaining closure sequence
 
-The closure head must pass:
-
-1. source-tree and architecture validation;
-2. exact 49-template validation;
-3. NuGet restoration;
-4. .NET Framework 4.8 Release MSBuild;
-5. zero compiler warnings and zero compiler errors;
-6. all 110 MSTest cases;
-7. TRX production and verification;
-8. closure artifact publication.
-
-After successful closure validation, this record must be merged into `develop`. The resulting `develop` baseline must then be promoted to `main`, and the exact mainline integration commit must receive Windows validation before final branch synchronization.
+The current documentation head records successful integrated-tree validation. It must receive final-head validation after this evidence update, then merge into `develop`. The resulting complete Pass 8 baseline must be promoted to `main`, the exact mainline integration commit must receive Windows validation, and `develop` must be synchronized to final `main` with zero divergence.
 
 ## Figma closure model
 
@@ -103,4 +109,4 @@ Pass 8 closure does not constitute release certification. Complete typed reposit
 
 ## Current closure state
 
-The closure branch and documentation exist. Independent integrated-tree Windows validation, closure merge, mainline promotion, exact mainline validation, and final branch synchronization remain pending.
+Independent integrated-tree validation is successful. Final closure-head validation, closure merge, mainline promotion, exact mainline validation, and final branch synchronization remain pending.
