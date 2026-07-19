@@ -10,6 +10,7 @@ Implement a coherent Finance Domain foundation without introducing persistence, 
 - base branch: `develop`
 - starting commit: `3fe05ae42f076a4c9ca7ff9e3f197ca8c8d4a9dd`
 - implementation branch: `build/pass-06-finance-foundations`
+- implementation pull request: `#17`
 - Passes 1 through 5 were integrated before branch creation
 
 ## Created Domain sources
@@ -89,7 +90,7 @@ The Ledger is derived and is not a new repository. No `student_ledgers.json` fil
 
 ## Test coverage
 
-`FinanceFoundationTests.cs` covers:
+`FinanceFoundationTests.cs` adds 18 Finance tests covering:
 
 - active fixed and per-unit charge calculations;
 - inactive-rule rejection;
@@ -106,6 +107,8 @@ The Ledger is derived and is not a new repository. No `student_ledgers.json` fil
 - derived Ledger debit, credit, balance, and void reversal;
 - Ledger currency consistency.
 
+The complete suite contains 72 tests after Pass 6.
+
 ## Supporting FigJam model
 
 An editable Finance Domain entity-relationship diagram was generated through Figma:
@@ -113,6 +116,29 @@ An editable Finance Domain entity-relationship diagram was generated through Fig
 - `https://www.figma.com/board/PVtLH7VIUDQIPed8X6rIWV`
 
 The diagram is explanatory only. GitHub source and automated test evidence remain authoritative.
+
+## Windows implementation validation
+
+GitHub Actions run `29686053729` validated implementation head `6a6ad194edc9b2e9eab42846172bcfa6fa73600b`.
+
+- source-tree and architecture validation: passed;
+- NuGet restoration: passed;
+- Release MSBuild: passed;
+- warnings: `0`;
+- errors: `0`;
+- MSTest: passed;
+- tests executed: `72`;
+- tests passed: `72`;
+- tests failed: `0`;
+- TRX verification: passed;
+- artifact publication: passed.
+
+Evidence artifact:
+
+- name: `iuis-windows-build-evidence-53`;
+- artifact ID: `8442097786`;
+- SHA-256: `035fafb86642ab0f0b48e85ef8bdef085fc31393f3af7be7a6b91e1f2f9ab72c`;
+- expiration: 2026-08-02.
 
 ## Explicitly deferred
 
@@ -129,6 +155,6 @@ The diagram is explanatory only. GitHub source and automated test evidence remai
 - Finance WinForms and reporting screens;
 - backup, restore, recovery, and release certification.
 
-## Current validation state
+## Current integration state
 
-The Finance source, tests, project-file updates, documentation, and FigJam model are committed on the Pass 6 branch. No compilation or test claim is made until the final branch head passes the Windows workflow and produces TRX and artifact evidence.
+The production Finance source compiled successfully with zero warnings and zero errors, and all 72 tests passed. PR #17 remains open until its final documentation head is revalidated and merged into `develop`. This is not release certification.
