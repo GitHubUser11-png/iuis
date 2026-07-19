@@ -49,9 +49,7 @@ $expectedReferenceNames = @{
 $projectResults = @()
 foreach ($relativePath in $projectFiles) {
     $fullPath = Join-Path $repositoryRoot $relativePath
-    if (-not (Test-Path -LiteralPath $fullPath -PathType Leaf)) {
-        continue
-    }
+    if (-not (Test-Path -LiteralPath $fullPath -PathType Leaf)) { continue }
 
     $projectContent = Get-Content -LiteralPath $fullPath -Raw
     $expectedOutputType = if ($relativePath -like '*UserApp*' -or $relativePath -like '*AdminApp*') { 'WinExe' } else { 'Library' }
@@ -59,7 +57,8 @@ foreach ($relativePath in $projectFiles) {
         $errors += "$relativePath does not declare OutputType $expectedOutputType."
     }
 
-    $actualReferences = @([regex]::Matches($projectContent, '<Name>(IUIS\.[^<]+)</Name>') | ForEach-Object { $_.Groups[1].Value } | Sort-Object)
+    $actualReferences = @([regex]::Matches($projectContent, '<Name>(IUIS\.[^<]+)</Name>') |
+        ForEach-Object { $_.Groups[1].Value } | Sort-Object)
     $expectedReferences = @($expectedReferenceNames[$relativePath] | Sort-Object)
     if (($actualReferences -join '|') -ne ($expectedReferences -join '|')) {
         $errors += "$relativePath references '$($actualReferences -join ', ')', expected '$($expectedReferences -join ', ')'."
@@ -72,6 +71,14 @@ foreach ($relativePath in $projectFiles) {
     }
 }
 
+$infrastructureProjectPath = Join-Path $repositoryRoot 'src\IUIS.Infrastructure\IUIS.Infrastructure.csproj'
+if (Test-Path -LiteralPath $infrastructureProjectPath -PathType Leaf) {
+    $infrastructureProject = Get-Content -LiteralPath $infrastructureProjectPath -Raw
+    if (-not $infrastructureProject.Contains('<PackageReference Include="System.Text.Json" Version="8.0.5" />')) {
+        $errors += 'IUIS.Infrastructure does not lock System.Text.Json to version 8.0.5.'
+    }
+}
+
 $formFiles = Get-ChildItem -LiteralPath (Join-Path $repositoryRoot 'src') -Recurse -Filter '*Form.cs' -File
 foreach ($formFile in $formFiles) {
     $formContent = Get-Content -LiteralPath $formFile.FullName -Raw
@@ -80,11 +87,72 @@ foreach ($formFile in $formFiles) {
     }
 }
 
+$expectedRepositoryNames = @(
+    'students','courses','subjects','enrollments','payments','books','borrowings','counseling',
+    'violations','medical_records','employees','attendance','clearances','users',
+    'academic_periods','assessments','assessment_charge_rules','scholarship_programs',
+    'scholarship_applications','scholarship_awards','appointments','consultations','subject_assignments',
+    'notifications','account_applications','permission_profiles','login_attempts','sessions','security_policy',
+    'password_assistance_requests','admin_access_rules','administrative_approvals','discipline_incidents',
+    'violation_responses','work_schedules','attendance_corrections','employee_profile_corrections',
+    'student_profile_corrections','payment_void_requests','financial_adjustments','audit_logs','id_sequences',
+    'transaction_journal','repository_manifest','system_settings','backup_catalog',
+    'repository_health_history','operational_report_runs','restore_history'
+)
+
+$templateRoot = Join-Path $repositoryRoot 'templates\production-data'
+$templateResults = @()
+if (-not (Test-Path -LiteralPath $templateRoot -PathType Container)) {
+    $errors += 'Production template directory is missing: templates\production-data'
+}
+else {
+    $templateFiles = @(Get-ChildItem -LiteralPath $templateRoot -Filter '*.json' -File | Sort-Object Name)
+    if ($templateFiles.Count -ne 49) {
+        $errors += "Production template directory contains $($templateFiles.Count) JSON files; exactly 49 are required."
+    }
+
+    $actualNames = @($templateFiles | ForEach-Object { $_.BaseName } | Sort-Object)
+    $expectedNames = @($expectedRepositoryNames | Sort-Object)
+    if (($actualNames -join '|') -ne ($expectedNames -join '|')) {
+        $errors += 'Production template filenames do not match the locked 49-repository catalog.'
+    }
+
+    foreach ($templateFile in $templateFiles) {
+        try {
+            $document = Get-Content -LiteralPath $templateFile.FullName -Raw | ConvertFrom-Json
+            if ($document.repository -ne $templateFile.BaseName) {
+                $errors += "$($templateFile.Name) has repository '$($document.repository)' instead of '$($templateFile.BaseName)'."
+            }
+            if ($document.schemaVersion -ne 1) {
+                $errors += "$($templateFile.Name) does not use schemaVersion 1."
+            }
+            if ($document.revision -ne 0) {
+                $errors += "$($templateFile.Name) does not begin at revision 0."
+            }
+            if ($null -eq $document.records -or $document.records.GetType().Name -ne 'Object[]') {
+                $errors += "$($templateFile.Name) must contain a records JSON array."
+            }
+            $templateResults += [ordered]@{
+                file = $templateFile.Name
+                repository = $document.repository
+                schemaVersion = $document.schemaVersion
+                revision = $document.revision
+            }
+        }
+        catch {
+            $errors += "$($templateFile.Name) is not valid production-template JSON: $($_.Exception.Message)"
+        }
+    }
+}
+
 $report = [ordered]@{
     generatedAtUtc = [DateTime]::UtcNow.ToString('o')
     expectedProjectCount = 7
     validatedProjectCount = $projectResults.Count
+    expectedProductionRepositoryCount = 49
+    validatedProductionTemplateCount = $templateResults.Count
     projects = $projectResults
+    productionTemplates = $templateResults
     errors = $errors
     succeeded = ($errors.Count -eq 0)
 }
@@ -93,10 +161,8 @@ $reportPath = Join-Path $validationRoot 'source-tree-validation.json'
 $report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $reportPath -Encoding UTF8
 
 if ($errors.Count -gt 0) {
-    foreach ($validationError in $errors) {
-        Write-Host "VALIDATION ERROR: $validationError"
-    }
+    foreach ($validationError in $errors) { Write-Host "VALIDATION ERROR: $validationError" }
     throw "Source-tree validation failed with $($errors.Count) error(s)."
 }
 
-Write-Host 'Source-tree and project-reference validation succeeded.'
+Write-Host 'Source-tree, project-reference, and 49-template validation succeeded.'

@@ -22,8 +22,8 @@ The project uses the following evidence levels. These terms are not interchangea
 | Item | State | Evidence |
 |---|---|---|
 | Private GitHub repository | Created | `GitHubUser11-png/iuis` |
-| Default branch | Updated through finalized Pass 7 closure | `main` |
-| Integration branch | Synchronized to finalized Pass 7 mainline | `develop` |
+| Default branch | Finalized through Pass 7 | `main` |
+| Integration branch | Recreated from finalized Pass 7 mainline | `develop` |
 | Passes 1 and 2 | Completed, compiled, tested, and merged | PRs #1–#4 |
 | Pass 3 Domain foundations | Completed, compiled, tested, and merged | PRs #5 and #6 |
 | Pass 4 core identity/person aggregates | Completed, compiled, tested, and merged | PR #8 and synchronized follow-up history |
@@ -34,9 +34,10 @@ The project uses the following evidence levels. These terms are not interchangea
 | Pass 6 Finance foundations | Completed, compiled, tested, and merged | PR #17; integration commit `d5b24245009bfc8b6639a5bbdc7fa1e6d7af59eb` |
 | Pass 6 closure | Completed, validated, and merged | PR #18; closure commit `9dcff9616dc8afb19af6d5bcf0497db77b31caa6` |
 | Pass 7 Student Service Operations | Completed, compiled, tested, and merged | PR #23; integration commit `b4cb980d3989160969a02b4b5a51a162a088d695` |
-| Pass 7 closure | Completed, validated, and promoted to mainline | PRs #24 and #25; finalized commit `6fdf2479af4494924b7249df4896f6d170ae0f49` before documentation finalization |
+| Pass 7 closure | Completed, validated, and mainline-synchronized | PRs #24–#26; final commit `8dae3e1f70ec41f8d51c3ac4cbc0af172dd3afcd` |
+| Pass 8 production repository/security bootstrap | Created on implementation branch; validation pending | `build/pass-08-production-repository-security-bootstrap` |
 | Visual Studio solution | Created and merged | `IUIS.sln` |
-| C# projects | 7 created, compiled, and tested through Pass 7 | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
+| C# projects | 7 created and compiled through Pass 7; Pass 8 validation pending | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
 | Central build properties | Created and enforced | `Directory.Build.props`, `Directory.Build.targets` |
 | Windows CI workflow | Created and operational | `.github/workflows/windows-build.yml` |
 | Production Domain foundations | Created, compiled, tested, and merged | entity contracts, value objects, monetary rules, identity enums, and compatibility policy |
@@ -44,9 +45,11 @@ The project uses the following evidence levels. These terms are not interchangea
 | Academic foundation aggregates | Created, compiled, tested, and merged | Course, Curriculum, Subject, prerequisite graph, AcademicPeriod, Enrollment, snapshots |
 | Finance foundation aggregates | Created, compiled, tested, and merged | charge rules, Tuition Assessment, Scholarship Award effects, Financial Adjustment, Payment, derived Student Ledger |
 | Student Service Domain aggregates | Created, compiled, tested, merged, and closure-validated | Library, Counseling, Discipline, Clinic, Medical Record, Medical Clearance |
-| Pass 7 Windows validations | Successful | runs `29688650226`, `29688849862`, `29689019318`, `29689147617`, and `29689242236`; 0 warnings, 0 errors; 96 tests passed |
-| Final Pass 7 integration artifact | Verified | `iuis-windows-build-evidence-76`, artifact `8443050329`, SHA-256 `5e3fa2f01d91dcf3d1bb1b2295f6e9faf7866e1f6f33af25246c5d5d9e955ad6` |
-| Production JSON templates | 0 created | Pass 8 construction boundary |
+| Production repository catalog | Created; validation pending | exactly 49 descriptors: 14 principal and 35 supporting |
+| Production JSON templates | 49 created; validation pending | `templates/production-data/*.json` |
+| Persistence coordination foundation | Created; validation pending | repository envelopes, revision checks, cross-process locks, atomic writes, journaled transactions, recovery |
+| Security bootstrap foundation | Created; validation pending | login attempts, lockout, PBKDF2, restricted sessions, forced password change, one-time bootstrap |
+| Pass 8 expected test count | 110 | 96 existing plus 14 Infrastructure tests |
 | Executable certification | Not achieved | final release gate only |
 
 ## Locked implementation target
@@ -59,7 +62,7 @@ The project uses the following evidence levels. These terms are not interchangea
 - separate User and Administrator executables
 - layered architecture
 - shared synchronized JSON persistence
-- exactly 49 authoritative production JSON files after template implementation
+- exactly 49 authoritative production JSON files
 - centralized identifiers and journaled multi-file mutations
 - no Forms that read or write JSON directly
 
@@ -74,13 +77,14 @@ The project uses the following evidence levels. These terms are not interchangea
 | 4 | Core identity and person aggregates | Completed, compiled, tested, and merged |
 | 5 | Academic foundation aggregates | Completed, compiled, tested, and merged through PR #11, correction PR #14, and closure PR #16 |
 | 6 | Finance Domain foundations | Completed, compiled, tested, merged, and closure-validated through PRs #17 and #18 |
-| 7 | Student Service Operations Domain foundations | Completed, compiled, tested, merged, closure-validated, and mainline-synchronized through PRs #23–#25 |
-| 8+ | Repository, security bootstrap, remaining modules, UI, operations, and certification | Not started |
+| 7 | Student Service Operations Domain foundations | Completed, compiled, tested, merged, closure-validated, and mainline-synchronized through PRs #23–#26 |
+| 8 | Production repository and security bootstrap foundation | Created; Windows validation and PR integration pending |
+| 9+ | Application orchestration, complete typed repositories, UI, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-Passes 1 through 7 are integrated into the authoritative repository history. The Student Service Domain baseline covers Library inventory and Borrowings, Counseling confidential sessions and controlled releases, Discipline incident and Violation workflows, Clinic appointments, append-only Medical Records, and Clinic Medical Clearance history. Five Windows validations completed with zero warnings and zero errors, and all 96 tests passed with TRX and artifact evidence. No production JSON persistence engine, 49-file repository template set, authentication implementation, Application orchestration, business-module UI, backup/restore implementation, or release-certified executable exists yet.
+Passes 1 through 7 are integrated into the authoritative repository history. Pass 8 source now defines the 49-repository catalog and initial templates, central ID allocation, cross-process locks, hardened atomic writes, journaled multi-file transactions, login-attempt tracking and temporary lockout, forced first-login password change, and one-time production bootstrap without a fixed credential. Fourteen Infrastructure tests have been added, producing an expected total of 110 tests. No Pass 8 compilation or automated-test success claim is made until the Windows workflow validates the final branch head. Application authorization orchestration, complete typed repositories for every module, business-module Forms, backup/restore execution, deployment, and release certification remain incomplete.
 
-## Exact next starting point
+## Exact next gate
 
-The next implementation branch must begin from the finalized Pass 7 `develop` baseline. Pass 8 must create the production repository and security-bootstrap foundation: authoritative repository catalog, initial JSON files, central ID sequence allocation, cross-process file locks, hardened atomic writes, journaled multi-file transactions, Login attempt tracking, lockout, forced password change, and production bootstrap. Domain and Forms must not access JSON or the file system directly.
+Open the Pass 8 implementation pull request, run source-tree and 49-template validation, NuGet restoration, Release MSBuild, all 110 MSTest cases, TRX verification, and artifact publication. Correct every compiler, test, or architecture failure before integration into `develop`, then independently closure-validate the merged Infrastructure baseline.

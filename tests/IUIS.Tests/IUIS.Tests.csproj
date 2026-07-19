@@ -9,6 +9,7 @@
     <RootNamespace>IUIS.Tests</RootNamespace>
     <AssemblyName>IUIS.Tests</AssemblyName>
     <TargetFrameworkProfile></TargetFrameworkProfile>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <OutputPath>..\..\artifacts\bin\$(Configuration)\IUIS.Tests\</OutputPath>
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.Tests\</IntermediateOutputPath>
   </PropertyGroup>
@@ -25,10 +26,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="AcademicFoundationTests.cs" />
     <Compile Include="CoreIdentityPersonAggregateTests.cs" />
     <Compile Include="DomainFoundationTests.cs" />
     <Compile Include="FinanceFoundationTests.cs" />
+    <Compile Include="InfrastructureFoundationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionFoundationTests.cs" />
     <Compile Include="StudentServiceDomainTests.cs" />
