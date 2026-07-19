@@ -109,8 +109,7 @@ namespace IUIS.Domain.People
 
         private static StudentStatus RequireStatus(StudentStatus value)
         {
-            if (!Enum.IsDefined(typeof(StudentStatus), value)
-                || value == StudentStatus.Unspecified)
+            if (!Enum.IsDefined(typeof(StudentStatus), value))
             {
                 throw new DomainValidationException("Student status is invalid.");
             }
