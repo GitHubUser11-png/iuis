@@ -16,6 +16,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Academic\AcademicEnums.cs" />
+    <Compile Include="Academic\AcademicPeriod.cs" />
+    <Compile Include="Academic\AcademicUnitRules.cs" />
+    <Compile Include="Academic\Course.cs" />
+    <Compile Include="Academic\Curriculum.cs" />
+    <Compile Include="Academic\Enrollment.cs" />
+    <Compile Include="Academic\Subject.cs" />
+    <Compile Include="Academic\SubjectPrerequisiteGraph.cs" />
     <Compile Include="Common\DomainGuard.cs" />
     <Compile Include="Common\DomainValidationException.cs" />
     <Compile Include="Common\EntityBase.cs" />

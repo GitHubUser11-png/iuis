@@ -25,6 +25,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AcademicFoundationTests.cs" />
     <Compile Include="CoreIdentityPersonAggregateTests.cs" />
     <Compile Include="DomainFoundationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
