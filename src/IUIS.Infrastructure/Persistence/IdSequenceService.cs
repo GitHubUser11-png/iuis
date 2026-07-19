@@ -12,7 +12,7 @@ namespace IUIS.Infrastructure.Persistence
     {
         public string Prefix { get; set; }
         public int Year { get; set; }
-        public long LastAllocatedSequence { get; set; }
+        public int LastAllocatedSequence { get; set; }
         public DateTime UpdatedAtUtc { get; set; }
         public string UpdatedByUserId { get; set; }
     }
@@ -28,7 +28,9 @@ namespace IUIS.Infrastructure.Persistence
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
-        public CentralIdSequenceService(ProductionRepositoryCatalog catalog, JsonInfrastructureOptions options)
+        public CentralIdSequenceService(
+            ProductionRepositoryCatalog catalog,
+            JsonInfrastructureOptions options)
         {
             _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
             _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -37,17 +39,22 @@ namespace IUIS.Infrastructure.Persistence
         public string Allocate(string prefix, int year, string actorUserId)
         {
             prefix = NormalizePrefix(prefix);
-            if (year < 2000 || year > 9999) throw new ArgumentOutOfRangeException(nameof(year));
-            if (string.IsNullOrWhiteSpace(actorUserId)) throw new ArgumentException("Actor user ID is required.", nameof(actorUserId));
+            if (year < 2000 || year > 9999)
+                throw new ArgumentOutOfRangeException(nameof(year));
+            if (string.IsNullOrWhiteSpace(actorUserId))
+                throw new ArgumentException("Actor user ID is required.", nameof(actorUserId));
 
             var path = _catalog.ResolvePath(_options.DataRoot, "id_sequences");
             using (CrossProcessFileLock.Acquire(path, _options.LockTimeout))
             {
-                RepositoryEnvelope<IdSequenceRecord> envelope;
+                RepositoryEnvelope<IdSequenceRecord> envelope = null;
                 if (File.Exists(path))
-                    envelope = JsonSerializer.Deserialize<RepositoryEnvelope<IdSequenceRecord>>(File.ReadAllText(path), _json);
-                else
-                    envelope = null;
+                {
+                    envelope = JsonSerializer.Deserialize<RepositoryEnvelope<IdSequenceRecord>>(
+                        File.ReadAllText(path),
+                        _json);
+                }
+
                 if (envelope == null)
                 {
                     envelope = new RepositoryEnvelope<IdSequenceRecord>
@@ -59,11 +66,17 @@ namespace IUIS.Infrastructure.Persistence
                     };
                 }
 
-                var record = envelope.Records.SingleOrDefault(x =>
-                    string.Equals(x.Prefix, prefix, StringComparison.Ordinal) && x.Year == year);
+                var record = envelope.Records.SingleOrDefault(item =>
+                    string.Equals(item.Prefix, prefix, StringComparison.Ordinal)
+                    && item.Year == year);
                 if (record == null)
                 {
-                    record = new IdSequenceRecord { Prefix = prefix, Year = year, LastAllocatedSequence = 0 };
+                    record = new IdSequenceRecord
+                    {
+                        Prefix = prefix,
+                        Year = year,
+                        LastAllocatedSequence = 0
+                    };
                     envelope.Records.Add(record);
                 }
 
@@ -74,16 +87,29 @@ namespace IUIS.Infrastructure.Persistence
                 envelope.UpdatedAtUtc = DateTime.UtcNow;
                 envelope.UpdatedByUserId = actorUserId;
                 _writer.WriteUtf8(path, JsonSerializer.Serialize(envelope, _json));
-                return InstitutionIdentifier.Create(prefix, year, record.LastAllocatedSequence).Value;
+
+                return InstitutionIdentifier.Create(
+                    prefix,
+                    year,
+                    record.LastAllocatedSequence).Value;
             }
         }
 
         private static string NormalizePrefix(string value)
         {
-            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Identifier prefix is required.", nameof(value));
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Identifier prefix is required.", nameof(value));
+
             var prefix = value.Trim().ToUpperInvariant();
-            if (prefix.Length < 2 || prefix.Length > 8 || prefix.Any(ch => ch < 'A' || ch > 'Z'))
-                throw new ArgumentException("Identifier prefix must contain 2 to 8 ASCII letters.", nameof(value));
+            if (prefix.Length < 2
+                || prefix.Length > 8
+                || prefix.Any(character => character < 'A' || character > 'Z'))
+            {
+                throw new ArgumentException(
+                    "Identifier prefix must contain 2 to 8 ASCII letters.",
+                    nameof(value));
+            }
+
             return prefix;
         }
     }
