@@ -51,7 +51,7 @@ namespace IUIS.Domain.Common
             ApplyChangeMetadata(changedAtUtc, changedByUserId);
         }
 
-        public void Archive(DateTime archivedAtUtc, string archivedByUserId)
+        public virtual void Archive(DateTime archivedAtUtc, string archivedByUserId)
         {
             if (IsArchived)
             {
@@ -64,7 +64,7 @@ namespace IUIS.Domain.Common
             ArchivedByUserId = UpdatedByUserId;
         }
 
-        public void Restore(DateTime restoredAtUtc, string restoredByUserId)
+        public virtual void Restore(DateTime restoredAtUtc, string restoredByUserId)
         {
             if (!IsArchived)
             {
