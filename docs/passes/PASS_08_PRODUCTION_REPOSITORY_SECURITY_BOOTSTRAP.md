@@ -4,17 +4,24 @@
 
 Create the first production Infrastructure baseline for synchronized JSON persistence and security bootstrap without allowing Domain entities or Windows Forms to access JSON or the file system directly.
 
-## Starting point
+## Construction and integration history
 
 - repository: `GitHubUser11-png/iuis`
-- baseline branch: `develop`
-- starting commit: `8dae3e1f70ec41f8d51c3ac4cbc0af172dd3afcd`
-- implementation branch: `build/pass-08-production-repository-security-bootstrap`
-- Passes 1 through 7 were integrated and closure-validated before this branch was created
+- Pass 7 starting baseline: `8dae3e1f70ec41f8d51c3ac4cbc0af172dd3afcd`
+- original implementation branch: `build/pass-08-production-repository-security-bootstrap`
+- predecessor PR #27: closed without merge
+- final validated implementation commit: `c622287893a2e13011eeae9674fda785c8525f44`
+- recovered branch: `build/pass-08-recovery-integration-final`
+- replacement PR: `#28`
+- replacement validated head: `28c797f7a0c2d453852728fc27d12214cbfdd84e`
+- integrated `develop` commit: `4920f3dec56e584bb3d4aa620b194b5dd31c36ce`
+- closure branch: `build/pass-08-closure`
+
+The production implementation was recovered directly from the validated commit after PR #27 closed without merge. It was not reconstructed or partially reimplemented.
 
 ## Authoritative production repository catalog
 
-Pass 8 defines exactly 49 authoritative production JSON repositories: 14 principal repositories and 35 supporting repositories.
+Pass 8 defines exactly 49 authoritative production JSON repositories: 14 principal and 35 supporting.
 
 ### Principal repositories
 
@@ -71,78 +78,35 @@ Pass 8 defines exactly 49 authoritative production JSON repositories: 14 princip
 34. `operational_report_runs.json`
 35. `restore_history.json`
 
-Every initial template uses schema version 1, revision 0, UTC metadata, a system actor marker, and an empty records array. The source-tree validator rejects missing, extra, malformed, or incorrectly named templates.
+Every initial template uses schema version 1, revision 0, UTC metadata, a system actor marker, and an empty records array. Source-tree validation rejects missing, extra, malformed, or incorrectly named templates.
 
 ## Persistence contracts
 
 ### Repository envelopes
 
-Every repository is represented by a versioned envelope containing:
+Every repository envelope contains repository name, schema version, revision, creation and update UTC timestamps, updating actor ID, and a records collection. `JsonRepositoryStore` validates repository identity, schema version, revision, and records. Writes use expected-revision checks to reject stale mutations.
 
-- repository name;
-- schema version;
-- revision;
-- creation and update UTC timestamps;
-- updating actor ID;
-- records collection.
+### Cross-process locking
 
-`JsonRepositoryStore` validates repository identity, schema version, revision, and records before returning or publishing an envelope. Writes use expected-revision checks to reject stale mutations.
-
-### Cross-process file locking
-
-`CrossProcessFileLock` combines:
-
-- a deterministic named Windows mutex derived from the canonical file path;
-- a same-target `.lock` file opened with `FileShare.None`;
-- bounded lock acquisition time;
-- abandoned-mutex recovery.
-
-Multi-file operations acquire canonical file paths in ordinal-insensitive sorted order to prevent inconsistent lock ordering.
+`CrossProcessFileLock` combines a deterministic named Windows mutex derived from the canonical target path, a same-target `.lock` file opened with `FileShare.None`, bounded acquisition time, and abandoned-mutex recovery. Multi-file operations acquire canonical paths in ordinal-insensitive sorted order.
 
 ### Hardened atomic writes
 
-`AtomicFileWriter` performs:
-
-1. same-directory unique temporary-file creation;
-2. UTF-8 writing without a byte-order mark;
-3. write-through and durable flush;
-4. SHA-256 verification of staged bytes;
-5. `File.Replace` for existing targets or atomic same-volume move for new targets;
-6. temporary and backup cleanup.
-
-A reader therefore sees either the previous complete repository file or the newly published complete repository file.
+`AtomicFileWriter` performs same-directory unique staging, UTF-8 output without a byte-order mark, write-through and durable flush, SHA-256 verification of staged bytes, `File.Replace` for existing targets or atomic same-volume move for new targets, and temporary/backup cleanup.
 
 ### Journaled multi-file transactions
 
-`JournaledTransactionCoordinator`:
+`JournaledTransactionCoordinator` rejects duplicate repository mutations, acquires target and journal locks in canonical order, creates rollback backups, records Prepared and Applying states, atomically publishes each complete replacement, records Committed only after all targets succeed, restores originals and records RolledBack on failure, and supports recovery of incomplete prepared/applying transactions.
 
-- rejects duplicate repository mutations;
-- acquires all target and journal locks in canonical order;
-- creates per-target rollback backups;
-- writes Prepared and Applying journal states before publication;
-- publishes each complete replacement through the atomic writer;
-- records Committed after all target writes succeed;
-- restores original files and records RolledBack on failure;
-- supports recovery of an incomplete prepared or applying transaction.
-
-This is a local shared-file transaction coordinator. It is not a distributed database transaction manager.
+This is a local shared-file transaction coordinator, not a distributed database transaction manager.
 
 ## Central identifier sequence allocation
 
-`CentralIdSequenceService` stores the last allocated sequence for each prefix and year in `id_sequences.json`.
+`CentralIdSequenceService` stores the last allocated sequence for each prefix and year in `id_sequences.json`. Allocation is cross-process locked, checked for overflow, atomically persisted before return, formatted through `InstitutionIdentifier`, independent of record counts, and never reused after successful persistence.
 
-Allocation is:
+## Security foundation
 
-- protected by the cross-process repository lock;
-- incremented with checked arithmetic;
-- atomically persisted before the identifier is returned;
-- formatted through the canonical Domain `InstitutionIdentifier` contract;
-- independent of repository record counts;
-- never reused after successful persistence.
-
-## Login attempts and lockout
-
-The production security policy seeds:
+The production policy seeds:
 
 - maximum failed attempts: 5;
 - observation window: 15 minutes;
@@ -150,44 +114,17 @@ The production security policy seeds:
 - minimum password length: 12 characters;
 - PBKDF2-HMAC-SHA256 iterations: 210,000.
 
-`LoginAttemptService` records successful and failed attempts in `login_attempts.json`. Five qualifying failures after the latest successful login cause a temporary lockout. Successful authentication does not bypass an active lockout.
+`LoginAttemptService` records success/failure history without attempted passwords. Five qualifying failures after the latest success trigger temporary lockout. Active lockout is not bypassed by otherwise valid credentials.
 
-## Password hashing and sessions
+Passwords use random salts and PBKDF2-HMAC-SHA256. Verification uses fixed-time byte comparison.
 
-Passwords are stored as salted PBKDF2-HMAC-SHA256 hashes. Verification uses fixed-time byte comparison.
-
-Authentication creates persisted session records with:
-
-- stable Session ID;
-- user linkage;
-- token hash representation;
-- security-stamp snapshot;
-- application kind;
-- purpose;
-- inactivity expiration;
-- absolute expiration;
-- lifecycle status.
+Persisted sessions include stable ID, User linkage, token hash, Security Stamp snapshot, application kind, purpose, inactivity expiration, absolute expiration, and lifecycle status.
 
 ## Forced first-login password change
 
-The production bootstrapper does not contain a fixed administrator password. It requires an explicit caller-supplied initial password and administrator employee information.
+The bootstrapper contains no fixed Administrator password. The caller supplies the initial password and Employee information. The initial Administrator account links to an Employee record, stores only a salted hash, has `MustChangePassword = true`, and receives a restricted `FirstLoginPasswordChange` session.
 
-The initial Administrator account:
-
-- is linked to an Employee record;
-- is active;
-- stores only a salted credential hash;
-- is marked `MustChangePassword = true`;
-- receives only a restricted `FirstLoginPasswordChange` session after authentication.
-
-Completing the forced password change atomically:
-
-- replaces the credential hash;
-- rotates the security stamp;
-- clears the forced-change flag;
-- revokes the restricted session;
-- creates a full-access session;
-- writes `users.json` and `sessions.json` through the multi-file transaction coordinator.
+Completing the password change atomically replaces the credential hash, rotates the Security Stamp, clears the forced-change flag, revokes the restricted session, creates a full-access session, and writes `users.json` and `sessions.json` through the transaction coordinator.
 
 ## Production bootstrap
 
@@ -195,20 +132,20 @@ Completing the forced password change atomically:
 
 1. creates all 49 authoritative JSON files;
 2. seeds the security policy;
-3. creates the first Employee and Administrator user from caller-supplied data;
-4. marks the account for forced password change;
-5. seeds `EMP` and `USR` identifier sequences so bootstrap IDs cannot be reallocated;
+3. creates the first Employee and Administrator User from caller-supplied data;
+4. requires first-login password replacement;
+5. seeds EMP and USR sequences so bootstrap IDs cannot be reallocated;
 6. creates the repository manifest with file hashes and revisions;
 7. verifies that exactly 49 JSON repository files exist.
 
-Bootstrap is intentionally one-time and refuses to overwrite an existing production data directory.
+Bootstrap is one-time and refuses to overwrite a non-empty production data directory.
 
-## Infrastructure tests
+## Tests
 
 `InfrastructureFoundationTests.cs` adds 14 tests covering:
 
 - the 49-entry catalog and 14/35 split;
-- required coordination and security repositories;
+- required coordination/security repositories;
 - creation of exactly 49 JSON files;
 - absence of a built-in production credential;
 - forced first-login password change;
@@ -220,25 +157,56 @@ Bootstrap is intentionally one-time and refuses to overwrite an existing product
 - five-failure lockout;
 - lockout expiry;
 - restricted-session replacement with full access;
-- old-password invalidation;
-- salted PBKDF2-HMAC-SHA256 verification.
+- salted PBKDF2-HMAC-SHA256 verification and old-password invalidation.
 
-The expected complete suite contains 110 tests after Pass 8. No successful compilation or test claim is made until the final branch head completes the Windows workflow and produces TRX and artifact evidence.
+The complete suite contains 110 tests.
 
-## Figma architecture model
+## Validation history
 
-Editable FigJam architecture model:
+### Diagnostic runs
+
+1. `29691283953` — corrected identifier-sequence integer type mismatch.
+2. `29691378777` — corrected incompatible test-project restore configuration.
+3. `29691481045` — restored `System.Text.Json` runtime dependencies in the test output.
+
+### Successful implementation run
+
+- run: `29691593386`
+- commit: `c622287893a2e13011eeae9674fda785c8525f44`
+- warnings/errors: `0/0`
+- tests: `110/110` passed
+- artifact: `iuis-windows-build-evidence-88`
+- artifact ID: `8443750845`
+- SHA-256: `d79a4789460820da807e3147ede3edef6a754a490af14f158fa4c9b45f84d0ca`
+
+### Successful replacement-PR run
+
+- pull request: `#28`
+- run: `29692698528`
+- head: `28c797f7a0c2d453852728fc27d12214cbfdd84e`
+- warnings/errors: `0/0`
+- tests: `110/110` passed
+- artifact: `iuis-windows-build-evidence-90`
+- artifact ID: `8444064263`
+- SHA-256: `8955298d4693623d585e62bdae83750106d74a269d5aa0c488b8d6436bc931d3`
+- expiration: 2026-08-02
+
+PR #28 merged the validated implementation into `develop` as `4920f3dec56e584bb3d4aa620b194b5dd31c36ce`.
+
+## Figma models
+
+Editable FigJam architecture and closure model:
 
 - `https://www.figma.com/board/VGyuqaZDhIBfGqBfGjQJUH`
 
-The diagram is explanatory. GitHub source and automated evidence remain authoritative.
+The diagrams are explanatory. GitHub source and automated evidence remain authoritative.
 
 ## Architecture boundary
 
 - JSON and file-system operations exist only in `IUIS.Infrastructure`.
 - Domain remains independent of Infrastructure.
 - Forms remain prohibited from direct `System.IO` and `System.Text.Json` access.
-- Application orchestration may consume Infrastructure contracts in later passes but is not completed here.
+- Application authorization/orchestration is not completed in Pass 8.
 
 ## Explicitly deferred
 
@@ -252,4 +220,4 @@ The diagram is explanatory. GitHub source and automated evidence remain authorit
 
 ## Current validation state
 
-The Pass 8 production Infrastructure source, 49 templates, tests, validation rules, documentation, and Figma model are prepared on the implementation branch. Windows compilation and automated test evidence remain pending.
+Pass 8 implementation and replacement-PR validation are complete, and the validated source is merged into `develop`. Independent integrated-tree closure validation, mainline promotion, exact mainline validation, and final branch synchronization remain the active gate.
