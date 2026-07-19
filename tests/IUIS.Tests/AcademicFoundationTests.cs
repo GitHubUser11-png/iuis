@@ -317,7 +317,7 @@ namespace IUIS.Tests
 
             Assert.AreEqual(EnrollmentStatus.Approved, enrollment.Status);
             Assert.AreEqual("Academic requirements verified.", enrollment.DecisionReason);
-            Assert.AreEqual(4L, enrollment.Version);
+            Assert.AreEqual(5L, enrollment.Version);
         }
 
         [TestMethod]
