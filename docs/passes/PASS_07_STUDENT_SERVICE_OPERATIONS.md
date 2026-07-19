@@ -7,10 +7,16 @@ Implement the coherent Student Service Operations Domain group without introduci
 ## Starting point
 
 - repository: `GitHubUser11-png/iuis`
-- baseline branch: `develop`
-- starting commit: `4ec4036452bb89d9b919d25aac8c20e844294ef8`
-- implementation branch: `build/pass-07-student-service-operations`
+- original starting commit: `4ec4036452bb89d9b919d25aac8c20e844294ef8`
+- original implementation branch: `build/pass-07-student-service-operations`
+- recovered integration branch: `build/pass-07-student-service-operations-v2`
+- original implementation pull request: `#21`
+- synchronization pull request: `#22`
 - Passes 1 through 6 were integrated and closure-validated before branch creation
+
+## Branch synchronization note
+
+The repository automation removed the original implementation branch and closed PR #21 after a formatting-only mainline commit was added. The validated implementation commit `6d55b5d86856627839c5e3560f70fa9b2df7a770` remained available. The implementation was recovered on `build/pass-07-student-service-operations-v2`, and PR #22 merged current mainline commit `e0f514888570b5b7d82a963592a8ede0b5d2e106` into that branch. The synchronization changed formatting only and did not alter Pass 7 Domain behavior.
 
 ## Created Domain sources
 
@@ -92,7 +98,7 @@ Implement the coherent Student Service Operations Domain group without introduci
 - Medical Record confidentiality separation, closure, and retention;
 - Medical Clearance review, issue, validity, revocation history, and identifier validation.
 
-The expected complete suite contains 96 tests after Pass 7. No successful compilation or test claim is made until the final branch head passes the Windows workflow and produces TRX and artifact evidence.
+The complete suite contains 96 tests after Pass 7.
 
 ## Supporting FigJam model
 
@@ -101,6 +107,31 @@ Editable Student Service Domain entity-relationship model:
 - `https://www.figma.com/board/2DiMHY2V9ZlTMh3TUFYvXW`
 
 The diagram is explanatory only. GitHub source and automated test evidence are authoritative.
+
+## Windows implementation validation
+
+GitHub Actions run `29688650226` validated implementation head `6d55b5d86856627839c5e3560f70fa9b2df7a770` before branch recovery.
+
+- source-tree and architecture validation: passed;
+- NuGet restoration: passed;
+- Release MSBuild: passed;
+- warnings: `0`;
+- errors: `0`;
+- MSTest: passed;
+- tests executed: `96`;
+- tests passed: `96`;
+- tests failed: `0`;
+- TRX verification: passed;
+- artifact publication: passed.
+
+Evidence artifact:
+
+- name: `iuis-windows-build-evidence-67`;
+- artifact ID: `8442878636`;
+- SHA-256: `c4d3090e74b3686125bee1ff82b117606b3e0a556a7225a7b0a4cb8b4f11e432`;
+- expiration: 2026-08-02.
+
+The recovered final documentation head must be revalidated before integration.
 
 ## Architecture boundary
 
@@ -119,6 +150,6 @@ All production additions belong to `IUIS.Domain`. Domain continues to reference 
 - Student and employee WinForms pages;
 - backup, restore, recovery, deployment, and release certification.
 
-## Current validation state
+## Current integration state
 
-The Pass 7 source, tests, project-file updates, documentation, and FigJam model are committed on the implementation branch. Windows compilation and automated test evidence remain pending.
+The Pass 7 implementation compiled successfully with zero warnings and zero errors, and all 96 tests passed. Final recovered-head validation and pull-request integration remain pending. This is not release certification.
