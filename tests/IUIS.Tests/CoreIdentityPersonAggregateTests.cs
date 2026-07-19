@@ -136,7 +136,7 @@ namespace IUIS.Tests
                 new ContactInformation("juan@example.edu", "+639171234567", null),
                 new PostalAddress("1 Main Street", null, "Poblacion", "Malvar", "Batangas", "4233", "PH"),
                 new InstitutionLocalDate(2005, 1, 1),
-                "CRS-BSIT",
+                "CRS-2026-000001",
                 StudentStatus.Active,
                 CreatedAtUtc,
                 "USR-2026-999999");
