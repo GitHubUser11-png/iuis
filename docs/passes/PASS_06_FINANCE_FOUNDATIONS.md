@@ -7,11 +7,12 @@ Implement a coherent Finance Domain foundation without introducing persistence, 
 ## Starting point
 
 - repository: `GitHubUser11-png/iuis`
-- base branch: `develop`
-- starting commit: `3fe05ae42f076a4c9ca7ff9e3f197ca8c8d4a9dd`
+- starting integration commit: `3fe05ae42f076a4c9ca7ff9e3f197ca8c8d4a9dd`
 - implementation branch: `build/pass-06-finance-foundations`
 - implementation pull request: `#17`
-- Passes 1 through 5 were integrated before branch creation
+- implementation integration commit: `d5b24245009bfc8b6639a5bbdc7fa1e6d7af59eb`
+- closure pull request: `#18`
+- closure integration commit: `9dcff9616dc8afb19af6d5bcf0497db77b31caa6`
 
 ## Created Domain sources
 
@@ -25,7 +26,7 @@ Implement a coherent Finance Domain foundation without introducing persistence, 
 
 ## Modified Domain foundation
 
-`EntityBase.Archive` and `EntityBase.Restore` are now virtual so finance aggregates can enforce stronger retention rules. Posted Assessments, posted Adjustments, and posted or voided Payments override these operations and reject archival or restoration that would erase or obscure posted financial history.
+`EntityBase.Archive` and `EntityBase.Restore` are virtual so finance aggregates can enforce stronger retention rules. Posted Assessments, posted Adjustments, and posted or voided Payments override these operations and reject archival or restoration that would erase or obscure posted financial history.
 
 ## Assessment charge rules
 
@@ -69,13 +70,13 @@ Implement a coherent Finance Domain foundation without introducing persistence, 
 
 - Payment IDs use `PAY-YYYY-NNNNNN`.
 - Allocation IDs use `PAL-YYYY-NNNNNN`.
-- Receipt numbers use `RCT-YYYY-NNNNNN`.
+- Receipt Numbers use `RCT-YYYY-NNNNNN`.
 - Payments link a Student and Academic Period and contain immutable amount, method, receipt time, and optional external reference.
 - Draft allocations cannot exceed the Payment amount and cannot duplicate an Assessment.
 - Posting requires at least one allocation and complete allocation of the Payment amount.
 - Posted Payments cannot be edited or deleted.
 - Voiding preserves the original Payment, Receipt Number, amount, and allocations and adds explicit void metadata.
-- Receipt-number uniqueness and external-reference duplicate policy remain repository responsibilities.
+- Receipt Number uniqueness and external-reference duplicate policy remain repository responsibilities.
 
 ## Derived Student Ledger
 
@@ -90,28 +91,11 @@ The Ledger is derived and is not a new repository. No `student_ledgers.json` fil
 
 ## Test coverage
 
-`FinanceFoundationTests.cs` adds 18 Finance tests covering:
-
-- active fixed and per-unit charge calculations;
-- inactive-rule rejection;
-- Assessment posting and snapshot preservation;
-- posted Assessment immutability;
-- duplicate charge-line rejection;
-- Scholarship capping and single-use application;
-- Scholarship Credit Adjustment creation;
-- posted Adjustment retention;
-- complete Payment-allocation requirements;
-- Receipt Number and allocation preservation;
-- posted Payment immutability;
-- Payment void retention;
-- derived Ledger debit, credit, balance, and void reversal;
-- Ledger currency consistency.
-
-The complete suite contains 72 tests after Pass 6.
+`FinanceFoundationTests.cs` adds 18 Finance tests. Combined with the existing suite, Pass 6 contains 72 tests covering charge calculation, Assessment posting and immutability, Scholarship effects, Adjustment posting, Payment allocation and void retention, and derived Ledger behavior.
 
 ## Supporting FigJam model
 
-An editable Finance Domain entity-relationship diagram was generated through Figma:
+Editable Finance Domain entity-relationship diagram:
 
 - `https://www.figma.com/board/PVtLH7VIUDQIPed8X6rIWV`
 
@@ -119,7 +103,33 @@ The diagram is explanatory only. GitHub source and automated test evidence remai
 
 ## Windows implementation validation
 
-GitHub Actions run `29686053729` validated implementation head `6a6ad194edc9b2e9eab42846172bcfa6fa73600b`.
+Run `29686053729` validated implementation head `6a6ad194edc9b2e9eab42846172bcfa6fa73600b`.
+
+- Release warnings: `0`;
+- Release errors: `0`;
+- tests: `72` executed, `72` passed, `0` failed;
+- TRX verification: passed;
+- artifact publication: passed.
+
+Artifact:
+
+- `iuis-windows-build-evidence-53`;
+- artifact ID `8442097786`;
+- SHA-256 `035fafb86642ab0f0b48e85ef8bdef085fc31393f3af7be7a6b91e1f2f9ab72c`.
+
+## Final implementation-head validation
+
+Run `29686160166` validated final PR head `2e8093cbb13e1f0a6dfd0ba5987c924030c2f1f3`.
+
+Artifact:
+
+- `iuis-windows-build-evidence-55`;
+- artifact ID `8442130601`;
+- SHA-256 `1cee4df9922bde548090ef487b787943dee89cbbd53621d63f1557af0f6543fd`.
+
+## Independent closure validation
+
+Run `29686316294` validated closure head `cf8e75544c3bb233e4ffa0f397f0def8581547f6`, created from the integrated Finance tree.
 
 - source-tree and architecture validation: passed;
 - NuGet restoration: passed;
@@ -127,43 +137,15 @@ GitHub Actions run `29686053729` validated implementation head `6a6ad194edc9b2e9
 - warnings: `0`;
 - errors: `0`;
 - MSTest: passed;
-- tests executed: `72`;
-- tests passed: `72`;
-- tests failed: `0`;
+- tests: `72` executed, `72` passed, `0` failed;
 - TRX verification: passed;
 - artifact publication: passed.
 
-Evidence artifact:
+Closure artifact:
 
-- name: `iuis-windows-build-evidence-53`;
-- artifact ID: `8442097786`;
-- SHA-256: `035fafb86642ab0f0b48e85ef8bdef085fc31393f3af7be7a6b91e1f2f9ab72c`;
-- expiration: 2026-08-02.
-
-## Final implementation-head validation
-
-GitHub Actions run `29686160166` validated final PR head `2e8093cbb13e1f0a6dfd0ba5987c924030c2f1f3` after evidence documentation was added.
-
-- source-tree and architecture validation: passed;
-- NuGet restoration: passed;
-- Release MSBuild: passed;
-- MSTest: passed;
-- TRX verification: passed;
-- artifact publication: passed.
-
-Final-head artifact:
-
-- name: `iuis-windows-build-evidence-55`;
-- artifact ID: `8442130601`;
-- SHA-256: `1cee4df9922bde548090ef487b787943dee89cbbd53621d63f1557af0f6543fd`;
-- expiration: 2026-08-02.
-
-## Integration result
-
-- PR #17 was squash-merged into `develop`.
-- integration commit: `d5b24245009bfc8b6639a5bbdc7fa1e6d7af59eb`.
-- closure branch: `build/pass-06-closure`.
-- independent post-merge validation is recorded in `PASS_06_CLOSURE.md`.
+- `iuis-windows-build-evidence-57`;
+- artifact ID `8442175482`;
+- SHA-256 `3e9441f0d37f309de587ad3e074bfd36a185483564007e32cd82830af848fc81`.
 
 ## Explicitly deferred
 
@@ -173,13 +155,13 @@ Final-head artifact:
 - `System.Text.Json` envelopes and the 49 production templates;
 - sequence allocation through `id_sequences.json`;
 - persistent locks and multi-file transaction coordination;
-- assessment generation from approved Enrollment;
+- Assessment generation from approved Enrollment;
 - atomic Scholarship Adjustment and Award application orchestration;
 - Payment receipt-print dispatch semantics;
 - Payment void approval requests;
 - Finance WinForms and reporting screens;
 - backup, restore, recovery, and release certification.
 
-## Integration state
+## Closure result
 
-Pass 6 is implemented, compile-verified, test-verified, and merged into `develop`. Independent closure validation remains the final administrative gate. This is not release certification.
+Pass 6 is implemented, compile-verified, test-verified, integrated, and independently closure-validated. This is not release certification.
