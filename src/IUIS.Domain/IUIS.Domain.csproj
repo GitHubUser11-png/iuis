@@ -24,11 +24,14 @@
     <Compile Include="Academic\Enrollment.cs" />
     <Compile Include="Academic\Subject.cs" />
     <Compile Include="Academic\SubjectPrerequisiteGraph.cs" />
+    <Compile Include="Clinic\ClinicModels.cs" />
     <Compile Include="Common\DomainGuard.cs" />
     <Compile Include="Common\DomainValidationException.cs" />
     <Compile Include="Common\EntityBase.cs" />
     <Compile Include="Common\EntityContracts.cs" />
     <Compile Include="Common\TextNormalizer.cs" />
+    <Compile Include="Counseling\CounselingModels.cs" />
+    <Compile Include="Discipline\DisciplineModels.cs" />
     <Compile Include="Finance\AssessmentChargeRule.cs" />
     <Compile Include="Finance\FinanceEnums.cs" />
     <Compile Include="Finance\FinancialAdjustment.cs" />
@@ -43,6 +46,7 @@
     <Compile Include="Identity\InstitutionIdentifier.cs" />
     <Compile Include="Identity\UserAccount.cs" />
     <Compile Include="Identity\UserSession.cs" />
+    <Compile Include="Library\LibraryModels.cs" />
     <Compile Include="People\ContactInformation.cs" />
     <Compile Include="People\EmployeeRecord.cs" />
     <Compile Include="People\MasterRecordEnums.cs" />
@@ -50,6 +54,7 @@
     <Compile Include="People\PostalAddress.cs" />
     <Compile Include="People\StudentRecord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ServiceDomainGuard.cs" />
     <Compile Include="SolutionFoundation.cs" />
     <Compile Include="Time\InstitutionLocalDate.cs" />
   </ItemGroup>
