@@ -23,22 +23,25 @@ The project uses the following evidence levels. These terms are not interchangea
 |---|---|---|
 | Private GitHub repository | Created | `GitHubUser11-png/iuis` |
 | Default branch | Created and updated | `main` |
-| Integration branch | Recreated from validated Pass 5 baseline | `develop` |
+| Integration branch | Updated through Pass 5 closure | `develop` at `3fe05ae42f076a4c9ca7ff9e3f197ca8c8d4a9dd` before Pass 6 |
 | Passes 1 and 2 | Completed, compiled, tested, and merged | PRs #1–#4 |
 | Pass 3 Domain foundations | Completed, compiled, tested, and merged | PRs #5 and #6 |
 | Pass 4 core identity/person aggregates | Completed, compiled, tested, and merged | PR #8 and synchronized follow-up history |
 | Pass 4 preflight repair | Completed, compiled, tested, and merged | PR #12; run `29684773571`; 33 tests passed |
 | Pass 5 academic aggregates | Completed and merged | PR #11; implementation merge `7dffa7498bf1efece00cffe417cc76b86c285547` |
 | Pass 5 validation correction | Completed and merged | PR #14; final integration commit `6b5db90fce2691f7b76fbd5eed2731aa01179b82` |
+| Pass 5 closure | Completed and merged | PR #16; `develop` commit `3fe05ae42f076a4c9ca7ff9e3f197ca8c8d4a9dd` |
+| Pass 6 finance branch | Created, compiled, and tested; merge pending | PR #17; run `29686053729`; 72 tests passed |
 | Visual Studio solution | Created and merged | `IUIS.sln` |
-| C# projects | 7 created, compiled, and tested through Pass 5 | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
+| C# projects | 7 created and compiled through Pass 6 | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
 | Central build properties | Created and enforced | `Directory.Build.props`, `Directory.Build.targets` |
 | Windows CI workflow | Created and operational | `.github/workflows/windows-build.yml` |
 | Production Domain foundations | Created, compiled, tested, and merged | entity contracts, value objects, monetary rules, identity enums, and compatibility policy |
 | Core identity/person aggregates | Created, compiled, tested, and merged | InstitutionIdentifier, UserAccount, UserSession, StudentRecord, EmployeeRecord |
 | Academic foundation aggregates | Created, compiled, tested, and merged | Course, Curriculum, Subject, prerequisite graph, AcademicPeriod, Enrollment, snapshots |
-| Final Pass 5 validation | Successful | run `29685193452`; 0 warnings, 0 errors; 54 tests passed |
-| Final Pass 5 artifact | Verified | `iuis-windows-build-evidence-47`, artifact `8441849007`, SHA-256 `0ca4c821cc8383c63536d5e6e4d1335131082cdacc66793c20a5d69a67754fcf` |
+| Finance foundation aggregates | Created, compiled, and tested on Pass 6 branch | charge rules, Tuition Assessment, Scholarship Award effects, Financial Adjustment, Payment, derived Student Ledger |
+| Final Pass 6 implementation validation | Successful | run `29686053729`; 0 warnings, 0 errors; 72 tests passed |
+| Final Pass 6 implementation artifact | Verified | `iuis-windows-build-evidence-53`, artifact `8442097786`, SHA-256 `035fafb86642ab0f0b48e85ef8bdef085fc31393f3af7be7a6b91e1f2f9ab72c` |
 | Production JSON templates | 0 created | scheduled after repository contracts |
 | Executable certification | Not achieved | final release gate only |
 
@@ -65,13 +68,14 @@ The project uses the following evidence levels. These terms are not interchangea
 | 2 | Windows build, NuGet, MSBuild, MSTest, and artifact foundation | Completed, compiled, tested, and merged |
 | 3 | Production Domain foundations | Completed, compiled, tested, and merged |
 | 4 | Core identity and person aggregates | Completed, compiled, tested, and merged |
-| 5 | Academic foundation aggregates | Completed, compiled, tested, and merged through PR #11 and correction PR #14 |
-| 6+ | Remaining Domain aggregates, Application, Infrastructure, UI, modules, operations, and certification | Not started |
+| 5 | Academic foundation aggregates | Completed, compiled, tested, and merged through PR #11, correction PR #14, and closure PR #16 |
+| 6 | Finance Domain foundations | Created, compiled, and tested on PR #17; final-head validation and merge pending |
+| 7+ | Remaining Domain aggregates, Application, Infrastructure, UI, modules, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-Passes 1 through 5 are integrated into the authoritative repository history. The academic Domain baseline includes Course, Curriculum, Subject, prerequisite-graph, Academic Period, Enrollment, and immutable snapshot contracts. The final Windows Release build completed with zero warnings and zero errors, and all 54 tests passed with TRX and artifact evidence. No Application service layer, production JSON persistence engine, 49-file repository template set, authentication implementation, business-module UI, backup/restore implementation, or release-certified executable exists yet.
+Passes 1 through 5 are integrated into `develop`. Pass 6 Finance Domain source and tests exist on PR #17 and have completed a successful Windows Release build with zero warnings and zero errors. All 72 tests passed with TRX and artifact evidence. The branch adds Assessment charge rules, Tuition Assessment, Scholarship Award effects, Financial Adjustments, Payment allocation and void lifecycle, posted-finance retention overrides, and a derived Student Ledger. PR #17 remains unmerged until the final documentation head is revalidated. No Application service layer, production JSON persistence engine, 49-file repository template set, authentication implementation, business-module UI, backup/restore implementation, or release-certified executable exists yet.
 
-## Exact next starting point
+## Exact next gate
 
-The next implementation branch must begin from `develop` at the validated Pass 5 integration baseline. Pass 6 should create the Finance Domain foundation group: tuition Assessment, charge rules, Scholarship award effects, Payment and allocation lifecycle, immutable posted-finance invariants, derived ledger contracts, and expanded Domain tests. Persistence, cross-process locking, UI, and production transaction coordination remain outside Domain and must not be introduced there.
+Revalidate the final PR #17 documentation head, amend the pull request with final evidence, merge it into `develop`, then perform an independent post-merge Windows validation and finalize the Pass 6 closure record before beginning the next Domain aggregate group.
