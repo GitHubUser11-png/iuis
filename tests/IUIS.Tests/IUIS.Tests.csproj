@@ -31,6 +31,7 @@
     <Compile Include="FinanceFoundationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionFoundationTests.cs" />
+    <Compile Include="StudentServiceDomainTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
