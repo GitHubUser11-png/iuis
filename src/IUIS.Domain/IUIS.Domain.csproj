@@ -29,8 +29,15 @@
     <Compile Include="Common\EntityBase.cs" />
     <Compile Include="Common\EntityContracts.cs" />
     <Compile Include="Common\TextNormalizer.cs" />
+    <Compile Include="Finance\AssessmentChargeRule.cs" />
+    <Compile Include="Finance\FinanceEnums.cs" />
+    <Compile Include="Finance\FinancialAdjustment.cs" />
     <Compile Include="Finance\Money.cs" />
     <Compile Include="Finance\MoneyRules.cs" />
+    <Compile Include="Finance\Payment.cs" />
+    <Compile Include="Finance\ScholarshipAward.cs" />
+    <Compile Include="Finance\StudentLedger.cs" />
+    <Compile Include="Finance\TuitionAssessment.cs" />
     <Compile Include="Identity\IdentityEnums.cs" />
     <Compile Include="Identity\IdentityPolicy.cs" />
     <Compile Include="Identity\InstitutionIdentifier.cs" />
