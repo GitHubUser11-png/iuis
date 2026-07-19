@@ -22,8 +22,8 @@ The project uses the following evidence levels. These terms are not interchangea
 | Item | State | Evidence |
 |---|---|---|
 | Private GitHub repository | Created | `GitHubUser11-png/iuis` |
-| Default branch | Finalized through Pass 7 | `main` |
-| Integration branch | Recreated from finalized Pass 7 mainline | `develop` |
+| Default branch | Finalized through Pass 7 | `main` at `8dae3e1f70ec41f8d51c3ac4cbc0af172dd3afcd` |
+| Integration branch | Pass 8 implementation integrated | `develop` at integration commit `4920f3dec56e584bb3d4aa620b194b5dd31c36ce` before closure |
 | Passes 1 and 2 | Completed, compiled, tested, and merged | PRs #1–#4 |
 | Pass 3 Domain foundations | Completed, compiled, tested, and merged | PRs #5 and #6 |
 | Pass 4 core identity/person aggregates | Completed, compiled, tested, and merged | PR #8 and synchronized follow-up history |
@@ -36,11 +36,14 @@ The project uses the following evidence levels. These terms are not interchangea
 | Pass 7 Student Service Operations | Completed, compiled, tested, and merged | PR #23; integration commit `b4cb980d3989160969a02b4b5a51a162a088d695` |
 | Pass 7 closure | Completed, validated, and mainline-synchronized | PRs #24–#26; final commit `8dae3e1f70ec41f8d51c3ac4cbc0af172dd3afcd` |
 | Pass 8 predecessor PR | Closed without merge | PR #27 |
-| Pass 8 validated implementation | Recovered; replacement PR pending | commit `c622287893a2e13011eeae9674fda785c8525f44`; branch `build/pass-08-recovery-integration-final` |
-| Pass 8 implementation validation | Successful | run `29691593386`; 0 warnings, 0 errors; 110 tests passed |
-| Pass 8 implementation artifact | Verified | `iuis-windows-build-evidence-88`, artifact `8443750845`, SHA-256 `d79a4789460820da807e3147ede3edef6a754a490af14f158fa4c9b45f84d0ca` |
-| Visual Studio solution | Created and merged | `IUIS.sln` |
-| C# projects | 7 created and compiled through recovered Pass 8 implementation | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
+| Pass 8 implementation | Recovered, validated, and merged into `develop` | PR #28; integration commit `4920f3dec56e584bb3d4aa620b194b5dd31c36ce` |
+| Pass 8 original validation | Successful | run `29691593386`; 0 warnings, 0 errors; 110 tests passed |
+| Pass 8 original artifact | Verified | `iuis-windows-build-evidence-88`, artifact `8443750845`, SHA-256 `d79a4789460820da807e3147ede3edef6a754a490af14f158fa4c9b45f84d0ca` |
+| Pass 8 replacement-PR validation | Successful | run `29692698528`; 0 warnings, 0 errors; 110 tests passed |
+| Pass 8 replacement artifact | Verified | `iuis-windows-build-evidence-90`, artifact `8444064263`, SHA-256 `8955298d4693623d585e62bdae83750106d74a269d5aa0c488b8d6436bc931d3` |
+| Pass 8 closure | Branch created; integrated-tree validation pending | `build/pass-08-closure` from `4920f3dec56e584bb3d4aa620b194b5dd31c36ce` |
+| Visual Studio solution | Created and compiled through integrated Pass 8 | `IUIS.sln` |
+| C# projects | 7 created and compiled through integrated Pass 8 | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
 | Central build properties | Created and enforced | `Directory.Build.props`, `Directory.Build.targets` |
 | Windows CI workflow | Created and operational | `.github/workflows/windows-build.yml` |
 | Production Domain foundations | Created, compiled, tested, and merged | entity contracts, value objects, monetary rules, identity enums, and compatibility policy |
@@ -50,8 +53,8 @@ The project uses the following evidence levels. These terms are not interchangea
 | Student Service Domain aggregates | Created, compiled, tested, merged, and closure-validated | Library, Counseling, Discipline, Clinic, Medical Record, Medical Clearance |
 | Production repository catalog | Created and validated | exactly 49 descriptors: 14 principal and 35 supporting |
 | Production JSON templates | 49 created and validated | `templates/production-data/*.json` |
-| Persistence coordination foundation | Created and validated | repository envelopes, revision checks, cross-process locks, atomic writes, journaled transactions, recovery |
-| Security bootstrap foundation | Created and validated | login attempts, lockout, PBKDF2, restricted sessions, forced password change, one-time bootstrap |
+| Persistence coordination foundation | Created, validated, and integrated | envelopes, revision checks, cross-process locks, atomic writes, journaled transactions, recovery |
+| Security bootstrap foundation | Created, validated, and integrated | login attempts, lockout, PBKDF2, restricted sessions, forced password change, one-time bootstrap |
 | Pass 8 test count | 110 passed | 96 existing plus 14 Infrastructure tests |
 | Executable certification | Not achieved | final release gate only |
 
@@ -81,13 +84,15 @@ The project uses the following evidence levels. These terms are not interchangea
 | 5 | Academic foundation aggregates | Completed, compiled, tested, and merged through PR #11, correction PR #14, and closure PR #16 |
 | 6 | Finance Domain foundations | Completed, compiled, tested, merged, and closure-validated through PRs #17 and #18 |
 | 7 | Student Service Operations Domain foundations | Completed, compiled, tested, merged, closure-validated, and mainline-synchronized through PRs #23–#26 |
-| 8 | Production repository and security bootstrap foundation | Recovered and implementation-validated; replacement PR integration and closure pending |
+| 8 | Production repository and security bootstrap foundation | Implementation validated and integrated through PR #28; closure and mainline promotion pending |
 | 9+ | Application orchestration, complete typed repositories, UI, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-Passes 1 through 7 are integrated into the authoritative repository history. Pass 8 has been recovered from the exact validated commit after PR #27 closed without merge. Its 49-repository catalog and templates, central ID allocation, cross-process locks, hardened atomic writes, journaled transactions, login-attempt lockout, forced password change, and production bootstrap passed Windows Release compilation with zero warnings and zero errors and all 110 tests passed. Pass 8 is not yet integrated or closure-complete. Application authorization orchestration, complete typed repositories for every module, business-module Forms, backup/restore execution, deployment, and release certification remain incomplete.
+Passes 1 through 7 are integrated and mainline-synchronized. Pass 8 has been recovered from the exact validated commit, independently revalidated on replacement PR #28, and merged into `develop`. The integrated baseline contains the exact 49-repository catalog and templates, central ID allocation, cross-process locks, hardened atomic writes, journaled transactions, login-attempt lockout, forced password change, and production bootstrap. Both successful Pass 8 implementation runs completed with zero warnings, zero errors, and all 110 tests passing. Pass 8 is not closure-complete or promoted to `main` until the actual merged tree receives independent closure validation and exact mainline validation.
+
+Application authorization orchestration, complete typed repositories for every module, restricted DTO projection, business-module Forms, backup/restore execution, deployment, and release certification remain incomplete.
 
 ## Exact next gate
 
-Open and validate the replacement Pass 8 pull request against `develop`, merge the recovered implementation, then independently closure-validate the actual merged Infrastructure baseline before promotion to `main` and synchronization of `main` and `develop`.
+Validate the `build/pass-08-closure` head created from integration commit `4920f3dec56e584bb3d4aa620b194b5dd31c36ce`; merge the validated closure into `develop`; promote the complete Pass 8 baseline to `main`; validate the exact mainline integration commit; synchronize `develop` to final `main`; verify zero divergence; and record the final Pass 8 evidence and Pass 9 starting point.
