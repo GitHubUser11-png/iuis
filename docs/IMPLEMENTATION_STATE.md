@@ -23,16 +23,16 @@ The project uses the following evidence levels. These terms are not interchangea
 |---|---|---|
 | Private GitHub repository | Created | `GitHubUser11-png/iuis` |
 | Default branch | Created and updated | `main` |
-| Integration branch | Updated through Pass 6 | `develop` at `d5b24245009bfc8b6639a5bbdc7fa1e6d7af59eb` before closure |
+| Integration branch | Recreated from the final validated Pass 6 mainline | `develop` |
 | Passes 1 and 2 | Completed, compiled, tested, and merged | PRs #1–#4 |
 | Pass 3 Domain foundations | Completed, compiled, tested, and merged | PRs #5 and #6 |
 | Pass 4 core identity/person aggregates | Completed, compiled, tested, and merged | PR #8 and synchronized follow-up history |
 | Pass 4 preflight repair | Completed, compiled, tested, and merged | PR #12; run `29684773571`; 33 tests passed |
 | Pass 5 academic aggregates | Completed and merged | PR #11; implementation merge `7dffa7498bf1efece00cffe417cc76b86c285547` |
 | Pass 5 validation correction | Completed and merged | PR #14; final integration commit `6b5db90fce2691f7b76fbd5eed2731aa01179b82` |
-| Pass 5 closure | Completed and merged | PR #16; `develop` commit `3fe05ae42f076a4c9ca7ff9e3f197ca8c8d4a9dd` |
+| Pass 5 closure | Completed and merged | PR #16; closure commit `3fe05ae42f076a4c9ca7ff9e3f197ca8c8d4a9dd` |
 | Pass 6 Finance foundations | Completed, compiled, tested, and merged | PR #17; integration commit `d5b24245009bfc8b6639a5bbdc7fa1e6d7af59eb` |
-| Pass 6 closure | Created; independent validation pending | `build/pass-06-closure` |
+| Pass 6 closure | Completed, validated, and merged | PR #18; closure commit `9dcff9616dc8afb19af6d5bcf0497db77b31caa6` |
 | Visual Studio solution | Created and merged | `IUIS.sln` |
 | C# projects | 7 created, compiled, and tested through Pass 6 | Domain, Application, Infrastructure, SharedUI, UserApp, AdminApp, Tests |
 | Central build properties | Created and enforced | `Directory.Build.props`, `Directory.Build.targets` |
@@ -41,8 +41,9 @@ The project uses the following evidence levels. These terms are not interchangea
 | Core identity/person aggregates | Created, compiled, tested, and merged | InstitutionIdentifier, UserAccount, UserSession, StudentRecord, EmployeeRecord |
 | Academic foundation aggregates | Created, compiled, tested, and merged | Course, Curriculum, Subject, prerequisite graph, AcademicPeriod, Enrollment, snapshots |
 | Finance foundation aggregates | Created, compiled, tested, and merged | charge rules, Tuition Assessment, Scholarship Award effects, Financial Adjustment, Payment, derived Student Ledger |
-| Final Pass 6 implementation validation | Successful | runs `29686053729` and `29686160166`; 0 warnings, 0 errors; 72 tests passed |
-| Final Pass 6 implementation artifact | Verified | `iuis-windows-build-evidence-55`, artifact `8442130601`, SHA-256 `1cee4df9922bde548090ef487b787943dee89cbbd53621d63f1557af0f6543fd` |
+| Pass 6 implementation validations | Successful | runs `29686053729` and `29686160166`; 0 warnings, 0 errors; 72 tests passed |
+| Pass 6 closure validation | Successful | run `29686316294`; 0 warnings, 0 errors; 72 tests passed |
+| Pass 6 closure artifact | Verified | `iuis-windows-build-evidence-57`, artifact `8442175482`, SHA-256 `3e9441f0d37f309de587ad3e074bfd36a185483564007e32cd82830af848fc81` |
 | Production JSON templates | 0 created | scheduled after repository contracts |
 | Executable certification | Not achieved | final release gate only |
 
@@ -70,13 +71,13 @@ The project uses the following evidence levels. These terms are not interchangea
 | 3 | Production Domain foundations | Completed, compiled, tested, and merged |
 | 4 | Core identity and person aggregates | Completed, compiled, tested, and merged |
 | 5 | Academic foundation aggregates | Completed, compiled, tested, and merged through PR #11, correction PR #14, and closure PR #16 |
-| 6 | Finance Domain foundations | Completed, compiled, tested, and merged through PR #17; closure validation pending |
+| 6 | Finance Domain foundations | Completed, compiled, tested, merged, and closure-validated through PRs #17 and #18 |
 | 7+ | Remaining Domain aggregates, Application, Infrastructure, UI, modules, operations, and certification | Not started |
 
 ## Current truthful completion statement
 
-Passes 1 through 6 are integrated into `develop`. The Finance Domain baseline includes Assessment charge rules, Tuition Assessment, Scholarship Award effects, Financial Adjustments, Payment allocation and void lifecycle, posted-finance retention overrides, and a derived Student Ledger. The final implementation head completed a Windows Release build with zero warnings and zero errors, and all 72 tests passed with TRX and artifact evidence. Independent post-merge closure validation is pending. No Application service layer, production JSON persistence engine, 49-file repository template set, authentication implementation, business-module UI, backup/restore implementation, or release-certified executable exists yet.
+Passes 1 through 6 are integrated into the authoritative repository history. The Finance Domain baseline includes Assessment charge rules, Tuition Assessment, Scholarship Award effects, Financial Adjustments, Payment allocation and void lifecycle, posted-finance retention overrides, and a derived Student Ledger. The implementation and independent closure workflows completed Windows Release builds with zero warnings and zero errors, and all 72 tests passed with TRX and artifact evidence. No Application service layer, production JSON persistence engine, 49-file repository template set, authentication implementation, business-module UI, backup/restore implementation, or release-certified executable exists yet.
 
-## Exact next gate
+## Exact next starting point
 
-Complete the Pass 6 closure workflow against the actual merged Finance tree, record its artifact and test evidence, merge the closure documentation into `develop`, and then begin the next coherent Domain aggregate group.
+The next implementation branch must begin from the recreated `develop` baseline after Pass 6 closure. The next coherent Domain group should cover service operations such as Library books and Borrowings, Counseling cases and controlled release records, Discipline incidents and responses, Clinic appointments and Medical records, and Clearance workflows. Persistence, authorization orchestration, and WinForms remain outside that Domain pass.
