@@ -1,0 +1,59 @@
+name: Windows Build and Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: iuis-windows-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-build:
+    name: Release MSBuild and MSTest
+    runs-on: windows-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Add NuGet to PATH
+        uses: NuGet/setup-nuget@v2
+        with:
+          nuget-version: '6.x'
+
+      - name: Validate source tree and architecture
+        shell: pwsh
+        run: ./build/Test-IuisSourceTree.ps1
+
+      - name: Restore NuGet packages
+        shell: pwsh
+        run: nuget restore IUIS.sln -NonInteractive -Verbosity detailed
+
+      - name: Build Release and execute tests
+        shell: pwsh
+        run: ./build/Invoke-IuisBuild.ps1 -Configuration Release
+
+      - name: Upload build and test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iuis-windows-build-evidence-${{ github.run_number }}
+          path: |
+            artifacts/logs/**
+            artifacts/TestResults/**
+            artifacts/validation/**
+            artifacts/bin/Release/**
+          if-no-files-found: warn
+          retention-days: 14
