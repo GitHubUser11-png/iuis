@@ -4,14 +4,16 @@
 
 Validate the actual integrated Pass 7 Student Service Domain tree, finalize the implementation-state record, and establish the next construction boundary without overstating system completion.
 
-## Starting point
+## Integration history
 
 - repository: `GitHubUser11-png/iuis`
-- Pass 7 replacement integration pull request: `#23`
-- Pass 7 integration commit: `b4cb980d3989160969a02b4b5a51a162a088d695`
-- recreated integration branch: `develop`
-- closure branch: `build/pass-07-closure`
-- closure pull request: `#24`
+- replacement implementation PR: `#23`
+- implementation integration commit: `b4cb980d3989160969a02b4b5a51a162a088d695`
+- closure PR: `#24`
+- closure integration commit: `afd8a57ec53e978344f2de220d7ce49252323f61`
+- finalized-mainline PR: `#25`
+- finalized mainline commit: `6fdf2479af4494924b7249df4896f6d170ae0f49`
+- `main` and `develop` synchronized to the finalized mainline commit before this documentation finalization
 
 ## Integrated implementation validated
 
@@ -24,44 +26,42 @@ Validate the actual integrated Pass 7 Student Service Domain tree, finalize the 
 - Clinic Medical Clearance request, review, issue, deny, revoke, validity, and retained history;
 - 24 new Student Service tests and 72 existing tests.
 
-## Pre-merge evidence
+## Validation history
 
-Two successful Windows validations were completed before integration:
+Five Windows validations established the Pass 7 baseline:
 
-1. run `29688650226` against implementation head `6d55b5d86856627839c5e3560f70fa9b2df7a770`;
-2. run `29688849862` against final replacement PR head `3b363a0b627c27a6c236c4ab800f694ce09c3209`.
+1. run `29688650226` — production implementation head;
+2. run `29688849862` — final replacement-PR head;
+3. run `29689019318` — independently created integrated-tree closure head;
+4. run `29689147617` — final documented closure head;
+5. run `29689242236` — exact closure integration commit before mainline promotion.
 
-Both runs passed source-tree validation, NuGet restoration, Release MSBuild, all 96 MSTest cases, TRX verification, and artifact publication.
+Every run passed:
 
-Final pre-merge artifact:
-
-- name: `iuis-windows-build-evidence-69`;
-- artifact ID: `8442932025`;
-- SHA-256: `2521ad970f4fd181b64bbaee012d507de14aa813b2d872056479b35585f02ab2`;
-- expiration: 2026-08-02.
-
-## Independent post-merge closure evidence
-
-GitHub Actions run `29689019318` validated closure head `d5a8a9243956d70e3fd2949d5cb8db374a395fae`, created from the actual integrated Pass 7 tree.
-
-- source-tree and architecture validation: passed;
-- NuGet restoration: passed;
-- Release MSBuild: passed;
+- source-tree and architecture validation;
+- NuGet restoration;
+- Release MSBuild;
 - warnings: `0`;
 - errors: `0`;
-- MSTest: passed;
-- tests executed: `96`;
-- tests passed: `96`;
-- tests failed: `0`;
-- TRX verification: passed;
-- artifact publication: passed.
+- MSTest: `96` executed, `96` passed, `0` failed;
+- TRX verification;
+- artifact publication.
 
-Closure artifact:
+## Evidence artifacts
 
-- name: `iuis-windows-build-evidence-72`;
-- artifact ID: `8442982829`;
-- SHA-256: `cc8e7f68426e93a77328cbdc634a13a1c3e01160385ce499106bf9b835704239`;
-- expiration: 2026-08-02.
+| Run | Artifact | ID | SHA-256 |
+|---|---|---:|---|
+| `29688650226` | `iuis-windows-build-evidence-67` | `8442878636` | `c4d3090e74b3686125bee1ff82b117606b3e0a556a7225a7b0a4cb8b4f11e432` |
+| `29688849862` | `iuis-windows-build-evidence-69` | `8442932025` | `2521ad970f4fd181b64bbaee012d507de14aa813b2d872056479b35585f02ab2` |
+| `29689019318` | `iuis-windows-build-evidence-72` | `8442982829` | `cc8e7f68426e93a77328cbdc634a13a1c3e01160385ce499106bf9b835704239` |
+| `29689147617` | `iuis-windows-build-evidence-74` | `8443024402` | `ed37bf927c9340f8eb7c259732e7c7499d381e8b639924a60134ec000a317484` |
+| `29689242236` | `iuis-windows-build-evidence-76` | `8443050329` | `5e3fa2f01d91dcf3d1bb1b2295f6e9faf7866e1f6f33af25246c5d5d9e955ad6` |
+
+## Figma service-domain model
+
+- `https://www.figma.com/board/2DiMHY2V9ZlTMh3TUFYvXW`
+
+The FigJam model is explanatory. GitHub source and automated evidence remain authoritative.
 
 ## Evidence boundary
 
@@ -82,4 +82,4 @@ The next locked continuation begins the production repository and security-boots
 
 ## Closure result
 
-Pass 7 is implemented, compile-verified, test-verified, integrated, and independently closure-validated. Closure-document integration remains the final administrative step. This is not release certification.
+Pass 7 is implemented, compile-verified, test-verified, integrated, independently closure-validated, promoted to `main`, and synchronized to `develop`. This is not release certification.
