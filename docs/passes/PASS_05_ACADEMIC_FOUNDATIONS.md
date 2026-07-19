@@ -8,9 +8,24 @@ Implement the first coherent academic Domain aggregate group: Courses, Curriculu
 
 - repository: `GitHubUser11-png/iuis`
 - base branch: `develop`
-- starting commit: `54633e7585b5b2341f3a615cc886ac6bc018afa0`
+- original starting commit: `54633e7585b5b2341f3a615cc886ac6bc018afa0`
 - pass branch: `build/pass-05-academic-foundations`
-- Pass 4 identity and person aggregates are already merged into the base
+- Pass 4 identity and person aggregates were already present at branch creation
+
+## Preflight integration repair
+
+Before the new academic sources could be evaluated, PR #11 workflow run `29684436704` exposed syntax corruption in three pre-existing Pass 4 identity files on the recreated integration base. Two parallel Pass 4 histories had been synchronized through `main`, and Git auto-merged overlapping class implementations into malformed concatenated source.
+
+The repair was isolated in PR #12 and validated independently before merge:
+
+- restored one canonical `InstitutionIdentifier`;
+- restored one canonical `UserAccount`;
+- restored one canonical `UserSession`;
+- removed duplicate uncompiled Student/Employee alternatives;
+- Windows run `29684773571`: 0 warnings, 0 errors, 33 of 33 tests passed;
+- repair integration commit: `0c400df71bbf9e956834af1afad09f28c64d6e0e`.
+
+PR #11 is therefore evaluated against the repaired `develop` baseline. The preflight failure was not caused by Pass 5 academic behavior.
 
 ## Created Domain sources
 
@@ -114,4 +129,4 @@ The diagram is explanatory only. The GitHub source and automated tests remain au
 
 ## Evidence gate
 
-This branch is not considered compiled, tested, or merge-ready until the final documented branch head passes Windows source-tree validation, NuGet restoration, Release MSBuild, MSTest discovery and execution, TRX verification, and artifact publication.
+The final documented branch head must pass Windows source-tree validation, NuGet restoration, Release MSBuild, MSTest discovery and execution, TRX verification, and artifact publication against the repaired `develop` baseline before PR #11 is merged.
