@@ -11,8 +11,9 @@ Validate the actual integrated Pass 7 Student Service Domain tree, finalize the 
 - Pass 7 integration commit: `b4cb980d3989160969a02b4b5a51a162a088d695`
 - recreated integration branch: `develop`
 - closure branch: `build/pass-07-closure`
+- closure pull request: `#24`
 
-## Integrated implementation under validation
+## Integrated implementation validated
 
 - Library Book inventory and accountable copy states;
 - Library Borrowing issue, renewal, overdue, return, lost, and cancellation lifecycle;
@@ -39,16 +40,28 @@ Final pre-merge artifact:
 - SHA-256: `2521ad970f4fd181b64bbaee012d507de14aa813b2d872056479b35585f02ab2`;
 - expiration: 2026-08-02.
 
-## Closure validation gate
+## Independent post-merge closure evidence
 
-The closure branch must independently pass:
+GitHub Actions run `29689019318` validated closure head `d5a8a9243956d70e3fd2949d5cb8db374a395fae`, created from the actual integrated Pass 7 tree.
 
-- source-tree and architecture validation;
-- NuGet package restoration;
-- Release MSBuild under .NET Framework 4.8 and C# 7.3;
-- all 96 MSTest cases;
-- TRX creation and verification;
-- evidence artifact publication.
+- source-tree and architecture validation: passed;
+- NuGet restoration: passed;
+- Release MSBuild: passed;
+- warnings: `0`;
+- errors: `0`;
+- MSTest: passed;
+- tests executed: `96`;
+- tests passed: `96`;
+- tests failed: `0`;
+- TRX verification: passed;
+- artifact publication: passed.
+
+Closure artifact:
+
+- name: `iuis-windows-build-evidence-72`;
+- artifact ID: `8442982829`;
+- SHA-256: `cc8e7f68426e93a77328cbdc634a13a1c3e01160385ce499106bf9b835704239`;
+- expiration: 2026-08-02.
 
 ## Evidence boundary
 
@@ -65,4 +78,8 @@ This closure validates the integrated Student Service Domain foundation only. It
 
 ## Next implementation boundary
 
-After successful closure, the next locked continuation should begin the production repository and security-bootstrap foundation: authoritative repository catalog, initial JSON templates, central ID sequence allocation, cross-process file locks, hardened atomic writes, journaled multi-file transactions, Login attempt tracking, lockout, forced password change, and production bootstrap. Domain and Forms must remain separated from direct file access.
+The next locked continuation begins the production repository and security-bootstrap foundation: authoritative repository catalog, initial JSON templates, central ID sequence allocation, cross-process file locks, hardened atomic writes, journaled multi-file transactions, Login attempt tracking, lockout, forced password change, and production bootstrap. Domain and Forms must remain separated from direct file access.
+
+## Closure result
+
+Pass 7 is implemented, compile-verified, test-verified, integrated, and independently closure-validated. Closure-document integration remains the final administrative step. This is not release certification.
