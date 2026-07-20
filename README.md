@@ -20,13 +20,17 @@ Pass 10 adds the first operational typed-persistence activation:
 - canonical Administrator Employee master-record bootstrap; and
 - mapper, migration, restart, stale-token, confidentiality, and vertical-slice tests.
 
-Pass 10 implementation validation succeeded through GitHub Actions run `29723680915`: exactly 49 production templates, seven valid project boundaries, zero compiler warnings, zero compiler errors, and 142 of 142 tests passed. PR #43 remains the integration gate; Pass 10 is not closure-complete or promoted to `main` yet.
+Pass 10 implementation was validated with zero compiler warnings, zero compiler errors, and 142 of 142 tests, then merged through PR #43. PR #44 subsequently placed that implementation tree on `main` before the formal independent closure audit.
 
-Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md). Pass-specific evidence is recorded in [`docs/passes/PASS_10_CANONICAL_SCHEMAS_SPECIALIZED_MAPPERS.md`](docs/passes/PASS_10_CANONICAL_SCHEMAS_SPECIALIZED_MAPPERS.md).
+The Pass 10 closure branch starts from exact mainline merge commit `1405b507e9e8e0d7b24031c09cedeef500c5ac2f`. It adds six independent integrated-tree tests and corrects an `AssessmentChargeRule` exception-atomicity defect discovered during audit. The expected closure suite is 148 tests. Closure evidence, promotion confirmation, exact-mainline reverification, final branch synchronization, and the Pass 11 boundary are not complete until the closure sequence finishes.
+
+The audit also reconfirmed a pre-existing repository-envelope discrepancy: the authoritative contract requires `repositoryName`, `schemaVersion`, `revision`, `updatedAtUtc`, `updatedByUserId`, and `records`, while the existing templates and runtime still use legacy `repository` and persist `createdAtUtc`. Controlled compatibility migration of all 49 templates is reserved as the first Pass 11 requirement.
+
+Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md). Pass-specific records are in [`docs/passes/PASS_10_CANONICAL_SCHEMAS_SPECIALIZED_MAPPERS.md`](docs/passes/PASS_10_CANONICAL_SCHEMAS_SPECIALIZED_MAPPERS.md) and [`docs/passes/PASS_10_CLOSURE.md`](docs/passes/PASS_10_CLOSURE.md).
 
 ## Exact next gate
 
-Validate the final evidence-updated PR #43 head, merge it into `develop`, independently closure-validate the merged Pass 10 tree, promote only after successful closure, synchronize branches, and define the Pass 11 construction boundary.
+Validate and merge `build/pass-10-closure`, promote the closure corrections and evidence records to `main`, validate the exact promoted and final documentation-inclusive mainline trees, synchronize `develop` and `main` with zero divergence, and record the exact Pass 11 construction boundary.
 
 ## Locked technical target
 
