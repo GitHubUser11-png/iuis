@@ -51,6 +51,27 @@ namespace IUIS.Application.Orchestration
             _projections = projections ?? throw new ArgumentNullException(nameof(projections));
         }
 
+        public EmployeeSelfServiceDto GetOwnRecord(
+            string sessionId,
+            string sessionToken,
+            DateTime utcNow)
+        {
+            return _executor.Query(sessionId, sessionToken, utcNow,
+                principal => new AuthorizationRequest(
+                    "employee.profile.read",
+                    SessionApplicationKind.UserApplication,
+                    ConfidentialityClassification.OwnRecord,
+                    principal.PersonRecordId,
+                    new[] { PrimaryRole.EmployeeFaculty }),
+                principal =>
+                {
+                    var record = _employees.FindById(principal.PersonRecordId);
+                    if (record == null)
+                        throw new InvalidOperationException("The Employee record is unavailable.");
+                    return _projections.ToEmployeeSelfService(record);
+                });
+        }
+
         public EmployeeSelfServiceDto GetEmployee(string sessionId, string sessionToken,
             string employeeId, DateTime utcNow)
         {
