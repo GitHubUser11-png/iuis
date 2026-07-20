@@ -6,26 +6,27 @@ This repository contains the authoritative C# implementation of the Integrated U
 
 Passes 1 through 8 establish the seven-project .NET Framework 4.8 solution, Domain foundations, the exact 49-file production JSON catalog, central ID allocation, cross-process locks, hardened atomic writes, journaled transactions, login lockout, forced password change, and one-time production bootstrap.
 
-Pass 9 adds and closes:
+Pass 9 adds and closes Application authorization, session-aware command/query execution, Student own-record enforcement, Employee and Administrator permission boundaries, restricted DTOs, typed repository seams, in-lock expected-revision revalidation, and explicit readiness classification for all 18 aggregate adapters.
 
-- Application authorization from roles, active profiles, direct grants, direct restrictions, application kind, session purpose, ownership, and confidentiality;
-- session-aware command and query execution;
-- Student own-record enforcement from the authenticated session;
-- Employee and Administrator permission boundaries;
-- separate released and internal Counseling, Discipline, and Medical DTOs;
-- revision-aware typed repository contracts and Infrastructure adapters;
-- journal-coordinated Application mutations;
-- in-lock expected revision revalidation for staged Application transactions;
-- deterministic stale-stage concurrency protection; and
-- an explicit mapper-readiness catalog for all 18 production aggregate adapters.
+Pass 10 adds the first operational typed-persistence activation:
 
-Pass 9 is completed, promoted, exact-mainline validated, and synchronized. The exact compiled code baseline is `559811d39f37a5fb4c6be62e71e87f3c366749cf`; closure-record finalization was integrated through PR #41 and separately validated. `main` and `develop` are synchronized with ahead `0` and behind `0`.
+- canonical persisted-record schema v1 for StudentRecord, EmployeeRecord, Course, Subject, AcademicPeriod, and AssessmentChargeRule;
+- validated Domain rehydration factories that restore value objects, lifecycle state, archive state, timestamps, actor IDs, and entity versions without reflection or transition replay;
+- six specialized `System.Text.Json` mappers and six activated typed repository adapters;
+- twelve remaining adapters that stay fail-closed with explicit deferral reasons;
+- an Infrastructure composition root for repositories, authorization, projections, and Application services;
+- real JSON-backed Student own-profile and Employee self-service read models with concurrency tokens;
+- controlled Student and Employee contact updates with session-derived ownership, expected repository/entity versions, journaled transactions, and audit-ready metadata;
+- canonical Administrator Employee master-record bootstrap; and
+- mapper, migration, restart, stale-token, confidentiality, and vertical-slice tests.
 
-Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md). Pass-specific evidence is recorded in [`docs/passes/PASS_09_APPLICATION_AUTHORIZATION_TYPED_REPOSITORIES.md`](docs/passes/PASS_09_APPLICATION_AUTHORIZATION_TYPED_REPOSITORIES.md) and [`docs/passes/PASS_09_CLOSURE.md`](docs/passes/PASS_09_CLOSURE.md).
+Pass 10 implementation validation succeeded through GitHub Actions run `29723680915`: exactly 49 production templates, seven valid project boundaries, zero compiler warnings, zero compiler errors, and 142 of 142 tests passed. PR #43 remains the integration gate; Pass 10 is not closure-complete or promoted to `main` yet.
 
-## Exact next construction boundary
+Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md). Pass-specific evidence is recorded in [`docs/passes/PASS_10_CANONICAL_SCHEMAS_SPECIALIZED_MAPPERS.md`](docs/passes/PASS_10_CANONICAL_SCHEMAS_SPECIALIZED_MAPPERS.md).
 
-Pass 10 will define canonical persisted record schemas, implement the first specialized aggregate mappers, activate validated typed repositories through the composition root, connect real JSON-backed Student and Employee vertical slices, add controlled authorized writes, and expand mapper, migration, restart, concurrency, and projection tests.
+## Exact next gate
+
+Validate the final evidence-updated PR #43 head, merge it into `develop`, independently closure-validate the merged Pass 10 tree, promote only after successful closure, synchronize branches, and define the Pass 11 construction boundary.
 
 ## Locked technical target
 
