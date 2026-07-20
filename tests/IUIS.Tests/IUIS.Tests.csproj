@@ -24,6 +24,7 @@
     <Compile Include="DomainFoundationTests.cs" /><Compile Include="FinanceFoundationTests.cs" />
     <Compile Include="InfrastructureFoundationTests.cs" /><Compile Include="Pass9ApplicationInfrastructureTests.cs" />
     <Compile Include="Pass10CanonicalPersistenceTests.cs" />
+    <Compile Include="Pass10ClosureIntegrityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" /><Compile Include="SolutionFoundationTests.cs" />
     <Compile Include="StudentServiceDomainTests.cs" />
   </ItemGroup>
