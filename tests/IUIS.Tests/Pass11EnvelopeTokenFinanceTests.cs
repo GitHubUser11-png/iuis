@@ -25,36 +25,39 @@ namespace IUIS.Tests
             new DateTime(2026, 7, 20, 15, 0, 0, DateTimeKind.Utc);
 
         [TestMethod]
-        public void ProductionTemplatesUseExactlySixCanonicalEnvelopeFields()
+        public void BootstrapProducesExactlyFortyNineCanonicalEnvelopes()
         {
-            var root = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "production-data");
-            var files = Directory.GetFiles(root, "*.json");
-            Assert.AreEqual(49, files.Length);
-            var expected = new[]
+            WithBootstrap((root, bootstrap) =>
             {
-                "records",
-                "repositoryName",
-                "revision",
-                "schemaVersion",
-                "updatedAtUtc",
-                "updatedByUserId"
-            };
-            foreach (var file in files)
-            {
-                using (var document = JsonDocument.Parse(File.ReadAllText(file)))
+                var files = Directory.GetFiles(root, "*.json");
+                Assert.AreEqual(49, files.Length);
+                var expected = new[]
                 {
-                    var actual = document.RootElement.EnumerateObject()
-                        .Select(item => item.Name)
-                        .OrderBy(item => item, StringComparer.Ordinal)
-                        .ToArray();
-                    CollectionAssert.AreEqual(expected, actual);
-                    Assert.AreEqual(
-                        Path.GetFileNameWithoutExtension(file),
-                        document.RootElement.GetProperty("repositoryName").GetString());
+                    "records",
+                    "repositoryName",
+                    "revision",
+                    "schemaVersion",
+                    "updatedAtUtc",
+                    "updatedByUserId"
+                };
+
+                foreach (var file in files)
+                {
+                    using (var document = JsonDocument.Parse(File.ReadAllText(file)))
+                    {
+                        var actual = document.RootElement.EnumerateObject()
+                            .Select(item => item.Name)
+                            .OrderBy(item => item, StringComparer.Ordinal)
+                            .ToArray();
+                        CollectionAssert.AreEqual(expected, actual);
+                        Assert.AreEqual(
+                            Path.GetFileNameWithoutExtension(file),
+                            document.RootElement
+                                .GetProperty("repositoryName")
+                                .GetString());
+                    }
                 }
-            }
+            });
         }
 
         [TestMethod]
@@ -69,7 +72,10 @@ namespace IUIS.Tests
                 + "\"updatedByUserId\":\"USR-2026-000001\","
                 + "\"records\":[]}";
             var options = JsonOptions();
-            var envelope = RepositoryEnvelopeJson.Deserialize<JsonElement>(legacy, options);
+            var envelope = RepositoryEnvelopeJson.Deserialize<JsonElement>(
+                legacy,
+                options);
+
             Assert.AreEqual("courses", envelope.RepositoryName);
             Assert.AreEqual(4L, envelope.Revision);
             Assert.IsTrue(RepositoryEnvelopeJson.IsLegacy(legacy));
@@ -111,10 +117,9 @@ namespace IUIS.Tests
 
                 foreach (var descriptor in new ProductionRepositoryCatalog().All)
                 {
-                    var raw = File.ReadAllText(
-                        Path.Combine(root, descriptor.FileName));
                     Assert.IsFalse(
-                        RepositoryEnvelopeJson.IsLegacy(raw),
+                        RepositoryEnvelopeJson.IsLegacy(File.ReadAllText(
+                            Path.Combine(root, descriptor.FileName))),
                         descriptor.Name + " was not canonicalized.");
                 }
 
@@ -134,7 +139,11 @@ namespace IUIS.Tests
                 var store = NewStore(root);
                 var courses = store.Read<JsonElement>("courses");
                 courses.Records.Add(JsonSerializer.SerializeToElement(
-                    new { id = "CRS-2026-009999", name = "Legacy payload" },
+                    new
+                    {
+                        id = "CRS-2026-009999",
+                        name = "Legacy payload"
+                    },
                     JsonOptions()));
                 courses.UpdatedByUserId = bootstrap.AdministratorUserId;
                 store.Write("courses", courses, courses.Revision);
@@ -162,17 +171,17 @@ namespace IUIS.Tests
         {
             WithBootstrap((root, bootstrap) =>
             {
-                var service = new AuthenticationService(
+                var result = new AuthenticationService(
                     new ProductionRepositoryCatalog(),
-                    new JsonInfrastructureOptions(root));
-                var result = service.Authenticate(
-                    "root.admin",
-                    "Temporary-Admin-Password-1",
-                    "AdministratorApplication",
-                    Now.AddMinutes(1));
+                    new JsonInfrastructureOptions(root))
+                    .Authenticate(
+                        "root.admin",
+                        "Temporary-Admin-Password-1",
+                        "AdministratorApplication",
+                        Now.AddMinutes(1));
+
                 Assert.IsTrue(result.Succeeded);
                 Assert.IsFalse(string.IsNullOrWhiteSpace(result.SessionToken));
-
                 var raw = File.ReadAllText(Path.Combine(root, "sessions.json"));
                 Assert.IsFalse(raw.Contains(result.SessionToken));
                 Assert.IsFalse(raw.Contains("\"tokenHash\""));
@@ -180,13 +189,14 @@ namespace IUIS.Tests
                 var session = NewStore(root)
                     .Read<PersistedSessionRecord>("sessions")
                     .Records.Single(item => item.Id == result.SessionId);
+                var protector = new SessionTokenProtector();
                 Assert.AreEqual(
                     SessionTokenProtector.CurrentDigestVersion,
                     session.TokenDigestVersion);
-                Assert.IsTrue(new SessionTokenProtector().Verify(
+                Assert.IsTrue(protector.Verify(
                     session.TokenDigest,
                     result.SessionToken));
-                Assert.IsFalse(new SessionTokenProtector().Verify(
+                Assert.IsFalse(protector.Verify(
                     session.TokenDigest,
                     result.SessionToken + "tampered"));
             });
@@ -199,6 +209,8 @@ namespace IUIS.Tests
             {
                 var store = NewStore(root);
                 var sessions = store.Read<PersistedSessionRecord>("sessions");
+                var user = store.Read<PersistedUserAccount>("users")
+                    .Records.Single();
                 sessions.Records.Add(new PersistedSessionRecord
                 {
                     Id = "SES-2026-009999",
@@ -206,10 +218,9 @@ namespace IUIS.Tests
                     TokenDigestVersion = 0,
                     TokenDigest = null,
                     LegacyTokenHash = "legacy-active-bearer",
-                    SecurityStampSnapshot = NewStore(root)
-                        .Read<PersistedUserAccount>("users")
-                        .Records.Single().SecurityStamp,
-                    ApplicationKind = SessionApplicationKind.AdministratorApplication.ToString(),
+                    SecurityStampSnapshot = user.SecurityStamp,
+                    ApplicationKind = SessionApplicationKind
+                        .AdministratorApplication.ToString(),
                     Purpose = SessionPurpose.FullAccess.ToString(),
                     Status = UserSessionStatus.Active.ToString(),
                     IssuedAtUtc = Now,
@@ -240,10 +251,13 @@ namespace IUIS.Tests
 
                 var migrated = store.Read<PersistedSessionRecord>("sessions")
                     .Records.Single(item => item.Id == "SES-2026-009999");
-                Assert.AreEqual(UserSessionStatus.Revoked.ToString(), migrated.Status);
+                Assert.AreEqual(
+                    UserSessionStatus.Revoked.ToString(),
+                    migrated.Status);
                 Assert.IsNull(migrated.TokenDigest);
                 Assert.IsNull(migrated.LegacyTokenHash);
-                Assert.IsFalse(File.ReadAllText(Path.Combine(root, "sessions.json"))
+                Assert.IsFalse(File.ReadAllText(
+                    Path.Combine(root, "sessions.json"))
                     .Contains("legacy-active-bearer"));
             });
         }
@@ -252,7 +266,9 @@ namespace IUIS.Tests
         public void FiveNewSpecializedMappersRoundTripLifecycleAndImmutableState()
         {
             var options = JsonOptions();
-            var enrollment = CreateApprovedEnrollment("ENR-2026-000201", "STU-2026-000201");
+            var enrollment = CreateApprovedEnrollment(
+                "ENR-2026-000201",
+                "STU-2026-000201");
             var assessment = CreatePostedAssessment(
                 "ASM-2026-000201",
                 enrollment.Id,
@@ -285,17 +301,29 @@ namespace IUIS.Tests
                 new ScholarshipAwardJsonMapper().ToJson(award, options),
                 options);
 
-            Assert.AreEqual(EnrollmentStatus.Approved, restoredEnrollment.Status);
+            Assert.AreEqual(
+                EnrollmentStatus.Approved,
+                restoredEnrollment.Status);
             Assert.AreEqual(enrollment.Version, restoredEnrollment.Version);
             Assert.AreEqual(1, restoredEnrollment.SubjectLines.Count);
-            Assert.AreEqual(TuitionAssessmentStatus.Posted, restoredAssessment.Status);
+            Assert.AreEqual(
+                TuitionAssessmentStatus.Posted,
+                restoredAssessment.Status);
             Assert.AreEqual(1500m, restoredAssessment.GrossAmount.Amount);
             Assert.AreEqual(PaymentStatus.Posted, restoredPayment.Status);
-            Assert.AreEqual("RCT-2026-000201", restoredPayment.ReceiptNumber);
+            Assert.AreEqual(
+                "RCT-2026-000201",
+                restoredPayment.ReceiptNumber);
             Assert.AreEqual(1, restoredPayment.Allocations.Count);
-            Assert.AreEqual(FinancialAdjustmentStatus.Posted, restoredAdjustment.Status);
-            Assert.AreEqual(FinancialAdjustmentDirection.Credit, restoredAdjustment.Direction);
-            Assert.AreEqual(ScholarshipAwardStatus.Approved, restoredAward.Status);
+            Assert.AreEqual(
+                FinancialAdjustmentStatus.Posted,
+                restoredAdjustment.Status);
+            Assert.AreEqual(
+                FinancialAdjustmentDirection.Credit,
+                restoredAdjustment.Direction);
+            Assert.AreEqual(
+                ScholarshipAwardStatus.Approved,
+                restoredAward.Status);
             Assert.AreEqual(500m, restoredAward.FixedAmount.Amount);
         }
 
@@ -320,7 +348,9 @@ namespace IUIS.Tests
                 Status = PaymentStatus.Draft.ToString(),
                 Allocations = new List<PersistedPaymentAllocation>()
             };
-            var json = JsonSerializer.SerializeToElement(record, JsonOptions());
+            var json = JsonSerializer.SerializeToElement(
+                record,
+                JsonOptions());
             Assert.ThrowsException<InvalidOperationException>(() =>
                 new PaymentJsonMapper().FromJson(json, JsonOptions()));
         }
@@ -430,7 +460,9 @@ namespace IUIS.Tests
                             }
                         },
                         Now.AddHours(1).AddMinutes(1)));
-                Assert.AreEqual(0, composition.Payments.Read().Records.Count);
+                Assert.AreEqual(
+                    0,
+                    composition.Payments.Read().Records.Count);
             });
         }
 
@@ -483,15 +515,18 @@ namespace IUIS.Tests
                     },
                     Now.AddHours(1));
 
-                Assert.IsFalse(string.IsNullOrWhiteSpace(result.TransactionId));
+                Assert.IsFalse(string.IsNullOrWhiteSpace(
+                    result.TransactionId));
                 Assert.AreEqual(2L, result.RepositoryRevision);
                 Assert.AreEqual(1L, result.SecondaryRepositoryRevision);
                 Assert.AreEqual(
                     ScholarshipAwardStatus.Applied,
-                    composition.ScholarshipAwards.Read().Records.Single().Status);
+                    composition.ScholarshipAwards.Read()
+                        .Records.Single().Status);
                 Assert.AreEqual(
                     FinancialAdjustmentStatus.Posted,
-                    composition.FinancialAdjustments.Read().Records.Single().Status);
+                    composition.FinancialAdjustments.Read()
+                        .Records.Single().Status);
             });
         }
 
@@ -523,8 +558,13 @@ namespace IUIS.Tests
                 Now.AddMinutes(1),
                 "USR-2026-000001");
             value.Submit(Now.AddMinutes(2), "USR-2026-000001");
-            value.BeginReview(Now.AddMinutes(3), "USR-2026-000001");
-            value.Approve(null, Now.AddMinutes(4), "USR-2026-000001");
+            value.BeginReview(
+                Now.AddMinutes(3),
+                "USR-2026-000001");
+            value.Approve(
+                null,
+                Now.AddMinutes(4),
+                "USR-2026-000001");
             return value;
         }
 
@@ -551,7 +591,9 @@ namespace IUIS.Tests
                     Money.PhilippinePeso(1500m)),
                 Now.AddMinutes(1),
                 "USR-2026-000001");
-            value.Post(Now.AddMinutes(2), "USR-2026-000001");
+            value.Post(
+                Now.AddMinutes(2),
+                "USR-2026-000001");
             return value;
         }
 
@@ -595,12 +637,14 @@ namespace IUIS.Tests
                 assessmentId,
                 FinancialAdjustmentDirection.Credit,
                 Money.PhilippinePeso(100m),
-                FinancialAdjustmentSourceKind.Manual,
+                FinancialAdjustmentSourceKind.AdministrativeCorrection,
                 "ADM-2026-000001",
                 "Approved credit",
                 Now,
                 "USR-2026-000001");
-            value.Post(Now.AddMinutes(1), "USR-2026-000001");
+            value.Post(
+                Now.AddMinutes(1),
+                "USR-2026-000001");
             return value;
         }
 
@@ -619,7 +663,9 @@ namespace IUIS.Tests
                 0m,
                 Now,
                 "USR-2026-000001");
-            value.Approve(Now.AddMinutes(1), "USR-2026-000001");
+            value.Approve(
+                Now.AddMinutes(1),
+                "USR-2026-000001");
             return value;
         }
 
@@ -672,18 +718,40 @@ namespace IUIS.Tests
             foreach (var descriptor in new ProductionRepositoryCatalog().All)
             {
                 var path = Path.Combine(root, descriptor.FileName);
-                using (var document = JsonDocument.Parse(File.ReadAllText(path)))
+                using (var document = JsonDocument.Parse(
+                    File.ReadAllText(path)))
                 {
                     var source = document.RootElement;
                     var legacy = new Dictionary<string, object>
                     {
-                        { "repository", source.GetProperty("repositoryName").GetString() },
-                        { "schemaVersion", source.GetProperty("schemaVersion").GetInt32() },
-                        { "revision", source.GetProperty("revision").GetInt64() },
-                        { "createdAtUtc", "2026-01-01T00:00:00Z" },
-                        { "updatedAtUtc", source.GetProperty("updatedAtUtc").GetDateTime() },
-                        { "updatedByUserId", source.GetProperty("updatedByUserId").GetString() },
-                        { "records", source.GetProperty("records").Clone() }
+                        {
+                            "repository",
+                            source.GetProperty("repositoryName").GetString()
+                        },
+                        {
+                            "schemaVersion",
+                            source.GetProperty("schemaVersion").GetInt32()
+                        },
+                        {
+                            "revision",
+                            source.GetProperty("revision").GetInt64()
+                        },
+                        {
+                            "createdAtUtc",
+                            "2026-01-01T00:00:00Z"
+                        },
+                        {
+                            "updatedAtUtc",
+                            source.GetProperty("updatedAtUtc").GetDateTime()
+                        },
+                        {
+                            "updatedByUserId",
+                            source.GetProperty("updatedByUserId").GetString()
+                        },
+                        {
+                            "records",
+                            source.GetProperty("records").Clone()
+                        }
                     };
                     File.WriteAllText(
                         path,
@@ -723,7 +791,8 @@ namespace IUIS.Tests
                     .Initialize(new ProductionBootstrapRequest
                     {
                         AdministratorLoginId = "root.admin",
-                        AdministratorInitialPassword = "Temporary-Admin-Password-1",
+                        AdministratorInitialPassword =
+                            "Temporary-Admin-Password-1",
                         AdministratorGivenName = "Initial",
                         AdministratorFamilyName = "Administrator",
                         AdministratorEmailAddress = "admin@example.edu",
