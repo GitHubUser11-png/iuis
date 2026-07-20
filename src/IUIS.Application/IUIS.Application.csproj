@@ -11,18 +11,22 @@
     <OutputPath>..\..\artifacts\bin\$(Configuration)\IUIS.Application\</OutputPath>
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.Application\</IntermediateOutputPath>
   </PropertyGroup>
+  <ItemGroup><Reference Include="System" /><Reference Include="System.Core" /></ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Authorization\AuthorizationModels.cs" />
+    <Compile Include="Authorization\PermissionResolver.cs" />
+    <Compile Include="Authorization\SessionAwareRequestExecutor.cs" />
+    <Compile Include="Dtos\RestrictedDtos.cs" />
+    <Compile Include="Dtos\RestrictedProjectionService.cs" />
+    <Compile Include="Orchestration\IdentityQueryServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AggregateRepositoryContracts.cs" />
+    <Compile Include="Repositories\RepositoryContracts.cs" />
     <Compile Include="SolutionFoundation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IUIS.Domain\IUIS.Domain.csproj">
-      <Project>{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}</Project>
-      <Name>IUIS.Domain</Name>
+      <Project>{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}</Project><Name>IUIS.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
