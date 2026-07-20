@@ -15,6 +15,7 @@
   <ItemGroup>
     <Compile Include="Bootstrap\ProductionBootstrapper.cs" />
     <Compile Include="Composition\IuisCompositionRoot.cs" />
+    <Compile Include="Identity\ApplicationIdentifierAllocator.cs" />
     <Compile Include="Persistence\AggregateMapperReadinessCatalog.cs" />
     <Compile Include="Persistence\AggregateRepositoryAdapters.cs" />
     <Compile Include="Persistence\AtomicFileWriter.cs" />
