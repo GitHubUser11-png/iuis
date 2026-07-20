@@ -26,7 +26,8 @@ That merge promoted the implementation tree before the formal closure audit. Thi
 
 - reconstructed integration branch: `develop` at `1405b507e9e8e0d7b24031c09cedeef500c5ac2f`;
 - closure branch: `build/pass-10-closure`;
-- closure branch starting commit: `1405b507e9e8e0d7b24031c09cedeef500c5ac2f`.
+- closure branch starting commit: `1405b507e9e8e0d7b24031c09cedeef500c5ac2f`;
+- closure pull request: PR #45.
 
 ## Independent integrity audit
 
@@ -56,7 +57,7 @@ The closure branch corrects this by validating and recording change metadata bef
 
 ## Closure test expansion
 
-Six independent closure tests were added, increasing the expected suite from `142` to `148`:
+Six independent closure tests were added, increasing the suite from `142` to `148`:
 
 1. all six activated repositories round-trip through a restarted composition root;
 2. archived Student records preserve version and archive metadata across restart;
@@ -64,6 +65,30 @@ Six independent closure tests were added, increasing the expected suite from `14
 4. incomplete archive metadata fails closed during hydration;
 5. rejected charge-rule mutations are exception-atomic;
 6. the mapper-readiness catalog exactly matches the six composition-root activation targets.
+
+## Independent closure validation
+
+GitHub Actions run `29743422763` validated closure head `a50e6971651b7d9f6a66b56be8dc77f6c3c7becc`.
+
+- source-tree and architecture validation: passed;
+- production templates: exactly `49`;
+- project boundaries: exactly `7`;
+- NuGet restoration: passed;
+- .NET Framework 4.8 Release MSBuild: passed;
+- compiler warnings: `0`;
+- compiler errors: `0`;
+- MSTest: `148` executed, `148` passed, `0` failed;
+- TRX verification: passed;
+- artifact publication: passed.
+
+Evidence artifact:
+
+- name: `iuis-windows-build-evidence-136`;
+- artifact ID: `8461386106`;
+- SHA-256: `66c439b535cd1b7d5fb517531ecfbbd047a84140a20bfa078f6029ad0a3968b9`;
+- expiration: 2026-08-03.
+
+The downloaded artifact independently confirmed `148` total, `148` executed, `148` passed, `0` failed, and successful validation of all 49 templates and seven project boundaries.
 
 ## Authoritative contract reconciliation identified for Pass 11
 
@@ -80,20 +105,21 @@ The current implementation and 49 templates still use legacy `repository` and al
 
 ## Validation and integration checkpoints
 
-The following checkpoints remain mandatory before closure completion:
+Checkpoint status after run 136:
 
-1. validate the exact closure PR head on Windows;
-2. verify 49 templates and seven project boundaries;
-3. verify zero compiler warnings and errors;
-4. verify all 148 tests and TRX output;
-5. publish and register closure artifacts and SHA-256 digests;
-6. merge the closure branch into `develop`;
-7. promote the validated closure baseline into `main`;
-8. validate the exact promoted mainline tree;
-9. finalize closure records and Pass 11 boundary;
-10. validate the exact final documentation-inclusive main tree;
-11. synchronize `develop` to the final `main` commit with ahead `0` and behind `0`.
+1. independent closure-head Windows validation — completed;
+2. 49-template and seven-project verification — completed;
+3. zero-warning and zero-error verification — completed;
+4. 148-test and TRX verification — completed;
+5. first closure artifact registration — completed;
+6. final evidence-updated closure-head validation — pending;
+7. merge closure branch into `develop` — pending;
+8. promote validated closure baseline into `main` — pending;
+9. validate exact promoted mainline tree — pending;
+10. finalize closure records and Pass 11 boundary — pending;
+11. validate exact final documentation-inclusive main tree — pending;
+12. synchronize `develop` to final `main` with ahead `0` and behind `0` — pending.
 
 ## Current truthful state
 
-Pass 10 implementation is present on `main`, but closure is in progress. The implementation cannot yet be described as independently closure-validated, final-record validated, or branch-synchronized until every checkpoint above is complete.
+The exact integrated Pass 10 tree and closure hardening have passed independent Windows validation with 148 of 148 tests. Pass 10 is not yet closure-complete because the evidence-updated final closure head, closure merge, promotion confirmation, exact-mainline validation, final-record validation, and branch synchronization remain outstanding.
