@@ -17,19 +17,39 @@ namespace IUIS.Infrastructure.Persistence
     public sealed class TransactionMutation
     {
         public TransactionMutation(string repositoryName, string completeJson)
+            : this(repositoryName, completeJson, null)
+        {
+        }
+
+        public TransactionMutation(
+            string repositoryName,
+            string completeJson,
+            long expectedRevision)
+            : this(repositoryName, completeJson, (long?)expectedRevision)
+        {
+        }
+
+        private TransactionMutation(
+            string repositoryName,
+            string completeJson,
+            long? expectedRevision)
         {
             if (string.IsNullOrWhiteSpace(repositoryName))
                 throw new ArgumentException("Repository name is required.", nameof(repositoryName));
             if (string.IsNullOrWhiteSpace(completeJson))
                 throw new ArgumentException("Complete JSON is required.", nameof(completeJson));
+            if (expectedRevision.HasValue && expectedRevision.Value < 0)
+                throw new ArgumentOutOfRangeException(nameof(expectedRevision));
 
             using (JsonDocument.Parse(completeJson)) { }
             RepositoryName = repositoryName.Trim().ToLowerInvariant();
             CompleteJson = completeJson;
+            ExpectedRevision = expectedRevision;
         }
 
         public string RepositoryName { get; private set; }
         public string CompleteJson { get; private set; }
+        public long? ExpectedRevision { get; private set; }
     }
 
     public sealed class TransactionJournalEntry
@@ -38,6 +58,7 @@ namespace IUIS.Infrastructure.Persistence
         public string TargetPath { get; set; }
         public string BackupPath { get; set; }
         public bool TargetExisted { get; set; }
+        public long? ExpectedRevision { get; set; }
     }
 
     public sealed class TransactionJournalRecord
@@ -95,6 +116,8 @@ namespace IUIS.Infrastructure.Persistence
 
             try
             {
+                ValidateExpectedRevisionsLocked(items);
+
                 var record = new TransactionJournalRecord
                 {
                     TransactionId = transactionId,
@@ -118,7 +141,8 @@ namespace IUIS.Infrastructure.Persistence
                         RepositoryName = item.RepositoryName,
                         TargetPath = target,
                         BackupPath = backup,
-                        TargetExisted = existed
+                        TargetExisted = existed,
+                        ExpectedRevision = item.ExpectedRevision
                     });
                 }
 
@@ -196,6 +220,54 @@ namespace IUIS.Infrastructure.Persistence
             finally
             {
                 DisposeAll(locks);
+            }
+        }
+
+        private void ValidateExpectedRevisionsLocked(
+            IEnumerable<TransactionMutation> mutations)
+        {
+            foreach (var mutation in mutations.Where(item => item.ExpectedRevision.HasValue))
+            {
+                var targetPath = _catalog.ResolvePath(
+                    _options.DataRoot,
+                    mutation.RepositoryName);
+                if (!File.Exists(targetPath))
+                {
+                    throw new InvalidOperationException(
+                        "A revision-checked transaction requires the authoritative repository "
+                        + mutation.RepositoryName + ".");
+                }
+
+                var current = JsonSerializer.Deserialize<RepositoryEnvelope<JsonElement>>(
+                    File.ReadAllText(targetPath),
+                    _json);
+                if (current == null || current.Records == null)
+                {
+                    throw new InvalidDataException(
+                        "Repository envelope is invalid for " + mutation.RepositoryName + ".");
+                }
+
+                if (current.Revision != mutation.ExpectedRevision.Value)
+                {
+                    throw new InvalidOperationException(
+                        "Repository revision conflict for " + mutation.RepositoryName + ".");
+                }
+
+                var staged = JsonSerializer.Deserialize<RepositoryEnvelope<JsonElement>>(
+                    mutation.CompleteJson,
+                    _json);
+                if (staged == null
+                    || staged.Records == null
+                    || !string.Equals(
+                        staged.Repository,
+                        mutation.RepositoryName,
+                        StringComparison.OrdinalIgnoreCase)
+                    || staged.Revision != checked(mutation.ExpectedRevision.Value + 1))
+                {
+                    throw new InvalidDataException(
+                        "The staged repository envelope is inconsistent for "
+                        + mutation.RepositoryName + ".");
+                }
             }
         }
 
