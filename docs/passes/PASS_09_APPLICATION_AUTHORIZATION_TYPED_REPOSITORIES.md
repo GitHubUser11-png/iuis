@@ -7,14 +7,11 @@ Build the first production Application-layer authorization and typed repository 
 ## Starting point
 
 - synchronized Pass 8 baseline: `55b69dcd0d2f82ec1cd6f6bba3db9b7f71ce320f`
-- Pass 8 final run: `29693980046`
-- Pass 8 final artifact: `iuis-windows-build-evidence-102`
-- Pass 8 final artifact ID: `8444441580`
-- Pass 8 final SHA-256: `8d082a7a293ae9bc1bc5ada5badee1414ab8f4689de2ab772c04e99118d960c9`
 - implementation branch: `build/pass-09-application-authorization-repositories`
 - implementation pull request: `#35`
 - integration commit: `2b7b629889523a00d54d8e699f705e1ecc4f8358`
 - closure branch: `build/pass-09-closure`
+- closure pull request: `#38`
 
 ## Authorization model
 
@@ -44,31 +41,11 @@ The existing 127-test suite remains at 127 tests. Its journaled Application tran
 
 ### Requires specialized mapper
 
-- StudentRecordRepositoryAdapter
-- EmployeeRecordRepositoryAdapter
-- CourseRepositoryAdapter
-- SubjectRepositoryAdapter
-- AcademicPeriodRepositoryAdapter
-- AssessmentChargeRuleRepositoryAdapter
-
-These aggregates require explicit reconstruction of value objects, private lifecycle state, and entity metadata.
+StudentRecord, EmployeeRecord, Course, Subject, AcademicPeriod, and AssessmentChargeRule adapters require explicit reconstruction of value objects, private lifecycle state, and entity metadata.
 
 ### Deferred with explicit reason
 
-- EnrollmentRepositoryAdapter
-- TuitionAssessmentRepositoryAdapter
-- PaymentRepositoryAdapter
-- FinancialAdjustmentRepositoryAdapter
-- ScholarshipAwardRepositoryAdapter
-- LibraryBookRepositoryAdapter
-- LibraryBorrowingRepositoryAdapter
-- CounselingCaseRepositoryAdapter
-- DisciplineCaseRepositoryAdapter
-- ClinicAppointmentRepositoryAdapter
-- MedicalRecordRepositoryAdapter
-- MedicalClearanceRepositoryAdapter
-
-These aggregates contain embedded snapshots, collections, confidential records, immutable financial history, or workflow transitions that require dedicated persisted shapes before operational activation.
+Enrollment, TuitionAssessment, Payment, FinancialAdjustment, ScholarshipAward, LibraryBook, LibraryBorrowing, CounselingCase, DisciplineCase, ClinicAppointment, MedicalRecord, and MedicalClearance adapters contain embedded snapshots, collections, confidential records, immutable financial history, or workflow transitions that require dedicated persisted shapes before operational activation.
 
 ### Generic-mapper compatible
 
@@ -78,38 +55,29 @@ None of the production Domain adapters. The generic mapper remains valid for sim
 
 None in Pass 9 closure. Completion is deferred rather than falsely represented.
 
-## Expanded tests
+## Test baseline
 
 Seventeen Pass 9 tests cover profile resolution, restriction precedence, Administrator confidentiality, Student ownership and cross-record denial, restricted session purposes, DTO exclusion, session-derived queries, Employee role boundaries, typed repository round trips, optimistic conflicts, journaled transactions, profile loading, expiration, and Security Stamp mismatch. The closure hardens two existing tests without increasing the suite count: mapper readiness is asserted during the typed round-trip test, and stale pre-lock staging is asserted during the Application transaction test.
 
-## Successful implementation validation
+## Validation evidence
 
-GitHub Actions run `29715030204` validated implementation head `898e1c54187c1e2ed5feec9f0085c59b525c7efd`.
+### Implementation head
 
-- source-tree and architecture validation: passed;
-- exact 49-template validation: passed;
-- NuGet restoration: passed;
-- .NET Framework 4.8 Release MSBuild: passed;
-- compiler warnings: `0`;
-- compiler errors: `0`;
-- MSTest: `127` executed, `127` passed, `0` failed;
-- TRX verification: passed;
-- artifact publication: passed.
+Run `29715030204` validated implementation head `898e1c54187c1e2ed5feec9f0085c59b525c7efd` with zero warnings, zero errors, and 127 of 127 tests passing. Artifact `iuis-windows-build-evidence-105`, ID `8450258190`, SHA-256 `9fe43133d8c3c3bdb30ba5d51367233d3c474e13b3a4219d95a2e0364d9da318`.
 
-Evidence artifact:
+### Final implementation PR head
 
-- name: `iuis-windows-build-evidence-105`;
-- artifact ID: `8450258190`;
-- SHA-256: `9fe43133d8c3c3bdb30ba5d51367233d3c474e13b3a4219d95a2e0364d9da318`;
-- expiration: 2026-08-03.
+Run `29715210764` validated final PR #35 head `edfe94f85bac10ce47777f7c8a0d55f8b27d0c68` with zero warnings, zero errors, and 127 of 127 tests passing. Artifact `iuis-windows-build-evidence-107`, ID `8450333060`, SHA-256 `64525aa1f3c7b91362dbb91a1a4fb872248cbe95376663cc02ef0fa1f79f1a7c`.
 
-The evidence-updated implementation PR head also passed run `29715210764` with artifact `iuis-windows-build-evidence-107`, artifact ID `8450333060`, and SHA-256 `64525aa1f3c7b91362dbb91a1a4fb872248cbe95376663cc02ef0fa1f79f1a7c`.
+### Independent closure head
+
+Run `29717369189` validated closure head `85a075d79f86d8596bd950136ab4e2ba9a81b5e2` with exactly 49 templates, all seven project boundaries, zero warnings, zero errors, 127 of 127 tests passing, valid TRX output, and artifact publication. Artifact `iuis-windows-build-evidence-114`, ID `8451078816`, SHA-256 `110e821dece6f998fabedfffda21df7d558fa309decf55c31addea05fccef721`.
 
 ## Figma Application-service model
 
 - `https://www.figma.com/board/VGyuqaZDhIBfGqBfGjQJUH`
 
-The editable FigJam model shows session validation, permission resolution, ownership and confidentiality checks, typed repository adapters, journaled transactions, released/internal projection boundaries, and the closure promotion sequence.
+The editable FigJam model shows session validation, permission resolution, ownership and confidentiality checks, typed repository adapters, journaled transactions, released/internal projection boundaries, in-lock revision validation, mapper readiness, and the closure promotion sequence.
 
 ## Evidence boundary
 
@@ -117,4 +85,4 @@ The generic mapper and aggregate-specific repository-name adapters establish the
 
 ## Exact next gate
 
-Validate the closure branch against the complete Windows workflow, register its artifact, merge the closure into `develop`, promote the validated baseline to `main`, validate the exact mainline tree, synchronize `develop`, and only then define the Pass 10 construction boundary.
+Validate the evidence-updated final closure PR head, merge it into `develop`, promote the validated baseline to `main`, validate the exact mainline tree, synchronize `develop`, and only then define the Pass 10 construction boundary.

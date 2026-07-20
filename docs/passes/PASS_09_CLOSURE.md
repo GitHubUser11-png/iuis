@@ -9,6 +9,8 @@ Close Pass 9 from the actual merged integration commit, eliminate the remaining 
 - Pass 9 integration commit: `2b7b629889523a00d54d8e699f705e1ecc4f8358`
 - closure branch: `build/pass-09-closure`
 - source hardening commit: `f8e9df4abaef995c9fd65225e9d135dbaec37551`
+- first closure validation head: `85a075d79f86d8596bd950136ab4e2ba9a81b5e2`
+- closure pull request: `#38`
 - target branch: `develop`
 
 ## Closure changes
@@ -33,23 +35,33 @@ The Application transaction test pauses a mapper after its initial unlocked revi
 
 All 18 production adapters are recorded in `AggregateMapperReadinessCatalog` as either `RequiresSpecializedMapper` or `DeferredWithExplicitReason`. No production adapter is claimed as generic-compatible or specialized-complete without a production hydration implementation.
 
-## Required validation gate
+## Independent closure validation
 
-The closure pull request must prove:
+GitHub Actions run `29717369189` validated closure head `85a075d79f86d8596bd950136ab4e2ba9a81b5e2`.
 
-- exactly 49 production templates;
-- all seven project boundaries;
-- NuGet restoration;
-- .NET Framework 4.8 Release compilation;
-- zero compiler warnings;
-- zero compiler errors;
-- 127 of 127 tests passing;
-- valid TRX output; and
-- closure artifact publication.
+- source-tree and architecture validation: passed;
+- exactly 49 production templates: passed;
+- seven-project boundary validation: passed;
+- NuGet restoration: passed;
+- .NET Framework 4.8 Release compilation: passed;
+- compiler warnings: `0`;
+- compiler errors: `0`;
+- MSTest: `127` executed, `127` passed, `0` failed;
+- TRX verification: passed;
+- artifact publication: passed.
+
+Closure artifact:
+
+- name: `iuis-windows-build-evidence-114`;
+- artifact ID: `8451078816`;
+- SHA-256: `110e821dece6f998fabedfffda21df7d558fa309decf55c31addea05fccef721`;
+- expiration: 2026-08-03.
+
+The artifact contains `build-summary.json`, the Release build log and binary log, the MSTest log, the TRX result, and source-tree validation evidence. The Release log reports `0 Warning(s)` and `0 Error(s)`. The TRX counters are total `127`, executed `127`, passed `127`, failed `0`.
 
 ## Promotion sequence
 
-1. Validate the exact closure PR head.
+1. Validate the evidence-updated final closure PR head.
 2. Merge the closure into `develop`.
 3. Open and validate a `develop` to `main` promotion pull request.
 4. Merge the validated promotion.
@@ -60,7 +72,7 @@ The closure pull request must prove:
 
 ## Evidence status
 
-Pending closure workflow, artifact registration, merge, promotion, exact-mainline validation, and final synchronization.
+The first independent closure workflow is successful. Final evidence-updated-head validation, closure merge, promotion, exact-mainline validation, final synchronization, and Pass 10 boundary registration remain pending.
 
 ## Evidence boundary
 
