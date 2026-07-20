@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 
+using IUIS.Domain.People;
+using IUIS.Domain.Time;
 using IUIS.Infrastructure.Persistence;
 using IUIS.Infrastructure.Security;
 
@@ -14,8 +16,20 @@ namespace IUIS.Infrastructure.Bootstrap
         public string AdministratorLoginId { get; set; }
         public string AdministratorInitialPassword { get; set; }
         public string AdministratorGivenName { get; set; }
+        public string AdministratorMiddleName { get; set; }
         public string AdministratorFamilyName { get; set; }
+        public string AdministratorSuffix { get; set; }
         public string AdministratorEmailAddress { get; set; }
+        public string AdministratorMobileNumber { get; set; }
+        public string AdministratorAlternatePhoneNumber { get; set; }
+        public string AdministratorAddressLine1 { get; set; }
+        public string AdministratorAddressLine2 { get; set; }
+        public string AdministratorBarangay { get; set; }
+        public string AdministratorCityMunicipality { get; set; }
+        public string AdministratorProvince { get; set; }
+        public string AdministratorPostalCode { get; set; }
+        public string AdministratorCountryCode { get; set; }
+        public string AdministratorBirthDate { get; set; }
         public string DepartmentId { get; set; }
         public string PositionTitle { get; set; }
         public DateTime BootstrapAtUtc { get; set; }
@@ -77,22 +91,42 @@ namespace IUIS.Infrastructure.Bootstrap
 
         private void SeedAdministrator(ProductionBootstrapRequest request, string employeeId, string userId)
         {
-            var employees = new RepositoryEnvelope<PersistedEmployeeRecord>
+            var employee = new EmployeeRecord(
+                employeeId,
+                employeeId,
+                new PersonName(
+                    request.AdministratorGivenName,
+                    request.AdministratorMiddleName,
+                    request.AdministratorFamilyName,
+                    request.AdministratorSuffix),
+                new ContactInformation(
+                    request.AdministratorEmailAddress,
+                    request.AdministratorMobileNumber,
+                    request.AdministratorAlternatePhoneNumber),
+                new PostalAddress(
+                    request.AdministratorAddressLine1,
+                    request.AdministratorAddressLine2,
+                    request.AdministratorBarangay,
+                    request.AdministratorCityMunicipality,
+                    request.AdministratorProvince,
+                    request.AdministratorPostalCode,
+                    request.AdministratorCountryCode),
+                InstitutionLocalDate.Parse(request.AdministratorBirthDate),
+                request.DepartmentId,
+                request.PositionTitle,
+                EmploymentStatus.Active,
+                false,
+                request.BootstrapAtUtc,
+                userId);
+            var employeeMapper = new EmployeeRecordJsonMapper();
+            var employees = new RepositoryEnvelope<JsonElement>
             {
                 Repository = "employees", SchemaVersion = 1, Revision = 1,
                 CreatedAtUtc = request.BootstrapAtUtc, UpdatedAtUtc = request.BootstrapAtUtc,
                 UpdatedByUserId = userId,
-                Records = new List<PersistedEmployeeRecord>
+                Records = new List<JsonElement>
                 {
-                    new PersistedEmployeeRecord
-                    {
-                        Id = employeeId, EmployeeNumber = employeeId,
-                        GivenName = request.AdministratorGivenName.Trim(), FamilyName = request.AdministratorFamilyName.Trim(),
-                        EmailAddress = request.AdministratorEmailAddress.Trim().ToLowerInvariant(),
-                        DepartmentId = request.DepartmentId.Trim(), PositionTitle = request.PositionTitle.Trim(),
-                        IsFaculty = false, Status = "Active", CreatedAtUtc = request.BootstrapAtUtc,
-                        UpdatedAtUtc = request.BootstrapAtUtc, Version = 1
-                    }
+                    employeeMapper.ToJson(employee, _json)
                 }
             };
             var users = new RepositoryEnvelope<PersistedUserAccount>
@@ -108,7 +142,10 @@ namespace IUIS.Infrastructure.Bootstrap
                         PrimaryRole = "Administrator", PersonRecordKind = "EmployeeFaculty", PersonRecordId = employeeId,
                         CredentialHash = _passwords.Hash(request.AdministratorInitialPassword, 210000),
                         SecurityStamp = Guid.NewGuid().ToString("N"), Status = "Active", MustChangePassword = true,
-                        CreatedAtUtc = request.BootstrapAtUtc, UpdatedAtUtc = request.BootstrapAtUtc, Version = 1
+                        CreatedAtUtc = request.BootstrapAtUtc, UpdatedAtUtc = request.BootstrapAtUtc, Version = 1,
+                        PermissionProfileIds = new List<string>(),
+                        DirectPermissionGrants = new List<string>(),
+                        DirectPermissionRestrictions = new List<string>()
                     }
                 }
             };
@@ -194,9 +231,15 @@ namespace IUIS.Infrastructure.Bootstrap
             if (string.IsNullOrWhiteSpace(request.AdministratorGivenName)
                 || string.IsNullOrWhiteSpace(request.AdministratorFamilyName)
                 || string.IsNullOrWhiteSpace(request.AdministratorEmailAddress)
+                || string.IsNullOrWhiteSpace(request.AdministratorAddressLine1)
+                || string.IsNullOrWhiteSpace(request.AdministratorCityMunicipality)
+                || string.IsNullOrWhiteSpace(request.AdministratorProvince)
+                || string.IsNullOrWhiteSpace(request.AdministratorCountryCode)
+                || string.IsNullOrWhiteSpace(request.AdministratorBirthDate)
                 || string.IsNullOrWhiteSpace(request.DepartmentId)
                 || string.IsNullOrWhiteSpace(request.PositionTitle))
                 throw new ArgumentException("Complete administrator employee information is required.");
+            InstitutionLocalDate.Parse(request.AdministratorBirthDate);
         }
     }
 }

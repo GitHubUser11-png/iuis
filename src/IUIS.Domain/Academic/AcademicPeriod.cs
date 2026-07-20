@@ -54,6 +54,47 @@ namespace IUIS.Domain.Academic
 
         public AcademicPeriodStatus Status { get; private set; }
 
+        public static AcademicPeriod Rehydrate(
+            string id,
+            string code,
+            string name,
+            InstitutionLocalDate enrollmentOpenDate,
+            InstitutionLocalDate enrollmentCloseDate,
+            InstitutionLocalDate startDate,
+            InstitutionLocalDate endDate,
+            AcademicPeriodStatus status,
+            long version,
+            bool isArchived,
+            DateTime createdAtUtc,
+            string createdByUserId,
+            DateTime updatedAtUtc,
+            string updatedByUserId,
+            DateTime? archivedAtUtc,
+            string archivedByUserId)
+        {
+            var record = new AcademicPeriod(
+                id,
+                code,
+                name,
+                enrollmentOpenDate,
+                enrollmentCloseDate,
+                startDate,
+                endDate,
+                createdAtUtc,
+                createdByUserId);
+            record.Status = RequirePersistedStatus(status);
+            record.RestorePersistenceState(
+                version,
+                isArchived,
+                createdAtUtc,
+                createdByUserId,
+                updatedAtUtc,
+                updatedByUserId,
+                archivedAtUtc,
+                archivedByUserId);
+            return record;
+        }
+
         public void UpdateSchedule(
             string name,
             InstitutionLocalDate enrollmentOpenDate,
@@ -133,6 +174,17 @@ namespace IUIS.Domain.Academic
                 throw new DomainValidationException(
                     parameterName + " must use an institution-supported year from 2000 onward.");
             }
+        }
+
+        private static AcademicPeriodStatus RequirePersistedStatus(AcademicPeriodStatus value)
+        {
+            if (!Enum.IsDefined(typeof(AcademicPeriodStatus), value)
+                || value == AcademicPeriodStatus.Unspecified)
+            {
+                throw new DomainValidationException("Persisted Academic Period status is invalid.");
+            }
+
+            return value;
         }
 
         private static void ValidateTransition(

@@ -41,6 +41,43 @@ namespace IUIS.Domain.Academic
 
         public CourseStatus Status { get; private set; }
 
+        public static Course Rehydrate(
+            string id,
+            string code,
+            string name,
+            string departmentId,
+            int durationYears,
+            CourseStatus status,
+            long version,
+            bool isArchived,
+            DateTime createdAtUtc,
+            string createdByUserId,
+            DateTime updatedAtUtc,
+            string updatedByUserId,
+            DateTime? archivedAtUtc,
+            string archivedByUserId)
+        {
+            var record = new Course(
+                id,
+                code,
+                name,
+                departmentId,
+                durationYears,
+                createdAtUtc,
+                createdByUserId);
+            record.Status = RequirePersistedStatus(status);
+            record.RestorePersistenceState(
+                version,
+                isArchived,
+                createdAtUtc,
+                createdByUserId,
+                updatedAtUtc,
+                updatedByUserId,
+                archivedAtUtc,
+                archivedByUserId);
+            return record;
+        }
+
         public void UpdateDetails(
             string name,
             string departmentId,
@@ -97,6 +134,17 @@ namespace IUIS.Domain.Academic
             {
                 throw new DomainValidationException(
                     "Course duration must be between 1 and 10 years.");
+            }
+
+            return value;
+        }
+
+        private static CourseStatus RequirePersistedStatus(CourseStatus value)
+        {
+            if (!Enum.IsDefined(typeof(CourseStatus), value)
+                || value == CourseStatus.Unspecified)
+            {
+                throw new DomainValidationException("Persisted Course status is invalid.");
             }
 
             return value;
