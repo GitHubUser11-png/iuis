@@ -12,6 +12,8 @@ namespace IUIS.Application.Dtos
         public string MobileNumber { get; set; }
         public string CourseId { get; set; }
         public string Status { get; set; }
+        public long RepositoryRevision { get; set; }
+        public long EntityVersion { get; set; }
     }
 
     public sealed class EmployeeSelfServiceDto
@@ -25,6 +27,8 @@ namespace IUIS.Application.Dtos
         public string PositionTitle { get; set; }
         public bool IsFaculty { get; set; }
         public string Status { get; set; }
+        public long RepositoryRevision { get; set; }
+        public long EntityVersion { get; set; }
     }
 
     public sealed class ReleasedSummaryDto
