@@ -19,7 +19,7 @@ Pass 9 adds and closes:
 - deterministic stale-stage concurrency protection; and
 - an explicit mapper-readiness catalog for all 18 production aggregate adapters.
 
-Pass 9 is completed, promoted, exact-mainline validated, and synchronized. `main` and `develop` are identical at `559811d39f37a5fb4c6be62e71e87f3c366749cf`. The exact mainline tree compiled with zero warnings and zero errors and passed all 127 tests.
+Pass 9 is completed, promoted, exact-mainline validated, and synchronized. The exact compiled code baseline is `559811d39f37a5fb4c6be62e71e87f3c366749cf`; closure-record finalization was integrated through PR #41 and separately validated. `main` and `develop` are synchronized with ahead `0` and behind `0`.
 
 Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md). Pass-specific evidence is recorded in [`docs/passes/PASS_09_APPLICATION_AUTHORIZATION_TYPED_REPOSITORIES.md`](docs/passes/PASS_09_APPLICATION_AUTHORIZATION_TYPED_REPOSITORIES.md) and [`docs/passes/PASS_09_CLOSURE.md`](docs/passes/PASS_09_CLOSURE.md).
 

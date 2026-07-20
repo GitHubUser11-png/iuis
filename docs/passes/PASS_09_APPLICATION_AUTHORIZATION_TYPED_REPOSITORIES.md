@@ -13,7 +13,9 @@ Build the first production Application-layer authorization and typed repository 
 - closure merge commit: `065018e8b643667f29eb4b6dd00af2d67e56dd8f`
 - promotion pull request: `#39`
 - exact-mainline evidence pull request: `#40`
-- final synchronized commit: `559811d39f37a5fb4c6be62e71e87f3c366749cf`
+- exact validated mainline code commit: `559811d39f37a5fb4c6be62e71e87f3c366749cf`
+- closure-record finalization pull request: `#41`
+- closure-record finalization merge: `7ec8560d04bbb73725ac6df6124cc067cf6df632`
 
 ## Authorization model
 
@@ -53,6 +55,7 @@ No production Domain adapter is claimed as generic-mapper compatible or speciali
 | Final closure PR head | `29717509492` | `iuis-windows-build-evidence-115` | `8451127726` | `7949403fb57ecabe5dbc8cc6e1904fa4c17d031ea6fe6759cd94b43501f9a762` |
 | Mainline promotion | `29717634787` | `iuis-windows-build-evidence-117` | `8451167506` | `c84d402c8bcba0b01ca65219f282f8c8140795bf0b3113439f120cca455d887f` |
 | Exact mainline tree | `29717728053` | `iuis-windows-build-evidence-119` | `8451202733` | `ee1c098bf11457e46e362c0196eb1d8aff0271f75e1e8408afbbf87eff8776aa` |
+| Closure-record finalization | `29717936028` | `iuis-windows-build-evidence-121` | `8451274089` | `e211ac1522d6bba1fd262ff0f83956e8e189f25d49cc5fdda6769819132289e4` |
 
 Every stage passed exact 49-template validation, all seven project boundaries, Release compilation with zero warnings and zero errors, all 127 tests, TRX verification, and artifact publication.
 
@@ -66,7 +69,7 @@ The generic mapper and aggregate-specific repository-name adapters establish the
 
 ## Final status
 
-Pass 9 is implemented, closure-hardened, independently validated, promoted, exact-mainline validated, and synchronized. `main` and `develop` are identical at `559811d39f37a5fb4c6be62e71e87f3c366749cf`.
+Pass 9 is implemented, closure-hardened, independently validated, promoted, exact-mainline validated, and synchronized. The exact compiled code baseline is `559811d39f37a5fb4c6be62e71e87f3c366749cf`; subsequent finalization commits update documentation only. `main` and `develop` are synchronized after closure-record finalization with ahead `0` and behind `0`.
 
 ## Exact next construction boundary
 
