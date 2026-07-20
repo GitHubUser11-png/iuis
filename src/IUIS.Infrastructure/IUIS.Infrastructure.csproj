@@ -14,9 +14,11 @@
   <ItemGroup><PackageReference Include="System.Text.Json" Version="8.0.5" /></ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrap\ProductionBootstrapper.cs" />
+    <Compile Include="Composition\IuisCompositionRoot.cs" />
     <Compile Include="Persistence\AggregateMapperReadinessCatalog.cs" />
     <Compile Include="Persistence\AggregateRepositoryAdapters.cs" />
     <Compile Include="Persistence\AtomicFileWriter.cs" />
+    <Compile Include="Persistence\CanonicalPersistedRecords.cs" />
     <Compile Include="Persistence\CrossProcessFileLock.cs" />
     <Compile Include="Persistence\IdSequenceService.cs" />
     <Compile Include="Persistence\JsonInfrastructureOptions.cs" />
@@ -24,6 +26,7 @@
     <Compile Include="Persistence\MappedJsonRepository.cs" />
     <Compile Include="Persistence\RepositoryCatalog.cs" />
     <Compile Include="Persistence\RepositoryEnvelope.cs" />
+    <Compile Include="Persistence\SpecializedAggregateJsonMappers.cs" />
     <Compile Include="Persistence\TransactionCoordinator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AuthenticationService.cs" />
