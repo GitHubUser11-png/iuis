@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.Json;
 
 using IUIS.Domain.Academic;
-using IUIS.Domain.Common;
 using IUIS.Domain.Finance;
 using IUIS.Domain.People;
 using IUIS.Domain.Time;
@@ -237,7 +236,7 @@ namespace IUIS.Infrastructure.Persistence
                 record.CreatedByUserId,
                 record.UpdatedAtUtc,
                 record.UpdatedByUserId,
-                record.ArivedAtUtc,
+                record.ArchivedAtUtc,
                 record.ArchivedByUserId);
         }
 
