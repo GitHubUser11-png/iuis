@@ -10,21 +10,21 @@ using IUIS.Domain.People;
 namespace IUIS.Infrastructure.Persistence
 {
     public sealed class StudentRecordRepositoryAdapter : MappedJsonRepository<StudentRecord>, IStudentRecordRepository
-    { public StudentRecordRepositoryAdapter(JsonRepositoryStore store, IJsonRecordMapper<StudentRecord> mapper) : base("students", store, mapper) { } }
+    { public StudentRecordRepositoryAdapter(JsonRepositoryStore store) : base("students", store, new StudentRecordJsonMapper()) { } }
     public sealed class EmployeeRecordRepositoryAdapter : MappedJsonRepository<EmployeeRecord>, IEmployeeRecordRepository
-    { public EmployeeRecordRepositoryAdapter(JsonRepositoryStore store, IJsonRecordMapper<EmployeeRecord> mapper) : base("employees", store, mapper) { } }
+    { public EmployeeRecordRepositoryAdapter(JsonRepositoryStore store) : base("employees", store, new EmployeeRecordJsonMapper()) { } }
     public sealed class CourseRepositoryAdapter : MappedJsonRepository<Course>, ICourseRepository
-    { public CourseRepositoryAdapter(JsonRepositoryStore store, IJsonRecordMapper<Course> mapper) : base("courses", store, mapper) { } }
+    { public CourseRepositoryAdapter(JsonRepositoryStore store) : base("courses", store, new CourseJsonMapper()) { } }
     public sealed class SubjectRepositoryAdapter : MappedJsonRepository<Subject>, ISubjectRepository
-    { public SubjectRepositoryAdapter(JsonRepositoryStore store, IJsonRecordMapper<Subject> mapper) : base("subjects", store, mapper) { } }
+    { public SubjectRepositoryAdapter(JsonRepositoryStore store) : base("subjects", store, new SubjectJsonMapper()) { } }
     public sealed class AcademicPeriodRepositoryAdapter : MappedJsonRepository<AcademicPeriod>, IAcademicPeriodRepository
-    { public AcademicPeriodRepositoryAdapter(JsonRepositoryStore store, IJsonRecordMapper<AcademicPeriod> mapper) : base("academic_periods", store, mapper) { } }
+    { public AcademicPeriodRepositoryAdapter(JsonRepositoryStore store) : base("academic_periods", store, new AcademicPeriodJsonMapper()) { } }
     public sealed class EnrollmentRepositoryAdapter : MappedJsonRepository<Enrollment>, IEnrollmentRepository
     { public EnrollmentRepositoryAdapter(JsonRepositoryStore store, IJsonRecordMapper<Enrollment> mapper) : base("enrollments", store, mapper) { } }
     public sealed class TuitionAssessmentRepositoryAdapter : MappedJsonRepository<TuitionAssessment>, ITuitionAssessmentRepository
     { public TuitionAssessmentRepositoryAdapter(JsonRepositoryStore store, IJsonRecordMapper<TuitionAssessment> mapper) : base("assessments", store, mapper) { } }
     public sealed class AssessmentChargeRuleRepositoryAdapter : MappedJsonRepository<AssessmentChargeRule>, IAssessmentChargeRuleRepository
-    { public AssessmentChargeRuleRepositoryAdapter(JsonRepositoryStore store, IJsonRecordMapper<AssessmentChargeRule> mapper) : base("assessment_charge_rules", store, mapper) { } }
+    { public AssessmentChargeRuleRepositoryAdapter(JsonRepositoryStore store) : base("assessment_charge_rules", store, new AssessmentChargeRuleJsonMapper()) { } }
     public sealed class PaymentRepositoryAdapter : MappedJsonRepository<Payment>, IPaymentRepository
     { public PaymentRepositoryAdapter(JsonRepositoryStore store, IJsonRecordMapper<Payment> mapper) : base("payments", store, mapper) { } }
     public sealed class FinancialAdjustmentRepositoryAdapter : MappedJsonRepository<FinancialAdjustment>, IFinancialAdjustmentRepository

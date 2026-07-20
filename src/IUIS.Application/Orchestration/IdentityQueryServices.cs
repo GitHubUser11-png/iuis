@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 using IUIS.Application.Authorization;
 using IUIS.Application.Dtos;
@@ -30,9 +31,14 @@ namespace IUIS.Application.Orchestration
                     new[] { PrimaryRole.Student }),
                 principal =>
                 {
-                    var record = _students.FindById(principal.PersonRecordId);
+                    var snapshot = _students.Read();
+                    var record = snapshot.Records.SingleOrDefault(
+                        item => string.Equals(item.Id, principal.PersonRecordId, StringComparison.Ordinal));
                     if (record == null) throw new InvalidOperationException("The Student record is unavailable.");
-                    return _projections.ToStudentOwnRecord(record);
+                    var result = _projections.ToStudentOwnRecord(record);
+                    result.RepositoryRevision = snapshot.Revision;
+                    result.EntityVersion = record.Version;
+                    return result;
                 });
         }
     }
@@ -51,6 +57,32 @@ namespace IUIS.Application.Orchestration
             _projections = projections ?? throw new ArgumentNullException(nameof(projections));
         }
 
+        public EmployeeSelfServiceDto GetOwnRecord(
+            string sessionId,
+            string sessionToken,
+            DateTime utcNow)
+        {
+            return _executor.Query(sessionId, sessionToken, utcNow,
+                principal => new AuthorizationRequest(
+                    "employee.profile.read",
+                    SessionApplicationKind.UserApplication,
+                    ConfidentialityClassification.OwnRecord,
+                    principal.PersonRecordId,
+                    new[] { PrimaryRole.EmployeeFaculty }),
+                principal =>
+                {
+                    var snapshot = _employees.Read();
+                    var record = snapshot.Records.SingleOrDefault(
+                        item => string.Equals(item.Id, principal.PersonRecordId, StringComparison.Ordinal));
+                    if (record == null)
+                        throw new InvalidOperationException("The Employee record is unavailable.");
+                    var result = _projections.ToEmployeeSelfService(record);
+                    result.RepositoryRevision = snapshot.Revision;
+                    result.EntityVersion = record.Version;
+                    return result;
+                });
+        }
+
         public EmployeeSelfServiceDto GetEmployee(string sessionId, string sessionToken,
             string employeeId, DateTime utcNow)
         {
@@ -66,9 +98,14 @@ namespace IUIS.Application.Orchestration
                     new[] { PrimaryRole.EmployeeFaculty, PrimaryRole.Administrator }),
                 principal =>
                 {
-                    var record = _employees.FindById(employeeId.Trim());
+                    var snapshot = _employees.Read();
+                    var record = snapshot.Records.SingleOrDefault(
+                        item => string.Equals(item.Id, employeeId.Trim(), StringComparison.Ordinal));
                     if (record == null) throw new InvalidOperationException("The Employee record is unavailable.");
-                    return _projections.ToEmployeeSelfService(record);
+                    var result = _projections.ToEmployeeSelfService(record);
+                    result.RepositoryRevision = snapshot.Revision;
+                    result.EntityVersion = record.Version;
+                    return result;
                 });
         }
     }

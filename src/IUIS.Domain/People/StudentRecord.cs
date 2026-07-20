@@ -60,6 +60,47 @@ namespace IUIS.Domain.People
 
         public StudentStatus Status { get; private set; }
 
+        public static StudentRecord Rehydrate(
+            string id,
+            string studentNumber,
+            PersonName name,
+            ContactInformation contact,
+            PostalAddress address,
+            InstitutionLocalDate birthDate,
+            string courseId,
+            StudentStatus status,
+            long version,
+            bool isArchived,
+            DateTime createdAtUtc,
+            string createdByUserId,
+            DateTime updatedAtUtc,
+            string updatedByUserId,
+            DateTime? archivedAtUtc,
+            string archivedByUserId)
+        {
+            var record = new StudentRecord(
+                id,
+                studentNumber,
+                name,
+                contact,
+                address,
+                birthDate,
+                courseId,
+                status,
+                createdAtUtc,
+                createdByUserId);
+            record.RestorePersistenceState(
+                version,
+                isArchived,
+                createdAtUtc,
+                createdByUserId,
+                updatedAtUtc,
+                updatedByUserId,
+                archivedAtUtc,
+                archivedByUserId);
+            return record;
+        }
+
         public void UpdateContact(
             ContactInformation contact,
             PostalAddress address,

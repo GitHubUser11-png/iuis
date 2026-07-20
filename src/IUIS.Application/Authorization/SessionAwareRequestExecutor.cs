@@ -36,11 +36,31 @@ namespace IUIS.Application.Authorization
             Func<AuthorizationPrincipal, AuthorizationRequest> requestFactory,
             Action<AuthorizationPrincipal> command)
         {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+            Command<object>(
+                sessionId,
+                sessionToken,
+                utcNow,
+                requestFactory,
+                principal =>
+                {
+                    command(principal);
+                    return null;
+                });
+        }
+
+        public TResult Command<TResult>(
+            string sessionId,
+            string sessionToken,
+            DateTime utcNow,
+            Func<AuthorizationPrincipal, AuthorizationRequest> requestFactory,
+            Func<AuthorizationPrincipal, TResult> command)
+        {
             if (requestFactory == null) throw new ArgumentNullException(nameof(requestFactory));
             if (command == null) throw new ArgumentNullException(nameof(command));
             var principal = _principalProvider.Load(sessionId, sessionToken, utcNow);
             Authorize(principal, requestFactory(principal));
-            command(principal);
+            return command(principal);
         }
 
         private void Authorize(AuthorizationPrincipal principal, AuthorizationRequest request)

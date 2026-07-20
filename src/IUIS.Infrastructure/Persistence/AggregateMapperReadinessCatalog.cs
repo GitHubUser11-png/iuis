@@ -48,22 +48,22 @@ namespace IUIS.Infrastructure.Persistence
         private static readonly IReadOnlyList<AggregateMapperReadinessRecord> Records =
             new List<AggregateMapperReadinessRecord>
             {
-                Requires("StudentRecordRepositoryAdapter", "StudentRecord", "students",
-                    "PersonName, ContactInformation, PostalAddress, private setters, and entity metadata require explicit reconstruction."),
-                Requires("EmployeeRecordRepositoryAdapter", "EmployeeRecord", "employees",
-                    "Workforce identity, value objects, employment state, and entity metadata require explicit reconstruction."),
-                Requires("CourseRepositoryAdapter", "Course", "courses",
-                    "Private state and lifecycle status require a mapper that restores persisted state without replaying transitions."),
-                Requires("SubjectRepositoryAdapter", "Subject", "subjects",
-                    "Prerequisite and subject lifecycle state require explicit hydration and invariant validation."),
-                Requires("AcademicPeriodRepositoryAdapter", "AcademicPeriod", "academic_periods",
-                    "Institution-local dates and period lifecycle state require explicit hydration."),
+                Completed("StudentRecordRepositoryAdapter", "StudentRecord", "students",
+                    "Canonical schema v1 and StudentRecordJsonMapper preserve value objects, status, stable identity, archive state, timestamps, actors, and entity version."),
+                Completed("EmployeeRecordRepositoryAdapter", "EmployeeRecord", "employees",
+                    "Canonical schema v1 and EmployeeRecordJsonMapper preserve workforce identity, value objects, assignment state, archive state, timestamps, actors, and entity version."),
+                Completed("CourseRepositoryAdapter", "Course", "courses",
+                    "Canonical schema v1 and CourseJsonMapper restore lifecycle state directly through the validated Domain rehydration factory."),
+                Completed("SubjectRepositoryAdapter", "Subject", "subjects",
+                    "Canonical schema v1 and SubjectJsonMapper restore prerequisite collections and lifecycle state with duplicate and self-reference validation."),
+                Completed("AcademicPeriodRepositoryAdapter", "AcademicPeriod", "academic_periods",
+                    "Canonical schema v1 and AcademicPeriodJsonMapper reconstruct institution-local dates, schedule invariants, lifecycle state, and entity metadata."),
                 Deferred("EnrollmentRepositoryAdapter", "Enrollment", "enrollments",
                     "Enrollment snapshots and workflow history require a dedicated persisted shape before activation."),
                 Deferred("TuitionAssessmentRepositoryAdapter", "TuitionAssessment", "assessments",
                     "Assessment lines, snapshots, finalization, supersession, and immutable finance history require a dedicated mapper."),
-                Requires("AssessmentChargeRuleRepositoryAdapter", "AssessmentChargeRule", "assessment_charge_rules",
-                    "Money values, applicability state, and lifecycle metadata require explicit hydration."),
+                Completed("AssessmentChargeRuleRepositoryAdapter", "AssessmentChargeRule", "assessment_charge_rules",
+                    "Canonical schema v1 and AssessmentChargeRuleJsonMapper preserve Money, calculation policy, lifecycle state, archive state, timestamps, actors, and entity version."),
                 Deferred("PaymentRepositoryAdapter", "Payment", "payments",
                     "Receipt, allocation, posting, void, and reversal state must be reconstructed without replaying financial actions."),
                 Deferred("FinancialAdjustmentRepositoryAdapter", "FinancialAdjustment", "financial_adjustments",
@@ -91,7 +91,7 @@ namespace IUIS.Infrastructure.Persistence
             get { return Records; }
         }
 
-        private static AggregateMapperReadinessRecord Requires(
+        private static AggregateMapperReadinessRecord Completed(
             string adapter,
             string aggregate,
             string repository,
@@ -101,7 +101,7 @@ namespace IUIS.Infrastructure.Persistence
                 adapter,
                 aggregate,
                 repository,
-                AggregateMapperReadiness.RequiresSpecializedMapper,
+                AggregateMapperReadiness.SpecializedMapperCompleted,
                 reason);
         }
 

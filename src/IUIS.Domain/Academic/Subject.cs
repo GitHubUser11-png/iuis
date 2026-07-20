@@ -73,6 +73,61 @@ namespace IUIS.Domain.Academic
             get { return _prerequisites.AsReadOnly(); }
         }
 
+        public static Subject Rehydrate(
+            string id,
+            string code,
+            string title,
+            decimal units,
+            SubjectStatus status,
+            IEnumerable<string> prerequisiteSubjectIds,
+            long version,
+            bool isArchived,
+            DateTime createdAtUtc,
+            string createdByUserId,
+            DateTime updatedAtUtc,
+            string updatedByUserId,
+            DateTime? archivedAtUtc,
+            string archivedByUserId)
+        {
+            var record = new Subject(
+                id,
+                code,
+                title,
+                units,
+                createdAtUtc,
+                createdByUserId);
+            record.Status = RequirePersistedStatus(status);
+
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var prerequisiteId in prerequisiteSubjectIds ?? new string[0])
+            {
+                var prerequisite = new SubjectPrerequisite(prerequisiteId);
+                if (StringComparer.Ordinal.Equals(record.Id, prerequisite.PrerequisiteSubjectId))
+                {
+                    throw new DomainValidationException("A Subject cannot require itself.");
+                }
+
+                if (!seen.Add(prerequisite.PrerequisiteSubjectId))
+                {
+                    throw new DomainValidationException(
+                        "Persisted Subject prerequisites cannot contain duplicates.");
+                }
+
+                record._prerequisites.Add(prerequisite);
+            }
+
+            record.RestorePersistenceState(
+                version,
+                isArchived,
+                createdAtUtc,
+                createdByUserId,
+                updatedAtUtc,
+                updatedByUserId,
+                archivedAtUtc,
+                archivedByUserId);
+            return record;
+        }
+
         public void UpdateDetails(
             string title,
             decimal units,
@@ -185,6 +240,17 @@ namespace IUIS.Domain.Academic
             }
 
             return normalized;
+        }
+
+        private static SubjectStatus RequirePersistedStatus(SubjectStatus value)
+        {
+            if (!Enum.IsDefined(typeof(SubjectStatus), value)
+                || value == SubjectStatus.Unspecified)
+            {
+                throw new DomainValidationException("Persisted Subject status is invalid.");
+            }
+
+            return value;
         }
 
         private static void ValidateTransition(SubjectStatus current, SubjectStatus target)
