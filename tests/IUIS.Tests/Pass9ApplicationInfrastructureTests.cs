@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -169,6 +171,18 @@ namespace IUIS.Tests
                 var snapshot = repository.Read();
                 Assert.AreEqual(1L, snapshot.Revision);
                 Assert.AreEqual("Alpha", snapshot.Records.Single().Value);
+
+                var readiness = AggregateMapperReadinessCatalog.All;
+                Assert.AreEqual(18, readiness.Count);
+                Assert.AreEqual(18, readiness.Select(item => item.AdapterName)
+                    .Distinct(StringComparer.Ordinal).Count());
+                Assert.IsFalse(readiness.Any(item =>
+                    item.Readiness == AggregateMapperReadiness.GenericMapperCompatible
+                    || item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted));
+                Assert.IsTrue(readiness.Any(item =>
+                    item.Readiness == AggregateMapperReadiness.RequiresSpecializedMapper));
+                Assert.IsTrue(readiness.Any(item =>
+                    item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason));
             });
         }
 
@@ -212,6 +226,64 @@ namespace IUIS.Tests
                 Assert.IsFalse(string.IsNullOrWhiteSpace(id));
                 Assert.AreEqual(1L, courses.Read().Revision);
                 Assert.AreEqual(1L, subjects.Read().Revision);
+
+                using (var stageReadCompleted = new ManualResetEventSlim(false))
+                using (var releaseStage = new ManualResetEventSlim(false))
+                {
+                    var blockingCourses = new MappedJsonRepository<TestAggregate>(
+                        "courses",
+                        store,
+                        new BlockingJsonRecordMapper(stageReadCompleted, releaseStage));
+                    Exception transactionFailure = null;
+                    var staleTask = Task.Run(() =>
+                    {
+                        try
+                        {
+                            transaction.Execute(scope => scope.Stage(
+                                blockingCourses,
+                                new[]
+                                {
+                                    new TestAggregate
+                                    {
+                                        Id = "TST-2026-000001",
+                                        Value = "Stale staged value"
+                                    }
+                                },
+                                1,
+                                bootstrap.AdministratorUserId));
+                        }
+                        catch (Exception exception)
+                        {
+                            transactionFailure = exception;
+                        }
+                    });
+
+                    Assert.IsTrue(
+                        stageReadCompleted.Wait(TimeSpan.FromSeconds(10)),
+                        "The transaction did not finish its pre-lock revision read.");
+                    courses.Write(
+                        new[]
+                        {
+                            new TestAggregate
+                            {
+                                Id = "TST-2026-000001",
+                                Value = "Concurrent committed value"
+                            }
+                        },
+                        1,
+                        bootstrap.AdministratorUserId);
+                    releaseStage.Set();
+                    Assert.IsTrue(
+                        staleTask.Wait(TimeSpan.FromSeconds(10)),
+                        "The stale transaction did not complete after the stage was released.");
+                    Assert.IsInstanceOfType(transactionFailure, typeof(InvalidOperationException));
+
+                    var finalSnapshot = courses.Read();
+                    Assert.AreEqual(2L, finalSnapshot.Revision);
+                    Assert.AreEqual(
+                        "Concurrent committed value",
+                        finalSnapshot.Records.Single().Value);
+                }
             });
         }
 
@@ -344,6 +416,39 @@ namespace IUIS.Tests
                 action(root, result);
             }
             finally { try { Directory.Delete(root, true); } catch { } }
+        }
+
+        private sealed class BlockingJsonRecordMapper : IJsonRecordMapper<TestAggregate>
+        {
+            private readonly ManualResetEventSlim _stageReadCompleted;
+            private readonly ManualResetEventSlim _releaseStage;
+            private readonly SystemTextJsonRecordMapper<TestAggregate> _inner =
+                new SystemTextJsonRecordMapper<TestAggregate>();
+
+            public BlockingJsonRecordMapper(
+                ManualResetEventSlim stageReadCompleted,
+                ManualResetEventSlim releaseStage)
+            {
+                _stageReadCompleted = stageReadCompleted;
+                _releaseStage = releaseStage;
+            }
+
+            public TestAggregate FromJson(
+                System.Text.Json.JsonElement element,
+                System.Text.Json.JsonSerializerOptions options)
+            {
+                return _inner.FromJson(element, options);
+            }
+
+            public System.Text.Json.JsonElement ToJson(
+                TestAggregate value,
+                System.Text.Json.JsonSerializerOptions options)
+            {
+                _stageReadCompleted.Set();
+                if (!_releaseStage.Wait(TimeSpan.FromSeconds(10)))
+                    throw new TimeoutException("The test did not release the staged mutation.");
+                return _inner.ToJson(value, options);
+            }
         }
 
         private sealed class FixedPrincipalProvider : IAuthorizationPrincipalProvider

@@ -14,6 +14,7 @@
   <ItemGroup><PackageReference Include="System.Text.Json" Version="8.0.5" /></ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrap\ProductionBootstrapper.cs" />
+    <Compile Include="Persistence\AggregateMapperReadinessCatalog.cs" />
     <Compile Include="Persistence\AggregateRepositoryAdapters.cs" />
     <Compile Include="Persistence\AtomicFileWriter.cs" />
     <Compile Include="Persistence\CrossProcessFileLock.cs" />

@@ -88,7 +88,10 @@ namespace IUIS.Infrastructure.Persistence
             if (current.Revision != expectedRevision)
                 throw new InvalidOperationException("Repository revision conflict for " + RepositoryName + ".");
             var envelope = CreateEnvelope(records, expectedRevision, updatedByUserId, true);
-            return new TransactionMutation(RepositoryName, JsonSerializer.Serialize(envelope, _json));
+            return new TransactionMutation(
+                RepositoryName,
+                JsonSerializer.Serialize(envelope, _json),
+                expectedRevision);
         }
 
         private RepositoryEnvelope<JsonElement> CreateEnvelope(
