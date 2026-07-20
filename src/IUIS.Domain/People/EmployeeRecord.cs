@@ -44,7 +44,7 @@ namespace IUIS.Domain.People
             BirthDate = birthDate;
             DepartmentId = DomainGuard.RequiredIdentifier(departmentId, nameof(departmentId));
             PositionTitle = TextNormalizer.Required(positionTitle, nameof(positionTitle), 150);
-            Status = status;
+            Status = RequireStatus(status);
             IsFaculty = isFaculty;
         }
 
@@ -57,6 +57,51 @@ namespace IUIS.Domain.People
         public string PositionTitle { get; private set; }
         public EmploymentStatus Status { get; private set; }
         public bool IsFaculty { get; private set; }
+
+        public static EmployeeRecord Rehydrate(
+            string id,
+            string employeeNumber,
+            PersonName name,
+            ContactInformation contact,
+            PostalAddress address,
+            InstitutionLocalDate birthDate,
+            string departmentId,
+            string positionTitle,
+            EmploymentStatus status,
+            bool isFaculty,
+            long version,
+            bool isArchived,
+            DateTime createdAtUtc,
+            string createdByUserId,
+            DateTime updatedAtUtc,
+            string updatedByUserId,
+            DateTime? archivedAtUtc,
+            string archivedByUserId)
+        {
+            var record = new EmployeeRecord(
+                id,
+                employeeNumber,
+                name,
+                contact,
+                address,
+                birthDate,
+                departmentId,
+                positionTitle,
+                status,
+                isFaculty,
+                createdAtUtc,
+                createdByUserId);
+            record.RestorePersistenceState(
+                version,
+                isArchived,
+                createdAtUtc,
+                createdByUserId,
+                updatedAtUtc,
+                updatedByUserId,
+                archivedAtUtc,
+                archivedByUserId);
+            return record;
+        }
 
         public void UpdateContact(ContactInformation contact, PostalAddress address, DateTime changedAtUtc, string changedByUserId)
         {
@@ -75,8 +120,18 @@ namespace IUIS.Domain.People
 
         public void SetStatus(EmploymentStatus status, DateTime changedAtUtc, string changedByUserId)
         {
-            Status = status;
+            Status = RequireStatus(status);
             RecordChange(changedAtUtc, changedByUserId);
+        }
+
+        private static EmploymentStatus RequireStatus(EmploymentStatus value)
+        {
+            if (!Enum.IsDefined(typeof(EmploymentStatus), value))
+            {
+                throw new DomainValidationException("Employment status is invalid.");
+            }
+
+            return value;
         }
     }
 }
