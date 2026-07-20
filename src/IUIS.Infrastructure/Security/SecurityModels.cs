@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace IUIS.Infrastructure.Security
 {
@@ -75,7 +76,34 @@ namespace IUIS.Infrastructure.Security
     {
         public string Id { get; set; }
         public string UserId { get; set; }
-        public string TokenHash { get; set; }
+        public int TokenDigestVersion { get; set; }
+        public string TokenDigest { get; set; }
+
+        [JsonPropertyName("tokenHash")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string LegacyTokenHash { get; set; }
+
+        [JsonIgnore]
+        public string TokenHash
+        {
+            get { return TokenDigest; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    TokenDigest = null;
+                    TokenDigestVersion = 0;
+                    return;
+                }
+
+                var rawToken = value.StartsWith("sha256:", StringComparison.Ordinal)
+                    ? value.Substring("sha256:".Length)
+                    : value;
+                TokenDigest = new SessionTokenProtector().ComputeDigest(rawToken);
+                TokenDigestVersion = SessionTokenProtector.CurrentDigestVersion;
+            }
+        }
+
         public string SecurityStampSnapshot { get; set; }
         public string ApplicationKind { get; set; }
         public string Purpose { get; set; }

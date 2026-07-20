@@ -102,6 +102,7 @@ $expectedRepositoryNames = @(
 
 $templateRoot = Join-Path $repositoryRoot 'templates\production-data'
 $templateResults = @()
+$canonicalEnvelopeFields = @('records','repositoryName','revision','schemaVersion','updatedAtUtc','updatedByUserId') | Sort-Object
 if (-not (Test-Path -LiteralPath $templateRoot -PathType Container)) {
     $errors += 'Production template directory is missing: templates\production-data'
 }
@@ -120,8 +121,12 @@ else {
     foreach ($templateFile in $templateFiles) {
         try {
             $document = Get-Content -LiteralPath $templateFile.FullName -Raw | ConvertFrom-Json
-            if ($document.repository -ne $templateFile.BaseName) {
-                $errors += "$($templateFile.Name) has repository '$($document.repository)' instead of '$($templateFile.BaseName)'."
+            $actualFields = @($document.PSObject.Properties.Name | Sort-Object)
+            if (($actualFields -join '|') -ne ($canonicalEnvelopeFields -join '|')) {
+                $errors += "$($templateFile.Name) does not contain exactly the six canonical envelope fields."
+            }
+            if ($document.repositoryName -ne $templateFile.BaseName) {
+                $errors += "$($templateFile.Name) has repositoryName '$($document.repositoryName)' instead of '$($templateFile.BaseName)'."
             }
             if ($document.schemaVersion -ne 1) {
                 $errors += "$($templateFile.Name) does not use schemaVersion 1."
@@ -129,12 +134,18 @@ else {
             if ($document.revision -ne 0) {
                 $errors += "$($templateFile.Name) does not begin at revision 0."
             }
+            if ($null -eq $document.updatedAtUtc) {
+                $errors += "$($templateFile.Name) requires updatedAtUtc."
+            }
+            if ([string]::IsNullOrWhiteSpace([string]$document.updatedByUserId)) {
+                $errors += "$($templateFile.Name) requires updatedByUserId."
+            }
             if ($null -eq $document.records -or $document.records.GetType().Name -ne 'Object[]') {
                 $errors += "$($templateFile.Name) must contain a records JSON array."
             }
             $templateResults += [ordered]@{
                 file = $templateFile.Name
-                repository = $document.repository
+                repositoryName = $document.repositoryName
                 schemaVersion = $document.schemaVersion
                 revision = $document.revision
             }
@@ -151,6 +162,7 @@ $report = [ordered]@{
     validatedProjectCount = $projectResults.Count
     expectedProductionRepositoryCount = 49
     validatedProductionTemplateCount = $templateResults.Count
+    canonicalEnvelopeFields = $canonicalEnvelopeFields
     projects = $projectResults
     productionTemplates = $templateResults
     errors = $errors
@@ -165,4 +177,4 @@ if ($errors.Count -gt 0) {
     throw "Source-tree validation failed with $($errors.Count) error(s)."
 }
 
-Write-Host 'Source-tree, project-reference, and 49-template validation succeeded.'
+Write-Host 'Source-tree, project-reference, canonical-envelope, and 49-template validation succeeded.'

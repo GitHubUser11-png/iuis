@@ -48,31 +48,32 @@ namespace IUIS.Domain.Academic
                 4,
                 nameof(termNumberSnapshot));
             IsRequiredSnapshot = isRequiredSnapshot;
-            SectionCode = NormalizeOptionalCode(sectionCode, nameof(sectionCode), 40);
+            SectionCode = NormalizeOptionalCode(
+                sectionCode,
+                nameof(sectionCode),
+                40);
         }
 
         public string SubjectId { get; private set; }
-
         public string SubjectCodeSnapshot { get; private set; }
-
         public string SubjectTitleSnapshot { get; private set; }
-
         public decimal UnitsSnapshot { get; private set; }
-
         public int YearLevelSnapshot { get; private set; }
-
         public int TermNumberSnapshot { get; private set; }
-
         public bool IsRequiredSnapshot { get; private set; }
-
         public string SectionCode { get; private set; }
 
-        private static int RequireRange(int value, int minimum, int maximum, string parameterName)
+        private static int RequireRange(
+            int value,
+            int minimum,
+            int maximum,
+            string parameterName)
         {
             if (value < minimum || value > maximum)
             {
                 throw new DomainValidationException(
-                    parameterName + " must be between " + minimum + " and " + maximum + ".");
+                    parameterName + " must be between "
+                    + minimum + " and " + maximum + ".");
             }
 
             return value;
@@ -83,7 +84,10 @@ namespace IUIS.Domain.Academic
             string parameterName,
             int maximumLength)
         {
-            var normalized = TextNormalizer.Optional(value, parameterName, maximumLength);
+            var normalized = TextNormalizer.Optional(
+                value,
+                parameterName,
+                maximumLength);
             return normalized == null
                 ? null
                 : NormalizeCode(normalized, parameterName, maximumLength);
@@ -111,13 +115,17 @@ namespace IUIS.Domain.Academic
                 }
 
                 throw new DomainValidationException(
-                    parameterName + " may contain only letters, digits, hyphens, and periods.");
+                    parameterName
+                    + " may contain only letters, digits, hyphens, and periods.");
             }
 
             return normalized;
         }
 
-        private static string RequireIdentifier(string value, string prefix, string entityName)
+        private static string RequireIdentifier(
+            string value,
+            string prefix,
+            string entityName)
         {
             var identifier = InstitutionIdentifier.Parse(value);
             if (!StringComparer.Ordinal.Equals(identifier.Prefix, prefix))
@@ -157,7 +165,10 @@ namespace IUIS.Domain.Academic
             string curriculumVersionSnapshot,
             DateTime createdAtUtc,
             string createdByUserId)
-            : base(RequireIdentifier(id, "ENR", "Enrollment"), createdAtUtc, createdByUserId)
+            : base(
+                RequireIdentifier(id, "ENR", "Enrollment"),
+                createdAtUtc,
+                createdByUserId)
         {
             StudentId = RequireIdentifier(studentId, "STU", "Student");
             AcademicPeriodId = RequireIdentifier(
@@ -189,33 +200,19 @@ namespace IUIS.Domain.Academic
         }
 
         public string StudentId { get; private set; }
-
         public string AcademicPeriodId { get; private set; }
-
         public string CourseIdSnapshot { get; private set; }
-
         public string CourseCodeSnapshot { get; private set; }
-
         public string CourseNameSnapshot { get; private set; }
-
         public string CurriculumIdSnapshot { get; private set; }
-
         public string CurriculumVersionSnapshot { get; private set; }
-
         public EnrollmentStatus Status { get; private set; }
-
         public DateTime? SubmittedAtUtc { get; private set; }
-
         public string SubmittedByUserId { get; private set; }
-
         public DateTime? ReviewStartedAtUtc { get; private set; }
-
         public string ReviewStartedByUserId { get; private set; }
-
         public DateTime? DecisionAtUtc { get; private set; }
-
         public string DecisionByUserId { get; private set; }
-
         public string DecisionReason { get; private set; }
 
         public IReadOnlyList<EnrollmentSubjectLine> SubjectLines
@@ -230,11 +227,124 @@ namespace IUIS.Domain.Academic
                 var total = 0m;
                 foreach (var line in _subjectLines)
                 {
-                    total = AcademicUnitRules.Sum(total, line.UnitsSnapshot);
+                    total = AcademicUnitRules.Sum(
+                        total,
+                        line.UnitsSnapshot);
                 }
 
                 return total;
             }
+        }
+
+        public static Enrollment Rehydrate(
+            string id,
+            string studentId,
+            string academicPeriodId,
+            string courseIdSnapshot,
+            string courseCodeSnapshot,
+            string courseNameSnapshot,
+            string curriculumIdSnapshot,
+            string curriculumVersionSnapshot,
+            IEnumerable<EnrollmentSubjectLine> subjectLines,
+            EnrollmentStatus status,
+            DateTime? submittedAtUtc,
+            string submittedByUserId,
+            DateTime? reviewStartedAtUtc,
+            string reviewStartedByUserId,
+            DateTime? decisionAtUtc,
+            string decisionByUserId,
+            string decisionReason,
+            long version,
+            bool isArchived,
+            DateTime createdAtUtc,
+            string createdByUserId,
+            DateTime updatedAtUtc,
+            string updatedByUserId,
+            DateTime? archivedAtUtc,
+            string archivedByUserId)
+        {
+            if (!Enum.IsDefined(typeof(EnrollmentStatus), status)
+                || status == EnrollmentStatus.Unspecified)
+            {
+                throw new DomainValidationException(
+                    "Persisted Enrollment status is invalid.");
+            }
+
+            if (subjectLines == null)
+            {
+                throw new DomainValidationException(
+                    "Persisted Enrollment Subject lines are required.");
+            }
+
+            var record = new Enrollment(
+                id,
+                studentId,
+                academicPeriodId,
+                courseIdSnapshot,
+                courseCodeSnapshot,
+                courseNameSnapshot,
+                curriculumIdSnapshot,
+                curriculumVersionSnapshot,
+                createdAtUtc,
+                createdByUserId);
+
+            foreach (var line in subjectLines)
+            {
+                if (line == null)
+                {
+                    throw new DomainValidationException(
+                        "Persisted Enrollment Subject line is invalid.");
+                }
+
+                if (record.FindSubjectLineIndex(line.SubjectId) >= 0)
+                {
+                    throw new DomainValidationException(
+                        "Persisted Enrollment Subject IDs must be unique.");
+                }
+
+                record._subjectLines.Add(line);
+            }
+
+            ValidatePersistedWorkflow(
+                status,
+                createdAtUtc,
+                updatedAtUtc,
+                submittedAtUtc,
+                submittedByUserId,
+                reviewStartedAtUtc,
+                reviewStartedByUserId,
+                decisionAtUtc,
+                decisionByUserId,
+                decisionReason,
+                record._subjectLines.Count);
+
+            record.Status = status;
+            record.SubmittedAtUtc = submittedAtUtc;
+            record.SubmittedByUserId = NormalizeOptionalActor(
+                submittedByUserId,
+                nameof(submittedByUserId));
+            record.ReviewStartedAtUtc = reviewStartedAtUtc;
+            record.ReviewStartedByUserId = NormalizeOptionalActor(
+                reviewStartedByUserId,
+                nameof(reviewStartedByUserId));
+            record.DecisionAtUtc = decisionAtUtc;
+            record.DecisionByUserId = NormalizeOptionalActor(
+                decisionByUserId,
+                nameof(decisionByUserId));
+            record.DecisionReason = TextNormalizer.Optional(
+                decisionReason,
+                nameof(decisionReason),
+                500);
+            record.RestorePersistenceState(
+                version,
+                isArchived,
+                createdAtUtc,
+                createdByUserId,
+                updatedAtUtc,
+                updatedByUserId,
+                archivedAtUtc,
+                archivedByUserId);
+            return record;
         }
 
         public void AddSubjectLine(
@@ -245,7 +355,8 @@ namespace IUIS.Domain.Academic
             EnsureSubjectLinesEditable();
             if (subjectLine == null)
             {
-                throw new DomainValidationException("Enrollment Subject line is required.");
+                throw new DomainValidationException(
+                    "Enrollment Subject line is required.");
             }
 
             if (FindSubjectLineIndex(subjectLine.SubjectId) >= 0)
@@ -264,7 +375,10 @@ namespace IUIS.Domain.Academic
             string changedByUserId)
         {
             EnsureSubjectLinesEditable();
-            var normalizedSubjectId = RequireIdentifier(subjectId, "SUB", "Subject");
+            var normalizedSubjectId = RequireIdentifier(
+                subjectId,
+                "SUB",
+                "Subject");
             var index = FindSubjectLineIndex(normalizedSubjectId);
             if (index < 0)
             {
@@ -276,7 +390,9 @@ namespace IUIS.Domain.Academic
             _subjectLines.RemoveAt(index);
         }
 
-        public void Submit(DateTime submittedAtUtc, string submittedByUserId)
+        public void Submit(
+            DateTime submittedAtUtc,
+            string submittedByUserId)
         {
             if (Status != EnrollmentStatus.Draft
                 && Status != EnrollmentStatus.ReturnedForCorrection)
@@ -299,7 +415,9 @@ namespace IUIS.Domain.Academic
             ClearDecision();
         }
 
-        public void BeginReview(DateTime reviewedAtUtc, string reviewedByUserId)
+        public void BeginReview(
+            DateTime reviewedAtUtc,
+            string reviewedByUserId)
         {
             if (Status != EnrollmentStatus.Submitted)
             {
@@ -412,6 +530,183 @@ namespace IUIS.Domain.Academic
                 decidedByUserId);
         }
 
+        private static void ValidatePersistedWorkflow(
+            EnrollmentStatus status,
+            DateTime createdAtUtc,
+            DateTime updatedAtUtc,
+            DateTime? submittedAtUtc,
+            string submittedByUserId,
+            DateTime? reviewStartedAtUtc,
+            string reviewStartedByUserId,
+            DateTime? decisionAtUtc,
+            string decisionByUserId,
+            string decisionReason,
+            int subjectLineCount)
+        {
+            var hasSubmission = submittedAtUtc.HasValue
+                || !string.IsNullOrWhiteSpace(submittedByUserId);
+            var hasReview = reviewStartedAtUtc.HasValue
+                || !string.IsNullOrWhiteSpace(reviewStartedByUserId);
+            var hasDecision = decisionAtUtc.HasValue
+                || !string.IsNullOrWhiteSpace(decisionByUserId)
+                || !string.IsNullOrWhiteSpace(decisionReason);
+
+            if (status == EnrollmentStatus.Draft)
+            {
+                if (hasSubmission || hasReview || hasDecision)
+                    throw new DomainValidationException(
+                        "Draft Enrollments cannot contain workflow metadata.");
+                return;
+            }
+
+            if (status != EnrollmentStatus.Withdrawn && subjectLineCount == 0)
+            {
+                throw new DomainValidationException(
+                    "Persisted non-Draft Enrollments require at least one Subject line.");
+            }
+
+            if (status == EnrollmentStatus.Submitted)
+            {
+                RequireWorkflowPair(
+                    submittedAtUtc,
+                    submittedByUserId,
+                    nameof(submittedAtUtc));
+                if (hasReview || hasDecision)
+                    throw new DomainValidationException(
+                        "Submitted Enrollments cannot contain review or decision metadata.");
+            }
+            else if (status == EnrollmentStatus.UnderReview)
+            {
+                RequireWorkflowPair(
+                    submittedAtUtc,
+                    submittedByUserId,
+                    nameof(submittedAtUtc));
+                RequireWorkflowPair(
+                    reviewStartedAtUtc,
+                    reviewStartedByUserId,
+                    nameof(reviewStartedAtUtc));
+                if (hasDecision)
+                    throw new DomainValidationException(
+                        "Under Review Enrollments cannot contain decision metadata.");
+            }
+            else if (status == EnrollmentStatus.ReturnedForCorrection
+                || status == EnrollmentStatus.Approved
+                || status == EnrollmentStatus.Rejected
+                || status == EnrollmentStatus.Cancelled
+                || status == EnrollmentStatus.Completed)
+            {
+                RequireWorkflowPair(
+                    submittedAtUtc,
+                    submittedByUserId,
+                    nameof(submittedAtUtc));
+                RequireWorkflowPair(
+                    reviewStartedAtUtc,
+                    reviewStartedByUserId,
+                    nameof(reviewStartedAtUtc));
+                RequireWorkflowPair(
+                    decisionAtUtc,
+                    decisionByUserId,
+                    nameof(decisionAtUtc));
+            }
+            else if (status == EnrollmentStatus.Withdrawn)
+            {
+                RequireWorkflowPair(
+                    decisionAtUtc,
+                    decisionByUserId,
+                    nameof(decisionAtUtc));
+                if (hasReview)
+                    RequireWorkflowPair(
+                        reviewStartedAtUtc,
+                        reviewStartedByUserId,
+                        nameof(reviewStartedAtUtc));
+                if (hasSubmission)
+                    RequireWorkflowPair(
+                        submittedAtUtc,
+                        submittedByUserId,
+                        nameof(submittedAtUtc));
+            }
+
+            if (status == EnrollmentStatus.ReturnedForCorrection
+                || status == EnrollmentStatus.Rejected
+                || status == EnrollmentStatus.Withdrawn
+                || status == EnrollmentStatus.Cancelled)
+            {
+                TextNormalizer.Required(
+                    decisionReason,
+                    nameof(decisionReason),
+                    500);
+            }
+            else if (status == EnrollmentStatus.Completed
+                && !string.IsNullOrWhiteSpace(decisionReason))
+            {
+                throw new DomainValidationException(
+                    "Completed Enrollments cannot contain a decision reason.");
+            }
+            else
+            {
+                TextNormalizer.Optional(
+                    decisionReason,
+                    nameof(decisionReason),
+                    500);
+            }
+
+            ValidateWorkflowTimestamp(
+                submittedAtUtc,
+                createdAtUtc,
+                updatedAtUtc,
+                nameof(submittedAtUtc));
+            ValidateWorkflowTimestamp(
+                reviewStartedAtUtc,
+                submittedAtUtc ?? createdAtUtc,
+                updatedAtUtc,
+                nameof(reviewStartedAtUtc));
+            ValidateWorkflowTimestamp(
+                decisionAtUtc,
+                reviewStartedAtUtc ?? submittedAtUtc ?? createdAtUtc,
+                updatedAtUtc,
+                nameof(decisionAtUtc));
+        }
+
+        private static void RequireWorkflowPair(
+            DateTime? timestamp,
+            string actorId,
+            string timestampName)
+        {
+            if (!timestamp.HasValue || string.IsNullOrWhiteSpace(actorId))
+            {
+                throw new DomainValidationException(
+                    timestampName + " and its actor are required together.");
+            }
+
+            DomainGuard.RequireUtc(timestamp.Value, timestampName);
+            DomainGuard.RequiredActorIdentifier(actorId, timestampName + "Actor");
+        }
+
+        private static void ValidateWorkflowTimestamp(
+            DateTime? value,
+            DateTime minimum,
+            DateTime maximum,
+            string parameterName)
+        {
+            if (!value.HasValue) return;
+            var canonical = DomainGuard.RequireUtc(value.Value, parameterName);
+            if (canonical < minimum || canonical > maximum)
+            {
+                throw new DomainValidationException(
+                    parameterName
+                    + " must be within the persisted entity chronology.");
+            }
+        }
+
+        private static string NormalizeOptionalActor(
+            string value,
+            string parameterName)
+        {
+            return string.IsNullOrWhiteSpace(value)
+                ? null
+                : DomainGuard.RequiredActorIdentifier(value, parameterName);
+        }
+
         private void EnsureSubjectLinesEditable()
         {
             if (Status != EnrollmentStatus.Draft
@@ -467,7 +762,9 @@ namespace IUIS.Domain.Academic
         {
             for (var index = 0; index < _subjectLines.Count; index++)
             {
-                if (StringComparer.Ordinal.Equals(_subjectLines[index].SubjectId, subjectId))
+                if (StringComparer.Ordinal.Equals(
+                    _subjectLines[index].SubjectId,
+                    subjectId))
                 {
                     return index;
                 }
@@ -498,13 +795,17 @@ namespace IUIS.Domain.Academic
                 }
 
                 throw new DomainValidationException(
-                    parameterName + " may contain only letters, digits, hyphens, and periods.");
+                    parameterName
+                    + " may contain only letters, digits, hyphens, and periods.");
             }
 
             return normalized;
         }
 
-        private static string RequireIdentifier(string value, string prefix, string entityName)
+        private static string RequireIdentifier(
+            string value,
+            string prefix,
+            string entityName)
         {
             var identifier = InstitutionIdentifier.Parse(value);
             if (!StringComparer.Ordinal.Equals(identifier.Prefix, prefix))
