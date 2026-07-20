@@ -45,6 +45,45 @@ namespace IUIS.Domain.Finance
 
         public ChargeRuleStatus Status { get; private set; }
 
+        public static AssessmentChargeRule Rehydrate(
+            string id,
+            string code,
+            string description,
+            AssessmentChargeCategory category,
+            ChargeCalculationKind calculationKind,
+            Money rate,
+            ChargeRuleStatus status,
+            long version,
+            bool isArchived,
+            DateTime createdAtUtc,
+            string createdByUserId,
+            DateTime updatedAtUtc,
+            string updatedByUserId,
+            DateTime? archivedAtUtc,
+            string archivedByUserId)
+        {
+            var record = new AssessmentChargeRule(
+                id,
+                code,
+                description,
+                category,
+                calculationKind,
+                rate,
+                createdAtUtc,
+                createdByUserId);
+            record.Status = RequirePersistedStatus(status);
+            record.RestorePersistenceState(
+                version,
+                isArchived,
+                createdAtUtc,
+                createdByUserId,
+                updatedAtUtc,
+                updatedByUserId,
+                archivedAtUtc,
+                archivedByUserId);
+            return record;
+        }
+
         public void UpdateDraftDetails(
             string description,
             AssessmentChargeCategory category,
@@ -154,6 +193,16 @@ namespace IUIS.Domain.Finance
             if (!Enum.IsDefined(typeof(TEnum), value) || Convert.ToInt32(value) == 0)
             {
                 throw new DomainValidationException(parameterName + " must be a defined value.");
+            }
+
+            return value;
+        }
+
+        private static ChargeRuleStatus RequirePersistedStatus(ChargeRuleStatus value)
+        {
+            if (!Enum.IsDefined(typeof(ChargeRuleStatus), value))
+            {
+                throw new DomainValidationException("Persisted charge-rule status is invalid.");
             }
 
             return value;
