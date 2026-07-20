@@ -15,9 +15,10 @@ The project distinguishes Specified, Created, Committed, Verified in GitHub, Com
 | Pass 8 final baseline | Completed and synchronized | `55b69dcd0d2f82ec1cd6f6bba3db9b7f71ce320f` |
 | Pass 9 implementation | Validated and merged | PR #35; integration commit `2b7b629889523a00d54d8e699f705e1ecc4f8358` |
 | Pass 9 closure | Validated and merged | PR #38; closure merge `065018e8b643667f29eb4b6dd00af2d67e56dd8f` |
-| Pass 9 promotion | Validated and merged | PR #39; mainline commit `559811d39f37a5fb4c6be62e71e87f3c366749cf` |
+| Pass 9 promotion | Validated and merged | PR #39; exact validated mainline code commit `559811d39f37a5fb4c6be62e71e87f3c366749cf` |
 | Exact Pass 9 mainline validation | Successful | PR #40; run `29717728053`; artifact `iuis-windows-build-evidence-119`; ID `8451202733`; SHA-256 `ee1c098bf11457e46e362c0196eb1d8aff0271f75e1e8408afbbf87eff8776aa` |
-| Final branch synchronization | Verified | `main` and `develop` at `559811d39f37a5fb4c6be62e71e87f3c366749cf`; ahead `0`; behind `0` |
+| Closure-record finalization | Validated and merged | PR #41; merge `7ec8560d04bbb73725ac6df6124cc067cf6df632`; run `29717936028`; artifact `iuis-windows-build-evidence-121`; SHA-256 `e211ac1522d6bba1fd262ff0f83956e8e189f25d49cc5fdda6769819132289e4` |
+| Final branch synchronization | Verified after closure-record finalization | ahead `0`; behind `0` |
 | In-lock transaction revision gate | Completed and validated | expected revisions rechecked after canonical locks and before journal preparation |
 | Aggregate mapper readiness catalog | Completed and validated | 18 adapters classified; no false production-ready mapper claims |
 | Pass 9 test count | 127 passed | includes deterministic stale-stage concurrency and mapper-readiness assertions |
@@ -35,6 +36,7 @@ The project distinguishes Specified, Created, Committed, Verified in GitHub, Com
 | Final closure head | `29717509492` | evidence-115 | `7949403fb57ecabe5dbc8cc6e1904fa4c17d031ea6fe6759cd94b43501f9a762` |
 | Promotion | `29717634787` | evidence-117 | `c84d402c8bcba0b01ca65219f282f8c8140795bf0b3113439f120cca455d887f` |
 | Exact mainline | `29717728053` | evidence-119 | `ee1c098bf11457e46e362c0196eb1d8aff0271f75e1e8408afbbf87eff8776aa` |
+| Closure-record finalization | `29717936028` | evidence-121 | `e211ac1522d6bba1fd262ff0f83956e8e189f25d49cc5fdda6769819132289e4` |
 
 ## Locked target
 
@@ -52,7 +54,7 @@ C# 7.3; Windows Forms; .NET Framework 4.8; `System.Text.Json`; seven projects; s
 
 ## Current truthful completion statement
 
-Passes 0 through 9 are integrated in the authoritative repository history. Pass 9 establishes role/profile/grant/restriction authorization, session-aware execution, session-derived Student ownership, restricted DTO separation, typed repository seams, in-lock expected revision revalidation, and an explicit readiness classification for all 18 production aggregate adapters. The exact mainline tree passed with zero warnings, zero errors, and 127 of 127 tests. `main` and `develop` are synchronized.
+Passes 0 through 9 are integrated in the authoritative repository history. Pass 9 establishes role/profile/grant/restriction authorization, session-aware execution, session-derived Student ownership, restricted DTO separation, typed repository seams, in-lock expected revision revalidation, and an explicit readiness classification for all 18 production aggregate adapters. The exact mainline code tree passed with zero warnings, zero errors, and 127 of 127 tests. Closure-record finalization was separately validated, and `main` and `develop` are synchronized with ahead `0` and behind `0`.
 
 Specialized JSON mappers for production Domain aggregates, operational activation of most typed adapters, production Forms, trusted-device/network enforcement, backup/restore execution, deployment, and release certification remain incomplete.
 

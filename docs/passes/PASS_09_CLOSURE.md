@@ -61,11 +61,19 @@ Run `29717634787` validated `develop` closure merge `065018e8b643667f29eb4b6dd00
 
 ### Exact-mainline validation
 
-Run `29717728053` validated exact mainline commit `559811d39f37a5fb4c6be62e71e87f3c366749cf` through evidence-only PR #40.
+Run `29717728053` validated exact mainline code commit `559811d39f37a5fb4c6be62e71e87f3c366749cf` through evidence-only PR #40.
 
 - artifact: `iuis-windows-build-evidence-119`
 - artifact ID: `8451202733`
 - SHA-256: `ee1c098bf11457e46e362c0196eb1d8aff0271f75e1e8408afbbf87eff8776aa`
+
+### Closure-record finalization validation
+
+Run `29717936028` validated closure-record finalization head `7e6d66f759a4fd51ab3408f7fc0456e24e2e7964` through PR #41.
+
+- artifact: `iuis-windows-build-evidence-121`
+- artifact ID: `8451274089`
+- SHA-256: `e211ac1522d6bba1fd262ff0f83956e8e189f25d49cc5fdda6769819132289e4`
 
 Every listed validation passed source-tree and architecture checks, exactly 49 production templates, all seven project boundaries, NuGet restoration, .NET Framework 4.8 Release compilation, zero compiler warnings, zero compiler errors, 127 of 127 tests, TRX verification, and artifact publication.
 
@@ -73,11 +81,14 @@ Every listed validation passed source-tree and architecture checks, exactly 49 p
 
 - closure merge into `develop`: `065018e8b643667f29eb4b6dd00af2d67e56dd8f`
 - promotion pull request: `#39`
-- final mainline commit: `559811d39f37a5fb4c6be62e71e87f3c366749cf`
+- exact validated mainline code commit: `559811d39f37a5fb4c6be62e71e87f3c366749cf`
 - exact-mainline evidence pull request: `#40`, closed without merge as intended
-- final synchronized `main`: `559811d39f37a5fb4c6be62e71e87f3c366749cf`
-- final synchronized `develop`: `559811d39f37a5fb4c6be62e71e87f3c366749cf`
+- closure-record finalization pull request: `#41`
+- closure-record finalization merge: `7ec8560d04bbb73725ac6df6124cc067cf6df632`
+- final branch synchronization: verified after closure-record finalization
 - divergence: ahead `0`, behind `0`
+
+The exact code tree was validated at `559811d39f37a5fb4c6be62e71e87f3c366749cf`. Subsequent commits modify closure documentation only; they do not alter compiled source or test behavior.
 
 ## Figma closure model
 
