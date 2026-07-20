@@ -161,12 +161,12 @@ namespace IUIS.Application.Orchestration
                         request,
                         snapshot.Revision,
                         record.Version);
-                    record.UpdateContact(contact, address, utcNow, principal.UserAccountId);
+                    record.UpdateContact(contact, address, utcNow, principal.UserId);
                     var transactionId = _transactions.Execute(scope => scope.Stage(
                         _students,
                         snapshot.Records,
                         snapshot.Revision,
-                        principal.UserAccountId));
+                        principal.UserId));
                     return ContactUpdateRequestFactory.Result(
                         transactionId,
                         _students.RepositoryName,
@@ -231,12 +231,12 @@ namespace IUIS.Application.Orchestration
                         request,
                         snapshot.Revision,
                         record.Version);
-                    record.UpdateContact(contact, address, utcNow, principal.UserAccountId);
+                    record.UpdateContact(contact, address, utcNow, principal.UserId);
                     var transactionId = _transactions.Execute(scope => scope.Stage(
                         _employees,
                         snapshot.Records,
                         snapshot.Revision,
-                        principal.UserAccountId));
+                        principal.UserId));
                     return ContactUpdateRequestFactory.Result(
                         transactionId,
                         _employees.RepositoryName,
