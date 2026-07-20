@@ -24,21 +24,21 @@ namespace IUIS.Tests
     [TestClass]
     public sealed class Pass9ApplicationInfrastructureTests
     {
-        private static readonly DateTime Now = new DateTime(2026, 7, 20, 3, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime Now =
+            new DateTime(2026, 7, 20, 3, 0, 0, DateTimeKind.Utc);
 
         [TestMethod]
         public void ActiveProfilePermissionAuthorizesEmployee()
         {
-            var principal = CreatePrincipal(
-                PrimaryRole.EmployeeFaculty,
-                SessionApplicationKind.UserApplication,
-                SessionPurpose.FullAccess,
-                "EMP-2026-000001",
-                new[] { "registrar.student.read" },
-                null,
-                null);
             var decision = new PermissionResolver().Resolve(
-                principal,
+                CreatePrincipal(
+                    PrimaryRole.EmployeeFaculty,
+                    SessionApplicationKind.UserApplication,
+                    SessionPurpose.FullAccess,
+                    "EMP-2026-000001",
+                    new[] { "registrar.student.read" },
+                    null,
+                    null),
                 Request(
                     "registrar.student.read",
                     ConfidentialityClassification.Internal,
@@ -51,16 +51,15 @@ namespace IUIS.Tests
         [TestMethod]
         public void DirectRestrictionOverridesProfileAndDirectGrant()
         {
-            var principal = CreatePrincipal(
-                PrimaryRole.EmployeeFaculty,
-                SessionApplicationKind.UserApplication,
-                SessionPurpose.FullAccess,
-                "EMP-2026-000001",
-                new[] { "finance.payment.post" },
-                new[] { "finance.*" },
-                new[] { "finance.payment.post" });
             var decision = new PermissionResolver().Resolve(
-                principal,
+                CreatePrincipal(
+                    PrimaryRole.EmployeeFaculty,
+                    SessionApplicationKind.UserApplication,
+                    SessionPurpose.FullAccess,
+                    "EMP-2026-000001",
+                    new[] { "finance.payment.post" },
+                    new[] { "finance.*" },
+                    new[] { "finance.payment.post" }),
                 Request(
                     "finance.payment.post",
                     ConfidentialityClassification.Internal,
@@ -74,16 +73,15 @@ namespace IUIS.Tests
         [TestMethod]
         public void AdministratorCannotBypassRestrictedConfidentiality()
         {
-            var principal = CreatePrincipal(
-                PrimaryRole.Administrator,
-                SessionApplicationKind.AdministratorApplication,
-                SessionPurpose.FullAccess,
-                "EMP-2026-000001",
-                new[] { "counseling.case.internal.read" },
-                null,
-                null);
             var decision = new PermissionResolver().Resolve(
-                principal,
+                CreatePrincipal(
+                    PrimaryRole.Administrator,
+                    SessionApplicationKind.AdministratorApplication,
+                    SessionPurpose.FullAccess,
+                    "EMP-2026-000001",
+                    new[] { "counseling.case.internal.read" },
+                    null,
+                    null),
                 Request(
                     "counseling.case.internal.read",
                     ConfidentialityClassification.Restricted,
@@ -99,20 +97,19 @@ namespace IUIS.Tests
         [TestMethod]
         public void AdministratorWithExplicitRestrictedPermissionIsAuthorized()
         {
-            var principal = CreatePrincipal(
-                PrimaryRole.Administrator,
-                SessionApplicationKind.AdministratorApplication,
-                SessionPurpose.FullAccess,
-                "EMP-2026-000001",
-                new[]
-                {
-                    "counseling.case.internal.read",
-                    "confidentiality.restricted"
-                },
-                null,
-                null);
             var decision = new PermissionResolver().Resolve(
-                principal,
+                CreatePrincipal(
+                    PrimaryRole.Administrator,
+                    SessionApplicationKind.AdministratorApplication,
+                    SessionPurpose.FullAccess,
+                    "EMP-2026-000001",
+                    new[]
+                    {
+                        "counseling.case.internal.read",
+                        "confidentiality.restricted"
+                    },
+                    null,
+                    null),
                 Request(
                     "counseling.case.internal.read",
                     ConfidentialityClassification.Restricted,
@@ -154,16 +151,15 @@ namespace IUIS.Tests
         [TestMethod]
         public void FirstLoginSessionBlocksOrdinaryQueries()
         {
-            var principal = CreatePrincipal(
-                PrimaryRole.Administrator,
-                SessionApplicationKind.AdministratorApplication,
-                SessionPurpose.FirstLoginPasswordChange,
-                "EMP-2026-000001",
-                new[] { "admin.user.read", "security.password.change" },
-                null,
-                null);
             var decision = new PermissionResolver().Resolve(
-                principal,
+                CreatePrincipal(
+                    PrimaryRole.Administrator,
+                    SessionApplicationKind.AdministratorApplication,
+                    SessionPurpose.FirstLoginPasswordChange,
+                    "EMP-2026-000001",
+                    new[] { "admin.user.read", "security.password.change" },
+                    null,
+                    null),
                 Request(
                     "admin.user.read",
                     ConfidentialityClassification.Internal,
@@ -177,16 +173,15 @@ namespace IUIS.Tests
         [TestMethod]
         public void FirstLoginSessionAllowsOnlyPasswordChange()
         {
-            var principal = CreatePrincipal(
-                PrimaryRole.Administrator,
-                SessionApplicationKind.AdministratorApplication,
-                SessionPurpose.FirstLoginPasswordChange,
-                "EMP-2026-000001",
-                new[] { "security.password.change" },
-                null,
-                null);
             var decision = new PermissionResolver().Resolve(
-                principal,
+                CreatePrincipal(
+                    PrimaryRole.Administrator,
+                    SessionApplicationKind.AdministratorApplication,
+                    SessionPurpose.FirstLoginPasswordChange,
+                    "EMP-2026-000001",
+                    new[] { "security.password.change" },
+                    null,
+                    null),
                 Request(
                     "security.password.change",
                     ConfidentialityClassification.Internal,
@@ -287,12 +282,12 @@ namespace IUIS.Tests
                         .Distinct(StringComparer.Ordinal)
                         .Count());
                 Assert.AreEqual(
-                    6,
+                    11,
                     readiness.Count(item =>
                         item.Readiness
                         == AggregateMapperReadiness.SpecializedMapperCompleted));
                 Assert.AreEqual(
-                    12,
+                    7,
                     readiness.Count(item =>
                         item.Readiness
                         == AggregateMapperReadiness.DeferredWithExplicitReason));
