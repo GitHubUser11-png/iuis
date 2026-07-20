@@ -1,8 +1,7 @@
 {
-  "repository": "payments",
+  "repositoryName": "payments",
   "schemaVersion": 1,
   "revision": 0,
-  "createdAtUtc": "1970-01-01T00:00:00Z",
   "updatedAtUtc": "1970-01-01T00:00:00Z",
   "updatedByUserId": "SYSTEM",
   "records": []

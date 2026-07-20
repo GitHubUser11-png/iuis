@@ -17,7 +17,7 @@ namespace IUIS.Infrastructure.Persistence
     public sealed class TransactionMutation
     {
         public TransactionMutation(string repositoryName, string completeJson)
-            : this(repositoryName, completeJson, null)
+            : this(repositoryName, completeJson, null, false)
         {
         }
 
@@ -25,14 +25,24 @@ namespace IUIS.Infrastructure.Persistence
             string repositoryName,
             string completeJson,
             long expectedRevision)
-            : this(repositoryName, completeJson, (long?)expectedRevision)
+            : this(repositoryName, completeJson, (long?)expectedRevision, false)
+        {
+        }
+
+        public TransactionMutation(
+            string repositoryName,
+            string completeJson,
+            long expectedRevision,
+            bool preserveRevision)
+            : this(repositoryName, completeJson, (long?)expectedRevision, preserveRevision)
         {
         }
 
         private TransactionMutation(
             string repositoryName,
             string completeJson,
-            long? expectedRevision)
+            long? expectedRevision,
+            bool preserveRevision)
         {
             if (string.IsNullOrWhiteSpace(repositoryName))
                 throw new ArgumentException("Repository name is required.", nameof(repositoryName));
@@ -40,16 +50,22 @@ namespace IUIS.Infrastructure.Persistence
                 throw new ArgumentException("Complete JSON is required.", nameof(completeJson));
             if (expectedRevision.HasValue && expectedRevision.Value < 0)
                 throw new ArgumentOutOfRangeException(nameof(expectedRevision));
+            if (preserveRevision && !expectedRevision.HasValue)
+                throw new ArgumentException(
+                    "Revision-preserving mutations require an expected revision.",
+                    nameof(expectedRevision));
 
             using (JsonDocument.Parse(completeJson)) { }
             RepositoryName = repositoryName.Trim().ToLowerInvariant();
             CompleteJson = completeJson;
             ExpectedRevision = expectedRevision;
+            PreserveRevision = preserveRevision;
         }
 
         public string RepositoryName { get; private set; }
         public string CompleteJson { get; private set; }
         public long? ExpectedRevision { get; private set; }
+        public bool PreserveRevision { get; private set; }
     }
 
     public sealed class TransactionJournalEntry
@@ -59,6 +75,7 @@ namespace IUIS.Infrastructure.Persistence
         public string BackupPath { get; set; }
         public bool TargetExisted { get; set; }
         public long? ExpectedRevision { get; set; }
+        public bool PreserveRevision { get; set; }
     }
 
     public sealed class TransactionJournalRecord
@@ -97,10 +114,8 @@ namespace IUIS.Infrastructure.Persistence
                 throw new ArgumentException("At least one mutation is required.", nameof(mutations));
             if (items.Select(x => x.RepositoryName)
                 .Distinct(StringComparer.OrdinalIgnoreCase).Count() != items.Count)
-            {
                 throw new InvalidOperationException(
                     "A transaction cannot mutate the same repository twice.");
-            }
 
             foreach (var item in items) _catalog.Get(item.RepositoryName);
 
@@ -117,13 +132,13 @@ namespace IUIS.Infrastructure.Persistence
             try
             {
                 ValidateExpectedRevisionsLocked(items);
-
+                var now = DateTime.UtcNow;
                 var record = new TransactionJournalRecord
                 {
                     TransactionId = transactionId,
                     Status = TransactionJournalStatus.Prepared,
-                    CreatedAtUtc = DateTime.UtcNow,
-                    UpdatedAtUtc = DateTime.UtcNow,
+                    CreatedAtUtc = now,
+                    UpdatedAtUtc = now,
                     Entries = new List<TransactionJournalEntry>()
                 };
 
@@ -135,14 +150,14 @@ namespace IUIS.Infrastructure.Persistence
                     var backup = target + ".txn-" + transactionId + ".bak";
                     var existed = File.Exists(target);
                     if (existed) File.Copy(target, backup, true);
-
                     record.Entries.Add(new TransactionJournalEntry
                     {
                         RepositoryName = item.RepositoryName,
                         TargetPath = target,
                         BackupPath = backup,
                         TargetExisted = existed,
-                        ExpectedRevision = item.ExpectedRevision
+                        ExpectedRevision = item.ExpectedRevision,
+                        PreserveRevision = item.PreserveRevision
                     });
                 }
 
@@ -182,16 +197,12 @@ namespace IUIS.Infrastructure.Persistence
 
             TransactionJournalRecord snapshot;
             using (CrossProcessFileLock.Acquire(journalPath, _options.LockTimeout))
-            {
                 snapshot = ReadJournal(journalPath);
-            }
 
             if (snapshot == null
                 || snapshot.Status == TransactionJournalStatus.Committed
                 || snapshot.Status == TransactionJournalStatus.RolledBack)
-            {
                 return false;
-            }
 
             var lockPaths = snapshot.Entries
                 .Select(entry => entry.TargetPath)
@@ -206,9 +217,7 @@ namespace IUIS.Infrastructure.Persistence
                 if (current == null
                     || current.Status == TransactionJournalStatus.Committed
                     || current.Status == TransactionJournalStatus.RolledBack)
-                {
                     return false;
-                }
 
                 Restore(current);
                 current.Status = TransactionJournalStatus.RolledBack;
@@ -232,42 +241,40 @@ namespace IUIS.Infrastructure.Persistence
                     _options.DataRoot,
                     mutation.RepositoryName);
                 if (!File.Exists(targetPath))
-                {
                     throw new InvalidOperationException(
                         "A revision-checked transaction requires the authoritative repository "
                         + mutation.RepositoryName + ".");
-                }
 
-                var current = JsonSerializer.Deserialize<RepositoryEnvelope<JsonElement>>(
+                var current = RepositoryEnvelopeJson.Deserialize<JsonElement>(
                     File.ReadAllText(targetPath),
                     _json);
                 if (current == null || current.Records == null)
-                {
                     throw new InvalidDataException(
                         "Repository envelope is invalid for " + mutation.RepositoryName + ".");
-                }
-
                 if (current.Revision != mutation.ExpectedRevision.Value)
-                {
                     throw new InvalidOperationException(
                         "Repository revision conflict for " + mutation.RepositoryName + ".");
-                }
 
-                var staged = JsonSerializer.Deserialize<RepositoryEnvelope<JsonElement>>(
+                if (RepositoryEnvelopeJson.IsLegacy(mutation.CompleteJson))
+                    throw new InvalidDataException(
+                        "Staged repository JSON must use the canonical envelope for "
+                        + mutation.RepositoryName + ".");
+                var staged = RepositoryEnvelopeJson.Deserialize<JsonElement>(
                     mutation.CompleteJson,
                     _json);
+                var requiredRevision = mutation.PreserveRevision
+                    ? mutation.ExpectedRevision.Value
+                    : checked(mutation.ExpectedRevision.Value + 1);
                 if (staged == null
                     || staged.Records == null
                     || !string.Equals(
-                        staged.Repository,
+                        staged.RepositoryName,
                         mutation.RepositoryName,
                         StringComparison.OrdinalIgnoreCase)
-                    || staged.Revision != checked(mutation.ExpectedRevision.Value + 1))
-                {
+                    || staged.Revision != requiredRevision)
                     throw new InvalidDataException(
                         "The staged repository envelope is inconsistent for "
                         + mutation.RepositoryName + ".");
-                }
             }
         }
 
@@ -301,10 +308,7 @@ namespace IUIS.Infrastructure.Persistence
                 var record = ReadJournal(journalPath);
                 if (record == null
                     || !string.Equals(record.TransactionId, transactionId, StringComparison.Ordinal))
-                {
                     return;
-                }
-
                 Restore(record);
                 record.Status = TransactionJournalStatus.RolledBack;
                 record.UpdatedAtUtc = DateTime.UtcNow;
@@ -334,15 +338,13 @@ namespace IUIS.Infrastructure.Persistence
             {
                 if (!string.IsNullOrWhiteSpace(entry.BackupPath)
                     && File.Exists(entry.BackupPath))
-                {
                     File.Delete(entry.BackupPath);
-                }
             }
         }
 
         private TransactionJournalRecord ReadJournal(string path)
         {
-            var envelope = JsonSerializer.Deserialize<RepositoryEnvelope<TransactionJournalRecord>>(
+            var envelope = RepositoryEnvelopeJson.Deserialize<TransactionJournalRecord>(
                 File.ReadAllText(path),
                 _json);
             return envelope == null || envelope.Records == null || envelope.Records.Count == 0
@@ -355,7 +357,7 @@ namespace IUIS.Infrastructure.Persistence
             RepositoryEnvelope<TransactionJournalRecord> envelope = null;
             if (File.Exists(path))
             {
-                envelope = JsonSerializer.Deserialize<RepositoryEnvelope<TransactionJournalRecord>>(
+                envelope = RepositoryEnvelopeJson.Deserialize<TransactionJournalRecord>(
                     File.ReadAllText(path),
                     _json);
             }
@@ -364,19 +366,25 @@ namespace IUIS.Infrastructure.Persistence
             {
                 envelope = new RepositoryEnvelope<TransactionJournalRecord>
                 {
-                    Repository = "transaction_journal",
+                    RepositoryName = "transaction_journal",
                     SchemaVersion = 1,
                     Revision = 0,
+                    UpdatedAtUtc = DateTime.UtcNow,
+                    UpdatedByUserId = "SYSTEM",
                     Records = new List<TransactionJournalRecord>()
                 };
             }
 
+            envelope.RepositoryName = "transaction_journal";
             envelope.Records.RemoveAll(
                 item => string.Equals(item.TransactionId, record.TransactionId, StringComparison.Ordinal));
             envelope.Records.Add(record);
             envelope.Revision = checked(envelope.Revision + 1);
             envelope.UpdatedAtUtc = DateTime.UtcNow;
-            _writer.WriteUtf8(path, JsonSerializer.Serialize(envelope, _json));
+            envelope.UpdatedByUserId = "SYSTEM";
+            _writer.WriteUtf8(
+                path,
+                RepositoryEnvelopeJson.Serialize(envelope, _json));
         }
     }
 }

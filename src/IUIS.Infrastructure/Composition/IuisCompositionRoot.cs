@@ -4,6 +4,7 @@ using IUIS.Application.Authorization;
 using IUIS.Application.Dtos;
 using IUIS.Application.Orchestration;
 using IUIS.Application.Repositories;
+using IUIS.Infrastructure.Identity;
 using IUIS.Infrastructure.Persistence;
 using IUIS.Infrastructure.Security;
 
@@ -31,15 +32,27 @@ namespace IUIS.Infrastructure.Composition
             Courses = new CourseRepositoryAdapter(Store);
             Subjects = new SubjectRepositoryAdapter(Store);
             AcademicPeriods = new AcademicPeriodRepositoryAdapter(Store);
+            Enrollments = new EnrollmentRepositoryAdapter(Store);
+            TuitionAssessments = new TuitionAssessmentRepositoryAdapter(Store);
             AssessmentChargeRules = new AssessmentChargeRuleRepositoryAdapter(Store);
+            Payments = new PaymentRepositoryAdapter(Store);
+            FinancialAdjustments = new FinancialAdjustmentRepositoryAdapter(Store);
+            ScholarshipAwards = new ScholarshipAwardRepositoryAdapter(Store);
 
             Transactions = new JournaledApplicationTransactionCoordinator(
                 new JournaledTransactionCoordinator(Catalog, Options));
+            IdentifierAllocator = new ApplicationIdentifierAllocator(Catalog, Options);
             PrincipalProvider = new JsonAuthorizationPrincipalProvider(Catalog, Options);
             RequestExecutor = new SessionAwareRequestExecutor(
                 PrincipalProvider,
                 new PermissionResolver());
             Projections = new RestrictedProjectionService();
+            EnvelopeMigrations = new RepositoryEnvelopeMigrationService(
+                Catalog,
+                Options);
+            SessionSecurityMigrations = new SessionSecurityMigrationService(
+                Catalog,
+                Options);
 
             StudentOwnRecords = new StudentOwnRecordQueryService(
                 RequestExecutor,
@@ -57,6 +70,43 @@ namespace IUIS.Infrastructure.Composition
                 RequestExecutor,
                 Employees,
                 Transactions);
+            StudentFinance = new StudentFinanceQueryService(
+                RequestExecutor,
+                Enrollments,
+                TuitionAssessments,
+                Payments,
+                FinancialAdjustments,
+                ScholarshipAwards);
+            EnrollmentSubmissions = new StudentEnrollmentSubmissionService(
+                RequestExecutor,
+                Enrollments,
+                Transactions,
+                IdentifierAllocator);
+            AssessmentPostings = new TuitionAssessmentPostingService(
+                RequestExecutor,
+                Enrollments,
+                TuitionAssessments,
+                Transactions,
+                IdentifierAllocator);
+            PaymentPostings = new PaymentPostingService(
+                RequestExecutor,
+                TuitionAssessments,
+                Payments,
+                Transactions,
+                IdentifierAllocator);
+            AdjustmentPostings = new FinancialAdjustmentPostingService(
+                RequestExecutor,
+                TuitionAssessments,
+                FinancialAdjustments,
+                Transactions,
+                IdentifierAllocator);
+            ScholarshipApplications = new ScholarshipAwardApplicationService(
+                RequestExecutor,
+                ScholarshipAwards,
+                TuitionAssessments,
+                FinancialAdjustments,
+                Transactions,
+                IdentifierAllocator);
         }
 
         public ProductionRepositoryCatalog Catalog { get; private set; }
@@ -68,16 +118,30 @@ namespace IUIS.Infrastructure.Composition
         public ICourseRepository Courses { get; private set; }
         public ISubjectRepository Subjects { get; private set; }
         public IAcademicPeriodRepository AcademicPeriods { get; private set; }
+        public IEnrollmentRepository Enrollments { get; private set; }
+        public ITuitionAssessmentRepository TuitionAssessments { get; private set; }
         public IAssessmentChargeRuleRepository AssessmentChargeRules { get; private set; }
+        public IPaymentRepository Payments { get; private set; }
+        public IFinancialAdjustmentRepository FinancialAdjustments { get; private set; }
+        public IScholarshipAwardRepository ScholarshipAwards { get; private set; }
 
         public IApplicationTransactionCoordinator Transactions { get; private set; }
+        public IApplicationIdentifierAllocator IdentifierAllocator { get; private set; }
         public IAuthorizationPrincipalProvider PrincipalProvider { get; private set; }
         public SessionAwareRequestExecutor RequestExecutor { get; private set; }
         public RestrictedProjectionService Projections { get; private set; }
+        public RepositoryEnvelopeMigrationService EnvelopeMigrations { get; private set; }
+        public SessionSecurityMigrationService SessionSecurityMigrations { get; private set; }
 
         public StudentOwnRecordQueryService StudentOwnRecords { get; private set; }
         public EmployeeRecordQueryService EmployeeSelfService { get; private set; }
         public StudentContactUpdateService StudentContactUpdates { get; private set; }
         public EmployeeContactUpdateService EmployeeContactUpdates { get; private set; }
+        public StudentFinanceQueryService StudentFinance { get; private set; }
+        public StudentEnrollmentSubmissionService EnrollmentSubmissions { get; private set; }
+        public TuitionAssessmentPostingService AssessmentPostings { get; private set; }
+        public PaymentPostingService PaymentPostings { get; private set; }
+        public FinancialAdjustmentPostingService AdjustmentPostings { get; private set; }
+        public ScholarshipAwardApplicationService ScholarshipApplications { get; private set; }
     }
 }

@@ -15,17 +15,22 @@
   <ItemGroup>
     <Compile Include="Bootstrap\ProductionBootstrapper.cs" />
     <Compile Include="Composition\IuisCompositionRoot.cs" />
+    <Compile Include="Identity\ApplicationIdentifierAllocator.cs" />
     <Compile Include="Persistence\AggregateMapperReadinessCatalog.cs" />
     <Compile Include="Persistence\AggregateRepositoryAdapters.cs" />
     <Compile Include="Persistence\AtomicFileWriter.cs" />
     <Compile Include="Persistence\CanonicalPersistedRecords.cs" />
     <Compile Include="Persistence\CrossProcessFileLock.cs" />
+    <Compile Include="Persistence\EnrollmentFinanceJsonMappers.cs" />
+    <Compile Include="Persistence\EnrollmentFinancePersistedRecords.cs" />
     <Compile Include="Persistence\IdSequenceService.cs" />
     <Compile Include="Persistence\JsonInfrastructureOptions.cs" />
     <Compile Include="Persistence\JsonRepositoryStore.cs" />
     <Compile Include="Persistence\MappedJsonRepository.cs" />
     <Compile Include="Persistence\RepositoryCatalog.cs" />
     <Compile Include="Persistence\RepositoryEnvelope.cs" />
+    <Compile Include="Persistence\RepositoryEnvelopeJson.cs" />
+    <Compile Include="Persistence\RepositoryEnvelopeMigrationService.cs" />
     <Compile Include="Persistence\SpecializedAggregateJsonMappers.cs" />
     <Compile Include="Persistence\TransactionCoordinator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -34,6 +39,8 @@
     <Compile Include="Security\LoginAttemptService.cs" />
     <Compile Include="Security\PasswordHasher.cs" />
     <Compile Include="Security\SecurityModels.cs" />
+    <Compile Include="Security\SessionSecurityMigrationService.cs" />
+    <Compile Include="Security\SessionTokenProtector.cs" />
     <Compile Include="SolutionFoundation.cs" />
   </ItemGroup>
   <ItemGroup><Content Include="..\..\templates\production-data\*.json"><Link>production-data\%(Filename)%(Extension)</Link><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content></ItemGroup>
