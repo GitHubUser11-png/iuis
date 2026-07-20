@@ -9,9 +9,7 @@ Close Pass 9 from the actual merged integration commit, eliminate the remaining 
 - Pass 9 integration commit: `2b7b629889523a00d54d8e699f705e1ecc4f8358`
 - closure branch: `build/pass-09-closure`
 - source hardening commit: `f8e9df4abaef995c9fd65225e9d135dbaec37551`
-- first closure validation head: `85a075d79f86d8596bd950136ab4e2ba9a81b5e2`
 - closure pull request: `#38`
-- target branch: `develop`
 
 ## Closure changes
 
@@ -35,45 +33,66 @@ The Application transaction test pauses a mapper after its initial unlocked revi
 
 All 18 production adapters are recorded in `AggregateMapperReadinessCatalog` as either `RequiresSpecializedMapper` or `DeferredWithExplicitReason`. No production adapter is claimed as generic-compatible or specialized-complete without a production hydration implementation.
 
-## Independent closure validation
+## Validation evidence
 
-GitHub Actions run `29717369189` validated closure head `85a075d79f86d8596bd950136ab4e2ba9a81b5e2`.
+### Independent closure validation
 
-- source-tree and architecture validation: passed;
-- exactly 49 production templates: passed;
-- seven-project boundary validation: passed;
-- NuGet restoration: passed;
-- .NET Framework 4.8 Release compilation: passed;
-- compiler warnings: `0`;
-- compiler errors: `0`;
-- MSTest: `127` executed, `127` passed, `0` failed;
-- TRX verification: passed;
-- artifact publication: passed.
+Run `29717369189` validated closure head `85a075d79f86d8596bd950136ab4e2ba9a81b5e2`.
 
-Closure artifact:
+- artifact: `iuis-windows-build-evidence-114`
+- artifact ID: `8451078816`
+- SHA-256: `110e821dece6f998fabedfffda21df7d558fa309decf55c31addea05fccef721`
 
-- name: `iuis-windows-build-evidence-114`;
-- artifact ID: `8451078816`;
-- SHA-256: `110e821dece6f998fabedfffda21df7d558fa309decf55c31addea05fccef721`;
-- expiration: 2026-08-03.
+### Final closure-head validation
 
-The artifact contains `build-summary.json`, the Release build log and binary log, the MSTest log, the TRX result, and source-tree validation evidence. The Release log reports `0 Warning(s)` and `0 Error(s)`. The TRX counters are total `127`, executed `127`, passed `127`, failed `0`.
+Run `29717509492` validated final closure head `34a00f821a29847c35307efe8bdc388509a14b12`.
 
-## Promotion sequence
+- artifact: `iuis-windows-build-evidence-115`
+- artifact ID: `8451127726`
+- SHA-256: `7949403fb57ecabe5dbc8cc6e1904fa4c17d031ea6fe6759cd94b43501f9a762`
 
-1. Validate the evidence-updated final closure PR head.
-2. Merge the closure into `develop`.
-3. Open and validate a `develop` to `main` promotion pull request.
-4. Merge the validated promotion.
-5. Validate the exact resulting mainline tree.
-6. Synchronize `develop` to the final `main` commit.
-7. Verify ahead `0` and behind `0`.
-8. Define and register the exact Pass 10 boundary.
+### Mainline-promotion validation
 
-## Evidence status
+Run `29717634787` validated `develop` closure merge `065018e8b643667f29eb4b6dd00af2d67e56dd8f` through promotion PR #39.
 
-The first independent closure workflow is successful. Final evidence-updated-head validation, closure merge, promotion, exact-mainline validation, final synchronization, and Pass 10 boundary registration remain pending.
+- artifact: `iuis-windows-build-evidence-117`
+- artifact ID: `8451167506`
+- SHA-256: `c84d402c8bcba0b01ca65219f282f8c8140795bf0b3113439f120cca455d887f`
+
+### Exact-mainline validation
+
+Run `29717728053` validated exact mainline commit `559811d39f37a5fb4c6be62e71e87f3c366749cf` through evidence-only PR #40.
+
+- artifact: `iuis-windows-build-evidence-119`
+- artifact ID: `8451202733`
+- SHA-256: `ee1c098bf11457e46e362c0196eb1d8aff0271f75e1e8408afbbf87eff8776aa`
+
+Every listed validation passed source-tree and architecture checks, exactly 49 production templates, all seven project boundaries, NuGet restoration, .NET Framework 4.8 Release compilation, zero compiler warnings, zero compiler errors, 127 of 127 tests, TRX verification, and artifact publication.
+
+## Integration and synchronization
+
+- closure merge into `develop`: `065018e8b643667f29eb4b6dd00af2d67e56dd8f`
+- promotion pull request: `#39`
+- final mainline commit: `559811d39f37a5fb4c6be62e71e87f3c366749cf`
+- exact-mainline evidence pull request: `#40`, closed without merge as intended
+- final synchronized `main`: `559811d39f37a5fb4c6be62e71e87f3c366749cf`
+- final synchronized `develop`: `559811d39f37a5fb4c6be62e71e87f3c366749cf`
+- divergence: ahead `0`, behind `0`
+
+## Figma closure model
+
+`https://www.figma.com/board/VGyuqaZDhIBfGqBfGjQJUH`
+
+The board records integration, in-lock revision hardening, mapper readiness, closure and promotion validation, exact-mainline evidence, branch synchronization, and the Pass 10 boundary.
 
 ## Evidence boundary
 
 Pass 9 closure does not claim that the 18 production aggregate adapters can all hydrate current Domain aggregates. The readiness catalog is an enforcement record, not an implementation substitute. Specialized mappers, production Forms, trusted Administrator environment enforcement, operational backup/restore execution, deployment packaging, and release certification remain outside Pass 9 closure.
+
+## Closure result
+
+Pass 9 is completed, independently validated, promoted to `main`, exact-mainline validated, and synchronized across `main` and `develop`.
+
+## Exact next construction boundary
+
+# Integrated University Information System Build Execution — Pass 10: Canonical Persisted Record Schemas, Specialized Aggregate Mappers, Typed Repository Activation, Composition-Root Registration, Student and Employee Read-Model Vertical Slices, Controlled Application Writes, Mapper Compatibility and Repository Migration Tests, Windows Release Compilation, Figma Persistence-to-UI Wiring Model, and Pull Request Integration

@@ -6,7 +6,7 @@ This repository contains the authoritative C# implementation of the Integrated U
 
 Passes 1 through 8 establish the seven-project .NET Framework 4.8 solution, Domain foundations, the exact 49-file production JSON catalog, central ID allocation, cross-process locks, hardened atomic writes, journaled transactions, login lockout, forced password change, and one-time production bootstrap.
 
-Pass 9 adds:
+Pass 9 adds and closes:
 
 - Application authorization from roles, active profiles, direct grants, direct restrictions, application kind, session purpose, ownership, and confidentiality;
 - session-aware command and query execution;
@@ -15,12 +15,17 @@ Pass 9 adds:
 - separate released and internal Counseling, Discipline, and Medical DTOs;
 - revision-aware typed repository contracts and Infrastructure adapters;
 - journal-coordinated Application mutations;
-- in-lock expected revision revalidation for staged Application transactions; and
+- in-lock expected revision revalidation for staged Application transactions;
+- deterministic stale-stage concurrency protection; and
 - an explicit mapper-readiness catalog for all 18 production aggregate adapters.
 
-Pass 9 is integrated into `develop`. Its closure branch is undergoing independent Windows validation before mainline promotion.
+Pass 9 is completed, promoted, exact-mainline validated, and synchronized. `main` and `develop` are identical at `559811d39f37a5fb4c6be62e71e87f3c366749cf`. The exact mainline tree compiled with zero warnings and zero errors and passed all 127 tests.
 
 Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md). Pass-specific evidence is recorded in [`docs/passes/PASS_09_APPLICATION_AUTHORIZATION_TYPED_REPOSITORIES.md`](docs/passes/PASS_09_APPLICATION_AUTHORIZATION_TYPED_REPOSITORIES.md) and [`docs/passes/PASS_09_CLOSURE.md`](docs/passes/PASS_09_CLOSURE.md).
+
+## Exact next construction boundary
+
+Pass 10 will define canonical persisted record schemas, implement the first specialized aggregate mappers, activate validated typed repositories through the composition root, connect real JSON-backed Student and Employee vertical slices, add controlled authorized writes, and expand mapper, migration, restart, concurrency, and projection tests.
 
 ## Locked technical target
 
@@ -38,7 +43,7 @@ Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPL
 ## Branch model
 
 - `main`: reviewed release-ready baselines
-- `develop`: integration branch
+- `develop`: synchronized integration branch
 - `build/pass-*`: controlled implementation and closure passes created from exact integration commits
 
 No component is described as compiled or tested unless machine-generated build or test evidence exists.

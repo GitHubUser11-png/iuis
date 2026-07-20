@@ -4,14 +4,16 @@
 
 Build the first production Application-layer authorization and typed repository boundary on top of the validated Pass 8 persistence foundation. Pass 9 enforces role, permission, session, ownership, and confidentiality rules before commands or queries reach repositories or Domain aggregates.
 
-## Starting point
+## Final integration baseline
 
 - synchronized Pass 8 baseline: `55b69dcd0d2f82ec1cd6f6bba3db9b7f71ce320f`
-- implementation branch: `build/pass-09-application-authorization-repositories`
 - implementation pull request: `#35`
-- integration commit: `2b7b629889523a00d54d8e699f705e1ecc4f8358`
-- closure branch: `build/pass-09-closure`
+- implementation integration commit: `2b7b629889523a00d54d8e699f705e1ecc4f8358`
 - closure pull request: `#38`
+- closure merge commit: `065018e8b643667f29eb4b6dd00af2d67e56dd8f`
+- promotion pull request: `#39`
+- exact-mainline evidence pull request: `#40`
+- final synchronized commit: `559811d39f37a5fb4c6be62e71e87f3c366749cf`
 
 ## Authorization model
 
@@ -31,58 +33,41 @@ Application defines revision-aware repository contracts for Student, Employee, A
 
 ## In-lock revision hardening
 
-The closure pass adds expected revision metadata to Application-staged transaction mutations. `JournaledTransactionCoordinator` now reopens and validates every revision-checked authoritative repository after all canonical transaction locks have been acquired and before backups, journal preparation, or replacement. The staged envelope name and next revision are also checked under the same locks. A concurrent committed revision therefore causes a controlled conflict before any transaction target is replaced.
+Application-staged transaction mutations carry expected revision metadata. `JournaledTransactionCoordinator` reopens and validates every revision-checked authoritative repository after all canonical transaction locks have been acquired and before backups, journal preparation, or replacement. The staged envelope name and next revision are checked under the same locks. A concurrent committed revision causes a controlled conflict before any transaction target is replaced.
 
-The existing 127-test suite remains at 127 tests. Its journaled Application transaction test now includes a deterministic concurrency scenario in which the staged mapper pauses after the pre-lock read, another writer commits revision 2, and the stale revision-1 transaction is rejected without overwriting the concurrent value.
+The existing 127-test suite remains at 127 tests. Its journaled Application transaction test includes a deterministic concurrency scenario in which the staged mapper pauses after the pre-lock read, another writer commits revision 2, and the stale revision-1 transaction is rejected without overwriting the concurrent value.
 
 ## Aggregate mapper readiness classification
 
-`AggregateMapperReadinessCatalog` classifies all 18 production aggregate adapters. No production Domain aggregate is represented as generic-mapper compatible or specialized-mapper complete without an explicit hydration implementation.
+`AggregateMapperReadinessCatalog` classifies all 18 production aggregate adapters. StudentRecord, EmployeeRecord, Course, Subject, AcademicPeriod, and AssessmentChargeRule adapters require specialized mappers. Enrollment, TuitionAssessment, Payment, FinancialAdjustment, ScholarshipAward, LibraryBook, LibraryBorrowing, CounselingCase, DisciplineCase, ClinicAppointment, MedicalRecord, and MedicalClearance adapters are deferred with explicit reasons tied to embedded snapshots, collections, confidential records, immutable history, or workflow state.
 
-### Requires specialized mapper
+No production Domain adapter is claimed as generic-mapper compatible or specialized-mapper complete in Pass 9.
 
-StudentRecord, EmployeeRecord, Course, Subject, AcademicPeriod, and AssessmentChargeRule adapters require explicit reconstruction of value objects, private lifecycle state, and entity metadata.
+## Final validation evidence
 
-### Deferred with explicit reason
+| Stage | Run | Artifact | ID | SHA-256 |
+|---|---:|---|---:|---|
+| Implementation head | `29715030204` | `iuis-windows-build-evidence-105` | `8450258190` | `9fe43133d8c3c3bdb30ba5d51367233d3c474e13b3a4219d95a2e0364d9da318` |
+| Final implementation PR head | `29715210764` | `iuis-windows-build-evidence-107` | `8450333060` | `64525aa1f3c7b91362dbb91a1a4fb872248cbe95376663cc02ef0fa1f79f1a7c` |
+| Independent closure head | `29717369189` | `iuis-windows-build-evidence-114` | `8451078816` | `110e821dece6f998fabedfffda21df7d558fa309decf55c31addea05fccef721` |
+| Final closure PR head | `29717509492` | `iuis-windows-build-evidence-115` | `8451127726` | `7949403fb57ecabe5dbc8cc6e1904fa4c17d031ea6fe6759cd94b43501f9a762` |
+| Mainline promotion | `29717634787` | `iuis-windows-build-evidence-117` | `8451167506` | `c84d402c8bcba0b01ca65219f282f8c8140795bf0b3113439f120cca455d887f` |
+| Exact mainline tree | `29717728053` | `iuis-windows-build-evidence-119` | `8451202733` | `ee1c098bf11457e46e362c0196eb1d8aff0271f75e1e8408afbbf87eff8776aa` |
 
-Enrollment, TuitionAssessment, Payment, FinancialAdjustment, ScholarshipAward, LibraryBook, LibraryBorrowing, CounselingCase, DisciplineCase, ClinicAppointment, MedicalRecord, and MedicalClearance adapters contain embedded snapshots, collections, confidential records, immutable financial history, or workflow transitions that require dedicated persisted shapes before operational activation.
+Every stage passed exact 49-template validation, all seven project boundaries, Release compilation with zero warnings and zero errors, all 127 tests, TRX verification, and artifact publication.
 
-### Generic-mapper compatible
+## Figma Application-service and closure model
 
-None of the production Domain adapters. The generic mapper remains valid for simple public DTO-like records and the test probe aggregate only.
-
-### Specialized mapper completed
-
-None in Pass 9 closure. Completion is deferred rather than falsely represented.
-
-## Test baseline
-
-Seventeen Pass 9 tests cover profile resolution, restriction precedence, Administrator confidentiality, Student ownership and cross-record denial, restricted session purposes, DTO exclusion, session-derived queries, Employee role boundaries, typed repository round trips, optimistic conflicts, journaled transactions, profile loading, expiration, and Security Stamp mismatch. The closure hardens two existing tests without increasing the suite count: mapper readiness is asserted during the typed round-trip test, and stale pre-lock staging is asserted during the Application transaction test.
-
-## Validation evidence
-
-### Implementation head
-
-Run `29715030204` validated implementation head `898e1c54187c1e2ed5feec9f0085c59b525c7efd` with zero warnings, zero errors, and 127 of 127 tests passing. Artifact `iuis-windows-build-evidence-105`, ID `8450258190`, SHA-256 `9fe43133d8c3c3bdb30ba5d51367233d3c474e13b3a4219d95a2e0364d9da318`.
-
-### Final implementation PR head
-
-Run `29715210764` validated final PR #35 head `edfe94f85bac10ce47777f7c8a0d55f8b27d0c68` with zero warnings, zero errors, and 127 of 127 tests passing. Artifact `iuis-windows-build-evidence-107`, ID `8450333060`, SHA-256 `64525aa1f3c7b91362dbb91a1a4fb872248cbe95376663cc02ef0fa1f79f1a7c`.
-
-### Independent closure head
-
-Run `29717369189` validated closure head `85a075d79f86d8596bd950136ab4e2ba9a81b5e2` with exactly 49 templates, all seven project boundaries, zero warnings, zero errors, 127 of 127 tests passing, valid TRX output, and artifact publication. Artifact `iuis-windows-build-evidence-114`, ID `8451078816`, SHA-256 `110e821dece6f998fabedfffda21df7d558fa309decf55c31addea05fccef721`.
-
-## Figma Application-service model
-
-- `https://www.figma.com/board/VGyuqaZDhIBfGqBfGjQJUH`
-
-The editable FigJam model shows session validation, permission resolution, ownership and confidentiality checks, typed repository adapters, journaled transactions, released/internal projection boundaries, in-lock revision validation, mapper readiness, and the closure promotion sequence.
+`https://www.figma.com/board/VGyuqaZDhIBfGqBfGjQJUH`
 
 ## Evidence boundary
 
 The generic mapper and aggregate-specific repository-name adapters establish the typed persistence seam, but complete specialized mappers for every evolved Domain aggregate shape remain a later construction requirement. Production Forms, trusted-device/network enforcement, notification dispatch, operational backup/restore execution, deployment packaging, and release certification also remain deferred.
 
-## Exact next gate
+## Final status
 
-Validate the evidence-updated final closure PR head, merge it into `develop`, promote the validated baseline to `main`, validate the exact mainline tree, synchronize `develop`, and only then define the Pass 10 construction boundary.
+Pass 9 is implemented, closure-hardened, independently validated, promoted, exact-mainline validated, and synchronized. `main` and `develop` are identical at `559811d39f37a5fb4c6be62e71e87f3c366749cf`.
+
+## Exact next construction boundary
+
+# Integrated University Information System Build Execution — Pass 10: Canonical Persisted Record Schemas, Specialized Aggregate Mappers, Typed Repository Activation, Composition-Root Registration, Student and Employee Read-Model Vertical Slices, Controlled Application Writes, Mapper Compatibility and Repository Migration Tests, Windows Release Compilation, Figma Persistence-to-UI Wiring Model, and Pull Request Integration
