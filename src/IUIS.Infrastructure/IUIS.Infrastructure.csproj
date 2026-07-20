@@ -4,54 +4,38 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>IUIS.Infrastructure</RootNamespace>
-    <AssemblyName>IUIS.Infrastructure</AssemblyName>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <OutputType>Library</OutputType><RootNamespace>IUIS.Infrastructure</RootNamespace>
+    <AssemblyName>IUIS.Infrastructure</AssemblyName><TargetFrameworkProfile></TargetFrameworkProfile>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <OutputPath>..\..\artifacts\bin\$(Configuration)\IUIS.Infrastructure\</OutputPath>
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.Infrastructure\</IntermediateOutputPath>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
-  </ItemGroup>
+  <ItemGroup><Reference Include="System" /><Reference Include="System.Configuration" /><Reference Include="System.Core" /></ItemGroup>
+  <ItemGroup><PackageReference Include="System.Text.Json" Version="8.0.5" /></ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrap\ProductionBootstrapper.cs" />
+    <Compile Include="Persistence\AggregateRepositoryAdapters.cs" />
     <Compile Include="Persistence\AtomicFileWriter.cs" />
     <Compile Include="Persistence\CrossProcessFileLock.cs" />
     <Compile Include="Persistence\IdSequenceService.cs" />
     <Compile Include="Persistence\JsonInfrastructureOptions.cs" />
     <Compile Include="Persistence\JsonRepositoryStore.cs" />
+    <Compile Include="Persistence\MappedJsonRepository.cs" />
     <Compile Include="Persistence\RepositoryCatalog.cs" />
     <Compile Include="Persistence\RepositoryEnvelope.cs" />
     <Compile Include="Persistence\TransactionCoordinator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AuthenticationService.cs" />
+    <Compile Include="Security\JsonAuthorizationPrincipalProvider.cs" />
     <Compile Include="Security\LoginAttemptService.cs" />
     <Compile Include="Security\PasswordHasher.cs" />
     <Compile Include="Security\SecurityModels.cs" />
     <Compile Include="SolutionFoundation.cs" />
   </ItemGroup>
+  <ItemGroup><Content Include="..\..\templates\production-data\*.json"><Link>production-data\%(Filename)%(Extension)</Link><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content></ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\templates\production-data\*.json">
-      <Link>production-data\%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\IUIS.Domain\IUIS.Domain.csproj">
-      <Project>{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}</Project>
-      <Name>IUIS.Domain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IUIS.Application\IUIS.Application.csproj">
-      <Project>{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}</Project>
-      <Name>IUIS.Application</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\IUIS.Domain\IUIS.Domain.csproj"><Project>{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}</Project><Name>IUIS.Domain</Name></ProjectReference>
+    <ProjectReference Include="..\IUIS.Application\IUIS.Application.csproj"><Project>{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}</Project><Name>IUIS.Application</Name></ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

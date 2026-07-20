@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace IUIS.Infrastructure.Security
 {
@@ -26,6 +27,20 @@ namespace IUIS.Infrastructure.Security
         public bool MustChangePassword { get; set; }
         public DateTime CreatedAtUtc { get; set; }
         public DateTime UpdatedAtUtc { get; set; }
+        public long Version { get; set; }
+        public List<string> PermissionProfileIds { get; set; }
+        public List<string> DirectPermissionGrants { get; set; }
+        public List<string> DirectPermissionRestrictions { get; set; }
+    }
+
+    public sealed class PersistedPermissionProfileRecord
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public bool IsActive { get; set; }
+        public List<string> Permissions { get; set; }
+        public DateTime UpdatedAtUtc { get; set; }
+        public string UpdatedByUserId { get; set; }
         public long Version { get; set; }
     }
 
