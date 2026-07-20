@@ -93,11 +93,21 @@ namespace IUIS.Domain.Finance
             string changedByUserId)
         {
             RequireDraft();
-            Description = TextNormalizer.Required(description, nameof(description), 200);
-            Category = RequireDefined(category, nameof(category));
-            CalculationKind = RequireDefined(calculationKind, nameof(calculationKind));
-            Rate = RequirePositive(rate, nameof(rate));
+            var normalizedDescription = TextNormalizer.Required(
+                description,
+                nameof(description),
+                200);
+            var normalizedCategory = RequireDefined(category, nameof(category));
+            var normalizedCalculationKind = RequireDefined(
+                calculationKind,
+                nameof(calculationKind));
+            var normalizedRate = RequirePositive(rate, nameof(rate));
+
             RecordChange(changedAtUtc, changedByUserId);
+            Description = normalizedDescription;
+            Category = normalizedCategory;
+            CalculationKind = normalizedCalculationKind;
+            Rate = normalizedRate;
         }
 
         public void Activate(DateTime changedAtUtc, string changedByUserId)
@@ -108,8 +118,8 @@ namespace IUIS.Domain.Finance
                     "Only Draft or Inactive charge rules can be activated.");
             }
 
-            Status = ChargeRuleStatus.Active;
             RecordChange(changedAtUtc, changedByUserId);
+            Status = ChargeRuleStatus.Active;
         }
 
         public void Deactivate(DateTime changedAtUtc, string changedByUserId)
@@ -119,8 +129,8 @@ namespace IUIS.Domain.Finance
                 throw new DomainValidationException("Only Active charge rules can be deactivated.");
             }
 
-            Status = ChargeRuleStatus.Inactive;
             RecordChange(changedAtUtc, changedByUserId);
+            Status = ChargeRuleStatus.Inactive;
         }
 
         public void Retire(DateTime changedAtUtc, string changedByUserId)
@@ -136,8 +146,8 @@ namespace IUIS.Domain.Finance
                     "An Active charge rule must be deactivated before retirement.");
             }
 
-            Status = ChargeRuleStatus.Retired;
             RecordChange(changedAtUtc, changedByUserId);
+            Status = ChargeRuleStatus.Retired;
         }
 
         public Money Calculate(decimal billableAcademicUnits)
