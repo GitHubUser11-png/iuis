@@ -105,23 +105,28 @@ namespace IUIS.Domain.People
 
         public void UpdateContact(ContactInformation contact, PostalAddress address, DateTime changedAtUtc, string changedByUserId)
         {
-            Contact = contact ?? throw new DomainValidationException("Employee contact information is required.");
-            Address = address ?? throw new DomainValidationException("Employee address is required.");
+            var normalizedContact = contact ?? throw new DomainValidationException("Employee contact information is required.");
+            var normalizedAddress = address ?? throw new DomainValidationException("Employee address is required.");
             RecordChange(changedAtUtc, changedByUserId);
+            Contact = normalizedContact;
+            Address = normalizedAddress;
         }
 
         public void ChangeAssignment(string departmentId, string positionTitle, bool isFaculty, DateTime changedAtUtc, string changedByUserId)
         {
-            DepartmentId = DomainGuard.RequiredIdentifier(departmentId, nameof(departmentId));
-            PositionTitle = TextNormalizer.Required(positionTitle, nameof(positionTitle), 150);
-            IsFaculty = isFaculty;
+            var normalizedDepartmentId = DomainGuard.RequiredIdentifier(departmentId, nameof(departmentId));
+            var normalizedPositionTitle = TextNormalizer.Required(positionTitle, nameof(positionTitle), 150);
             RecordChange(changedAtUtc, changedByUserId);
+            DepartmentId = normalizedDepartmentId;
+            PositionTitle = normalizedPositionTitle;
+            IsFaculty = isFaculty;
         }
 
         public void SetStatus(EmploymentStatus status, DateTime changedAtUtc, string changedByUserId)
         {
-            Status = RequireStatus(status);
+            var normalizedStatus = RequireStatus(status);
             RecordChange(changedAtUtc, changedByUserId);
+            Status = normalizedStatus;
         }
 
         private static EmploymentStatus RequireStatus(EmploymentStatus value)
