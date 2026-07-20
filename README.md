@@ -8,37 +8,29 @@ Passes 1 through 8 establish the seven-project .NET Framework 4.8 solution, Doma
 
 Pass 9 closes Application authorization, session-aware command/query execution, Student own-record enforcement, Employee and Administrator permission boundaries, restricted DTOs, typed repository seams, in-lock expected-revision revalidation, and explicit readiness classification for all 18 aggregate adapters.
 
-Pass 10 establishes the first operational typed-persistence activation:
+Pass 10 completes the first typed-persistence activation for StudentRecord, EmployeeRecord, Course, Subject, AcademicPeriod, and AssessmentChargeRule. It includes six specialized mappers, real Student and Employee JSON-backed vertical slices, controlled contact updates, independent closure hardening, exact-mainline validation, and 148 tests.
 
-- canonical persisted-record schema v1 for StudentRecord, EmployeeRecord, Course, Subject, AcademicPeriod, and AssessmentChargeRule;
-- validated Domain rehydration factories that reconstruct value objects, lifecycle state, archive metadata, timestamps, actor IDs, and entity versions without reflection or transition replay;
-- six specialized `System.Text.Json` mappers and six activated typed repository adapters;
-- twelve remaining adapters that stay fail-closed with explicit deferral reasons;
-- an Infrastructure composition root for repositories, authorization, projections, and Application services;
-- real JSON-backed Student own-profile and Employee self-service read models with repository and entity concurrency tokens;
-- controlled Student and Employee contact updates with session-derived ownership, expected revisions, journaled transactions, and audit-ready metadata; and
-- canonical Administrator Employee master-record bootstrap while preserving a separate User account.
+Pass 11 implements the next persistence and security boundary:
 
-The independent Pass 10 closure audit corrected an `AssessmentChargeRule` exception-atomicity defect and added six integrated-tree tests covering restarted repository round trips, archive metadata, unsupported record versions, incomplete archive data, mapper-readiness alignment, and rejected-mutation integrity. The suite now contains 148 tests.
+- the authoritative six-field repository envelope: `repositoryName`, `schemaVersion`, `revision`, `updatedAtUtc`, `updatedByUserId`, and `records`;
+- compatibility reads for legacy `repository` and `createdAtUtc` input with canonical-only writes;
+- an idempotent, revision-preserving, journaled one-way rewrite across all 49 repositories;
+- all 49 production templates and source-tree validation normalized to the canonical contract;
+- raw session tokens returned once, SHA-256 digests persisted, fixed-time verification, and legacy-session rejection and revocation;
+- canonical record schema v1 and specialized mappers for Enrollment, TuitionAssessment, Payment, FinancialAdjustment, and ScholarshipAward;
+- eleven activated specialized adapters and seven remaining fail-closed adapters;
+- real Student Enrollment, Assessment, balance, Payment, and Scholarship read models;
+- controlled Enrollment submission, Assessment posting, Payment allocation and posting, Financial Adjustment posting, and journaled Scholarship Award application.
 
-Pass 10 implementation, independent closure, closure-baseline promotion, and exact promoted-mainline validation are complete through PRs #43–#47. The exact promoted mainline commit is `b3f22c5641de6842e0696268d0e4930ae034e274`. Every closure-stage Windows run validated exactly 49 production templates, seven project boundaries, zero compiler warnings, zero compiler errors, 148 of 148 tests, valid TRX output, and evidence artifact publication.
+Pass 11 adds twelve regression and security tests, bringing the suite to 160 tests. GitHub Actions run `29753253012` validated continuation head `df6e5997b83b999cab459f3baa4cf11245ebffc9`: exactly 49 canonical templates, six canonical envelope fields, seven project boundaries, zero compiler warnings, zero compiler errors, 160 of 160 tests passed, valid TRX output, and artifact publication.
 
-This documentation-finalization branch records the complete closure evidence and the exact Pass 11 construction boundary. Pass 10 is not final release certification. Final documentation-inclusive mainline validation and zero-divergence `main`/`develop` synchronization remain required before Pass 11 starts.
+PR #51 integrated the prerequisite checkpoint before the complete Pass 11 boundary was finished. Draft PR #52 is the controlled continuation carrying the complete implementation, expanded tests, documentation, Figma model, and final integration gate. Pass 11 is not closure-complete or release-certified until the exact final PR head is validated and merged, followed by independent integrated-tree closure.
 
-## Locked Pass 11 starting boundary
+Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md). The Pass 11 implementation record is [`docs/passes/PASS_11_ENVELOPE_TOKEN_FINANCE.md`](docs/passes/PASS_11_ENVELOPE_TOKEN_FINANCE.md).
 
-Pass 11 begins with two inherited contract corrections:
+## Exact next gate
 
-1. migrate all 49 repositories from the legacy `repository` plus `createdAtUtc` envelope to the authoritative `repositoryName`, `schemaVersion`, `revision`, `updatedAtUtc`, `updatedByUserId`, and `records` envelope through a controlled, idempotent, journaled one-way rewrite;
-2. replace bearer-token persistence under `TokenHash` with raw-token-once issuance, cryptographic digest storage, fixed-time digest comparison, and legacy-session revocation or migration.
-
-After those corrections, Pass 11 adds canonical persisted schemas and specialized adapters for Enrollment, TuitionAssessment, Payment, FinancialAdjustment, and ScholarshipAward, then connects Student financial read models and controlled enrollment, assessment, payment, adjustment, and scholarship orchestration.
-
-Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md). Pass-specific records are in [`docs/passes/PASS_10_CANONICAL_SCHEMAS_SPECIALIZED_MAPPERS.md`](docs/passes/PASS_10_CANONICAL_SCHEMAS_SPECIALIZED_MAPPERS.md) and [`docs/passes/PASS_10_CLOSURE.md`](docs/passes/PASS_10_CLOSURE.md).
-
-## Exact next repository gate
-
-Validate and merge the Pass 10 closure-record finalization, validate the exact resulting documentation-inclusive `main` tree, synchronize `develop` to that exact final `main` commit with ahead `0` and behind `0`, and only then begin Pass 11.
+Validate the evidence-updated final PR #52 head, merge it into `develop`, then independently closure-validate the exact merged Pass 11 tree before any mainline promotion or Pass 12 construction.
 
 ## Locked technical target
 

@@ -246,8 +246,13 @@ namespace IUIS.Tests
                 {
                     "academic_periods",
                     "assessment_charge_rules",
+                    "assessments",
                     "courses",
                     "employees",
+                    "enrollments",
+                    "financial_adjustments",
+                    "payments",
+                    "scholarship_awards",
                     "students",
                     "subjects"
                 },
