@@ -10,6 +10,8 @@ namespace IUIS.Application.Orchestration
 {
     public sealed class ContactUpdateRequest
     {
+        public long ExpectedRepositoryRevision { get; set; }
+        public long ExpectedEntityVersion { get; set; }
         public string EmailAddress { get; set; }
         public string MobileNumber { get; set; }
         public string AlternatePhoneNumber { get; set; }
@@ -31,6 +33,80 @@ namespace IUIS.Application.Orchestration
         public long EntityVersion { get; set; }
         public DateTime UpdatedAtUtc { get; set; }
         public string UpdatedByUserId { get; set; }
+    }
+
+    internal static class ContactUpdateRequestFactory
+    {
+        public static ContactInformation Contact(ContactUpdateRequest request)
+        {
+            ValidateConcurrency(request);
+            return new ContactInformation(
+                request.EmailAddress,
+                request.MobileNumber,
+                request.AlternatePhoneNumber);
+        }
+
+        public static PostalAddress Address(ContactUpdateRequest request)
+        {
+            ValidateConcurrency(request);
+            return new PostalAddress(
+                request.AddressLine1,
+                request.AddressLine2,
+                request.Barangay,
+                request.CityMunicipality,
+                request.Province,
+                request.PostalCode,
+                request.CountryCode);
+        }
+
+        public static void EnsureCurrent(
+            ContactUpdateRequest request,
+            long repositoryRevision,
+            long entityVersion)
+        {
+            ValidateConcurrency(request);
+            if (request.ExpectedRepositoryRevision != repositoryRevision)
+            {
+                throw new InvalidOperationException(
+                    "The contact update is based on a stale repository revision.");
+            }
+
+            if (request.ExpectedEntityVersion != entityVersion)
+            {
+                throw new InvalidOperationException(
+                    "The contact update is based on a stale entity version.");
+            }
+        }
+
+        public static ContactUpdateResult Result(
+            string transactionId,
+            string repositoryName,
+            string recordId,
+            long repositoryRevision,
+            long entityVersion,
+            DateTime updatedAtUtc,
+            string updatedByUserId)
+        {
+            return new ContactUpdateResult
+            {
+                TransactionId = transactionId,
+                RepositoryName = repositoryName,
+                RecordId = recordId,
+                RepositoryRevision = repositoryRevision,
+                EntityVersion = entityVersion,
+                UpdatedAtUtc = updatedAtUtc,
+                UpdatedByUserId = updatedByUserId
+            };
+        }
+
+        private static void ValidateConcurrency(ContactUpdateRequest request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request.ExpectedRepositoryRevision < 0L)
+                throw new ArgumentOutOfRangeException(nameof(request.ExpectedRepositoryRevision));
+            if (request.ExpectedEntityVersion < 1L)
+                throw new ArgumentOutOfRangeException(nameof(request.ExpectedEntityVersion));
+        }
     }
 
     public sealed class StudentContactUpdateService
@@ -55,8 +131,8 @@ namespace IUIS.Application.Orchestration
             ContactUpdateRequest request,
             DateTime utcNow)
         {
-            var contact = CreateContact(request);
-            var address = CreateAddress(request);
+            var contact = ContactUpdateRequestFactory.Contact(request);
+            var address = ContactUpdateRequestFactory.Address(request);
             return _executor.Command(
                 sessionId,
                 sessionToken,
@@ -81,13 +157,17 @@ namespace IUIS.Application.Orchestration
                             "The Student record is unavailable.");
                     }
 
+                    ContactUpdateRequestFactory.EnsureCurrent(
+                        request,
+                        snapshot.Revision,
+                        record.Version);
                     record.UpdateContact(contact, address, utcNow, principal.UserAccountId);
                     var transactionId = _transactions.Execute(scope => scope.Stage(
                         _students,
                         snapshot.Records,
                         snapshot.Revision,
                         principal.UserAccountId));
-                    return Result(
+                    return ContactUpdateRequestFactory.Result(
                         transactionId,
                         _students.RepositoryName,
                         record.Id,
@@ -96,48 +176,6 @@ namespace IUIS.Application.Orchestration
                         record.UpdatedAtUtc,
                         record.UpdatedByUserId);
                 });
-        }
-
-        private static ContactInformation CreateContact(ContactUpdateRequest request)
-        {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-            return new ContactInformation(
-                request.EmailAddress,
-                request.MobileNumber,
-                request.AlternatePhoneNumber);
-        }
-
-        private static PostalAddress CreateAddress(ContactUpdateRequest request)
-        {
-            return new PostalAddress(
-                request.AddressLine1,
-                request.AddressLine2,
-                request.Barangay,
-                request.CityMunicipality,
-                request.Province,
-                request.PostalCode,
-                request.CountryCode);
-        }
-
-        private static ContactUpdateResult Result(
-            string transactionId,
-            string repositoryName,
-            string recordId,
-            long repositoryRevision,
-            long entityVersion,
-            DateTime updatedAtUtc,
-            string updatedByUserId)
-        {
-            return new ContactUpdateResult
-            {
-                TransactionId = transactionId,
-                RepositoryName = repositoryName,
-                RecordId = recordId,
-                RepositoryRevision = repositoryRevision,
-                EntityVersion = entityVersion,
-                UpdatedAtUtc = updatedAtUtc,
-                UpdatedByUserId = updatedByUserId
-            };
         }
     }
 
@@ -163,8 +201,8 @@ namespace IUIS.Application.Orchestration
             ContactUpdateRequest request,
             DateTime utcNow)
         {
-            var contact = CreateContact(request);
-            var address = CreateAddress(request);
+            var contact = ContactUpdateRequestFactory.Contact(request);
+            var address = ContactUpdateRequestFactory.Address(request);
             return _executor.Command(
                 sessionId,
                 sessionToken,
@@ -189,13 +227,17 @@ namespace IUIS.Application.Orchestration
                             "The Employee record is unavailable.");
                     }
 
+                    ContactUpdateRequestFactory.EnsureCurrent(
+                        request,
+                        snapshot.Revision,
+                        record.Version);
                     record.UpdateContact(contact, address, utcNow, principal.UserAccountId);
                     var transactionId = _transactions.Execute(scope => scope.Stage(
                         _employees,
                         snapshot.Records,
                         snapshot.Revision,
                         principal.UserAccountId));
-                    return Result(
+                    return ContactUpdateRequestFactory.Result(
                         transactionId,
                         _employees.RepositoryName,
                         record.Id,
@@ -204,48 +246,6 @@ namespace IUIS.Application.Orchestration
                         record.UpdatedAtUtc,
                         record.UpdatedByUserId);
                 });
-        }
-
-        private static ContactInformation CreateContact(ContactUpdateRequest request)
-        {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-            return new ContactInformation(
-                request.EmailAddress,
-                request.MobileNumber,
-                request.AlternatePhoneNumber);
-        }
-
-        private static PostalAddress CreateAddress(ContactUpdateRequest request)
-        {
-            return new PostalAddress(
-                request.AddressLine1,
-                request.AddressLine2,
-                request.Barangay,
-                request.CityMunicipality,
-                request.Province,
-                request.PostalCode,
-                request.CountryCode);
-        }
-
-        private static ContactUpdateResult Result(
-            string transactionId,
-            string repositoryName,
-            string recordId,
-            long repositoryRevision,
-            long entityVersion,
-            DateTime updatedAtUtc,
-            string updatedByUserId)
-        {
-            return new ContactUpdateResult
-            {
-                TransactionId = transactionId,
-                RepositoryName = repositoryName,
-                RecordId = recordId,
-                RepositoryRevision = repositoryRevision,
-                EntityVersion = entityVersion,
-                UpdatedAtUtc = updatedAtUtc,
-                UpdatedByUserId = updatedByUserId
-            };
         }
     }
 }
