@@ -26,6 +26,8 @@
     <Compile Include="Persistence\MappedJsonRepository.cs" />
     <Compile Include="Persistence\RepositoryCatalog.cs" />
     <Compile Include="Persistence\RepositoryEnvelope.cs" />
+    <Compile Include="Persistence\RepositoryEnvelopeJson.cs" />
+    <Compile Include="Persistence\RepositoryEnvelopeMigrationService.cs" />
     <Compile Include="Persistence\SpecializedAggregateJsonMappers.cs" />
     <Compile Include="Persistence\TransactionCoordinator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -34,6 +36,8 @@
     <Compile Include="Security\LoginAttemptService.cs" />
     <Compile Include="Security\PasswordHasher.cs" />
     <Compile Include="Security\SecurityModels.cs" />
+    <Compile Include="Security\SessionSecurityMigrationService.cs" />
+    <Compile Include="Security\SessionTokenProtector.cs" />
     <Compile Include="SolutionFoundation.cs" />
   </ItemGroup>
   <ItemGroup><Content Include="..\..\templates\production-data\*.json"><Link>production-data\%(Filename)%(Extension)</Link><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content></ItemGroup>
