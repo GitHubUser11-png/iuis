@@ -103,19 +103,15 @@ namespace IUIS.Infrastructure.Persistence
     public sealed class CounselingCaseRepositoryAdapter
         : MappedJsonRepository<CounselingCase>, ICounselingCaseRepository
     {
-        public CounselingCaseRepositoryAdapter(
-            JsonRepositoryStore store,
-            IJsonRecordMapper<CounselingCase> mapper)
-            : base("counseling", store, mapper) { }
+        public CounselingCaseRepositoryAdapter(JsonRepositoryStore store)
+            : base("counseling", store, new CounselingCaseJsonMapper()) { }
     }
 
     public sealed class DisciplineCaseRepositoryAdapter
         : MappedJsonRepository<DisciplineCase>, IDisciplineCaseRepository
     {
-        public DisciplineCaseRepositoryAdapter(
-            JsonRepositoryStore store,
-            IJsonRecordMapper<DisciplineCase> mapper)
-            : base("discipline_incidents", store, mapper) { }
+        public DisciplineCaseRepositoryAdapter(JsonRepositoryStore store)
+            : base("discipline_incidents", store, new DisciplineCaseJsonMapper()) { }
     }
 
     public sealed class ClinicAppointmentRepositoryAdapter
