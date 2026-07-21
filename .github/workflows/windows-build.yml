@@ -61,8 +61,8 @@ jobs:
               $pass9Old `
               $pass9New
 
-          $activationOld = "                    `"assessments`",`n                    `"courses`"," 
-          $activationNew = "                    `"assessments`",`n                    `"books`",`n                    `"borrowings`",`n                    `"courses`"," 
+          $activationOld = "                    `"assessments`",`n                    `"courses`","
+          $activationNew = "                    `"assessments`",`n                    `"books`",`n                    `"borrowings`",`n                    `"courses`","
           Replace-ExactOnce `
               'tests/IUIS.Tests/Pass10ClosureIntegrityTests.cs' `
               $activationOld `
