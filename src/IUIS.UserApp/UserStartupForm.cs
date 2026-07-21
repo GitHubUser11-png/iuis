@@ -27,5 +27,23 @@ namespace IUIS.UserApp
             Controls.Add(statusLabel);
             Controls.Add(detailLabel);
         }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // UserStartupForm
+            // 
+            this.ClientSize = new System.Drawing.Size(467, 291);
+            this.Name = "UserStartupForm";
+            this.Load += new System.EventHandler(this.UserStartupForm_Load);
+            this.ResumeLayout(false);
+
+        }
+
+        private void UserStartupForm_Load(object sender, System.EventArgs e)
+        {
+
+        }
     }
 }
