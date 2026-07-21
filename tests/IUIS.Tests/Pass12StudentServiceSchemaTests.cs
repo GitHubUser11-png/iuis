@@ -149,27 +149,21 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        public void TwoAdaptersRemainFailClosedAfterClinicMedicalActivation()
+        public void AllAdaptersAreSpecializedAfterFinalActivation()
         {
             var records = AggregateMapperReadinessCatalog.All;
             var completed = records
                 .Where(item => item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted)
+                .Select(item => item.AdapterName)
                 .ToList();
             var deferred = records
                 .Where(item => item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason)
-                .OrderBy(item => item.AdapterName, StringComparer.Ordinal)
                 .ToList();
 
-            Assert.AreEqual(16, completed.Count);
-            Assert.AreEqual(2, deferred.Count);
-            CollectionAssert.AreEqual(
-                new[]
-                {
-                    "CounselingCaseRepositoryAdapter",
-                    "DisciplineCaseRepositoryAdapter"
-                },
-                deferred.Select(item => item.AdapterName).ToArray());
-            Assert.IsTrue(deferred.All(item => !string.IsNullOrWhiteSpace(item.Reason)));
+            Assert.AreEqual(18, completed.Count);
+            Assert.AreEqual(0, deferred.Count);
+            CollectionAssert.Contains(completed, "CounselingCaseRepositoryAdapter");
+            CollectionAssert.Contains(completed, "DisciplineCaseRepositoryAdapter");
         }
 
         [TestMethod]
