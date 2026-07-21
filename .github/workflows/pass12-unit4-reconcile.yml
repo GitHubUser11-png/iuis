@@ -1,5 +1,6 @@
 name: Pass 12 Unit 4 Readiness Reconciliation
 
+# Second synchronization activates the already registered workflow identity.
 on:
   pull_request:
     branches:
