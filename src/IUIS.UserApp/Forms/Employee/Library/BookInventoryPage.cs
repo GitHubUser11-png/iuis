@@ -106,9 +106,9 @@ namespace IUIS.UserApp.Forms.Employee.Library
             AppDataGridViewFactory.AddTextBoxColumn(_booksGrid, "CopiesLost", "Lost", 60);
             AppDataGridViewFactory.AddTextBoxColumn(_booksGrid, "ConditionDisplay", "Condition", 100);
             AppDataGridViewFactory.AddTextBoxColumn(_booksGrid, "StatusDisplay", "Status", 100);
-            AppDataGridViewFactory.AddButtonColumn(_booksGrid, "View", "View", 60);
-            AppDataGridViewFactory.AddButtonColumn(_booksGrid, "Edit", "Edit", 60);
-            AppDataGridViewFactory.AddButtonColumn(_booksGrid, "Adjust", "Adjust", 60);
+            AppDataGridViewFactory.AddButtonColumn(_booksGrid, "View", "View", "View", 60);
+            AppDataGridViewFactory.AddButtonColumn(_booksGrid, "Edit", "Edit", "Edit", 60);
+            AppDataGridViewFactory.AddButtonColumn(_booksGrid, "Adjust", "Adjust", "Adjust", 60);
 
             _filterBar.SearchRequested += (s, e) => LoadBooks();
             _filterBar.ClearRequested += (s, e) => LoadBooks();

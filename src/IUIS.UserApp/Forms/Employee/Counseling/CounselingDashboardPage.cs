@@ -130,7 +130,7 @@ namespace IUIS.UserApp.Forms.Employee.Counseling
             AppDataGridViewFactory.AddTextBoxColumn(_todayScheduleGrid, "SessionId", "ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_todayScheduleGrid, "StudentName", "Student", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_todayScheduleGrid, "SessionType", "Type", 120);
-            AppDataGridViewFactory.AddDateColumn(_todayScheduleGrid, "ScheduledAtUtc", "Time", 120);
+            AppDataGridViewFactory.AddDateColumn(_todayScheduleGrid, "ScheduledAtUtc", "Time", "MM/dd/yyyy", 120);
 
             var pendingRequestsLabel = new Label
             {

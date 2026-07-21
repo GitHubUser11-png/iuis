@@ -130,7 +130,7 @@ namespace IUIS.UserApp.Forms.Employee.Discipline
             AppDataGridViewFactory.AddTextBoxColumn(_recentIncidentsGrid, "IncidentId", "ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_recentIncidentsGrid, "StudentName", "Student", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_recentIncidentsGrid, "ViolationType", "Violation", 150);
-            AppDataGridViewFactory.AddDateColumn(_recentIncidentsGrid, "ReportedAtUtc", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_recentIncidentsGrid, "ReportedAtUtc", "Date", "MM/dd/yyyy", 120);
 
             var pendingReviewLabel = new Label
             {
