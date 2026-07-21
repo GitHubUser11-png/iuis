@@ -119,12 +119,7 @@ The five remaining fail-closed adapters are Counseling Case, Discipline Case, Cl
 
 ## Unit 2 composition and Application services
 
-`IuisCompositionRoot` now registers:
-
-- `LibraryBooks`;
-- `LibraryBorrowings`;
-- `StudentLibraryCirculation`;
-- `LibraryCirculation`.
+`IuisCompositionRoot` now registers `LibraryBooks`, `LibraryBorrowings`, `StudentLibraryCirculation`, and `LibraryCirculation`.
 
 `StudentLibraryCirculationQueryService.GetOwnOverview` requires `student.library.read`, `UserApplication`, Student role, and `OwnRecord` confidentiality. Student identity is derived from the authenticated principal rather than supplied by the caller. The released projection includes Issued, Overdue, Returned, and Lost borrowings and excludes Prepared and Cancelled records. It exposes Book title, author, category, copy ID, due date, status, issue/return/lost timestamps, renewal count, and entity/repository revisions without internal actor IDs.
 
@@ -140,28 +135,13 @@ Issue creates and issues a new Borrowing and places the selected Book Copy on lo
 
 ## Unit 2 tests
 
-Thirteen new Unit 2 tests cover:
-
-- Book mapper round trip with Available, OnLoan, Maintenance, and Lost inventory;
-- Borrowing mapper round trip for Returned and Lost terminal states;
-- rejection of inconsistent persisted copy and borrowing state;
-- exact readiness transition from `11/7` to `13/5`;
-- issue staging of both repositories in one transaction;
-- return and lost mutation of both repositories;
-- stale repository revision rejection before transaction execution;
-- stale aggregate entity version rejection before transaction execution;
-- session-derived Student ownership;
-- released projection field exclusion;
-- Student denial for librarian commands;
-- composition-root restart persistence;
-- deterministic transaction failure with byte-for-byte rollback;
-- real repository stale-token rejection without persisted mutation.
+Thirteen new Unit 2 tests cover mapper round trips, invalid persisted state, readiness activation, journaled issue/return/lost coordination, stale repository and entity revisions, own-record projection, released field exclusion, Student command denial, composition-root restart, deterministic byte-for-byte rollback, and real-repository stale-token rejection.
 
 ## Unit 2 failed-run and reconciliation history
 
-Initial Unit 2 head `e4f476824c3d0db84cb54d43a5930be4fd66c78f` ran in GitHub Actions as run `29800360307` / run number `235`.
+Initial Unit 2 head `e4f476824c3d0db84cb54d43a5930be4fd66c78f` ran as GitHub Actions run `29800360307` / run number `235`.
 
-The source-tree gate, package restore, and Release compilation completed with zero compiler errors and zero warnings. All thirteen new Library tests passed. The suite result was `187 / 190` because three older tests still hard-coded the pre-Unit-2 readiness state of eleven active and seven deferred adapters and omitted `books` and `borrowings` from the composition activation list.
+The source-tree gate, package restore, and Release compilation completed with zero compiler errors and zero warnings. All thirteen new Library tests passed. The suite result was `187 / 190` because three older tests still hard-coded the pre-Unit-2 readiness state and omitted `books` and `borrowings` from the composition activation list.
 
 Failed-run artifact:
 
@@ -169,24 +149,49 @@ Failed-run artifact:
 - artifact ID `8483550446`;
 - SHA-256 `f0e7eca785ee9dec64621b28476755c1092461a4e6cc1bb0e505dbcec937ac38`.
 
-The compatibility assertions were reconciled through controlled test-only commits:
+Compatibility assertions were reconciled through controlled test-only commits:
 
 - `cf296537bc81eebd6f8f588bc1423d4ee61b6187` — Pass 10 canonical count and method name;
 - `20323326235e9f6cd92a5b35bb90e3d9492595f2` — Pass 9 typed-adapter count;
-- `c20969035260b8e9ad91ba6e55398ff8063d7fcf` — composition activation list and complete removal of temporary maintenance workflows.
+- `c20969035260b8e9ad91ba6e55398ff8063d7fcf` — composition activation list and removal of temporary maintenance workflows.
 
-The authoritative `.github/workflows/windows-build.yml` is restored byte-for-byte from `develop`, with `contents: read` and the original Release build job only.
+The authoritative `.github/workflows/windows-build.yml` was restored byte-for-byte from `develop`, with `contents: read` and the original Release build job only.
+
+## Successful Unit 2 Windows evidence
+
+GitHub Actions run `29802968984` / run number `244` validated exact documentation-inclusive head `ca2288c597debd6c2de0657103d7141ca60853d5`.
+
+- source-tree and architecture validation: passed;
+- project boundaries: exactly `7 / 7`;
+- production templates: exactly `49 / 49`;
+- canonical repository-envelope fields: exactly `6`;
+- UI C# files scanned: `8`;
+- prohibited UI dependency findings: `0`;
+- NuGet restoration: passed;
+- .NET Framework 4.8 Release MSBuild: passed;
+- compiler warnings: `0`;
+- compiler errors: `0`;
+- MSTest: `190 / 190` passed;
+- TRX production and verification: passed;
+- artifact publication: passed.
+
+Evidence artifact:
+
+- name: `iuis-windows-build-evidence-244`;
+- artifact ID: `8484440239`;
+- SHA-256: `3ddba8c7080314f8f66555e19ab8a74923f2dd6a579adf053e6fba5f7197e30c`;
+- expiration: `2026-08-04T05:07:18Z`.
+
+The locally calculated ZIP digest matched the GitHub artifact digest.
 
 ## Current evidence boundary
 
-Unit 1 is implemented and independently Windows-validated. Unit 2 implementation is complete at code head `c20969035260b8e9ad91ba6e55398ff8063d7fcf`; its failed-run cause has been corrected and all temporary workflow machinery has been removed.
+Unit 1 and Unit 2 are implemented and independently Windows-validated. Library Book and Library Borrowing are now active specialized adapters, bringing mapper readiness to `13 / 18` complete with five remaining fail-closed adapters.
 
-This documentation commit is the clean exact-head trigger for the authoritative Unit 2 Windows validation. Unit 2 is not described as successfully validated until that run passes Release compilation, all `190` tests, TRX verification, and artifact publication.
-
-Pass 12 remains under construction in draft PR #61. It is not merged, closure-validated, promoted, synchronized, deployed, or release-certified.
+This evidence-registration commit is the final Unit 2 exact-head validation target. Pass 12 remains under construction in draft PR #61. It is not merged, closure-validated, promoted, synchronized, deployed, or release-certified.
 
 ## Exact next gate
 
-Validate this documentation-inclusive Unit 2 head through the authoritative Windows workflow. After successful evidence registration, proceed to:
+Validate this evidence-registration head through the authoritative Windows workflow. After that exact head passes, proceed to:
 
 **Pass 12 — Construction Unit 3: ClinicAppointment, MedicalRecord, and MedicalClearance Invariant-Preserving Rehydration, Confidential Consultation Segregation, Specialized Mappers, Repository Activation, Session-Aware Appointment and Clearance Orchestration, Released Medical Projections, Journaled Related Mutations, and Windows Validation.**
