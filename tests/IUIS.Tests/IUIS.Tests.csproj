@@ -31,6 +31,7 @@
     <Compile Include="Pass12StudentServiceSchemaTests.cs" />
     <Compile Include="Pass12LibraryPersistenceTests.cs" />
     <Compile Include="Pass12LibraryIntegrationTests.cs" />
+    <Compile Include="Pass12ClinicMedicalIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" /><Compile Include="SolutionFoundationTests.cs" />
     <Compile Include="StudentServiceDomainTests.cs" />
   </ItemGroup>
