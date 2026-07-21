@@ -25,6 +25,7 @@
     <Compile Include="Academic\Subject.cs" />
     <Compile Include="Academic\SubjectPrerequisiteGraph.cs" />
     <Compile Include="Clinic\ClinicModels.cs" />
+    <Compile Include="Clinic\ClinicPersistenceFactory.cs" />
     <Compile Include="Common\DomainGuard.cs" />
     <Compile Include="Common\DomainValidationException.cs" />
     <Compile Include="Common\EntityBase.cs" />
