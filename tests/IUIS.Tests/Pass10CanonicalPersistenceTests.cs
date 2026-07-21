@@ -285,17 +285,17 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        public void ReadinessCatalogActivatesExactlyElevenSpecializedMappers()
+        public void ReadinessCatalogActivatesExactlyThirteenSpecializedMappers()
         {
             var records = AggregateMapperReadinessCatalog.All;
             Assert.AreEqual(18, records.Count);
             Assert.AreEqual(
-                11,
+                13,
                 records.Count(item =>
                     item.Readiness
                     == AggregateMapperReadiness.SpecializedMapperCompleted));
             Assert.AreEqual(
-                7,
+                5,
                 records.Count(item =>
                     item.Readiness
                     == AggregateMapperReadiness.DeferredWithExplicitReason));
