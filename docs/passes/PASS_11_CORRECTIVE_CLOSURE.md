@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This record preserves the distinction between original Pass 11 implementation, premature promotion, independently validated corrective units, final mainline validation, and branch synchronization.
+This record preserves the distinction between original Pass 11 implementation, premature promotion, independently validated corrective units, exact merged-main validation, final evidence registration, and branch synchronization.
 
 It does not rewrite PR #53 as closure-gated. PR #53 promoted Pass 11 to `main` before independent closure evidence existed.
 
@@ -15,11 +15,12 @@ It does not rewrite PR #53 as closure-gated. PR #53 promoted Pass 11 to `main` b
 | Premature promotion | #53 | `925696ca6dd75fc8be513e818835cde0ad85c812` | Merged to `main` before independent closure |
 | Abandoned corrective draft | #54 | `2c4e583f6d7a0f158e83e44543c5ed620f22bb03` | Closed without merge |
 | Corrective Unit 1 | #55 | head `517af90bd2218dea471747b2da5c92e49526e3ac`; merge `849396b3a00158b154cd9086cf0229cafd0868de` | Independently validated and merged |
-| Corrective Unit 2 | #56 | code head `eac074c23da378e1cdae9a1abdf76090851b89a9` | Independently validated; final promotion pending |
+| Corrective Unit 2 and reconciliation | #56 | code head `eac074c23da378e1cdae9a1abdf76090851b89a9`; documentation head `ac7adb00c106c4752b12bfaa3e6df5070b39e5c0`; merge `60536382383d9300000c9d042ad01ab6083a21e1` | Independently validated and merged |
+| Exact merged-main validation | #57 | `60536382383d9300000c9d042ad01ab6083a21e1` | Validation-only PR closed without merge after success |
 
 ## Combined corrective diff
 
-The combined corrective delta from prematurely promoted commit `925696ca6dd75fc8be513e818835cde0ad85c812` through Audit Unit 2 code head `eac074c23da378e1cdae9a1abdf76090851b89a9` is exactly ten files:
+The combined corrective delta from prematurely promoted commit `925696ca6dd75fc8be513e818835cde0ad85c812` through Audit Unit 2 code head `eac074c23da378e1cdae9a1abdf76090851b89a9` is exactly ten implementation/test files:
 
 1. `build/Test-IuisSourceTree.ps1`;
 2. `src/IUIS.Application/Orchestration/EnrollmentFinanceCommandServices.cs`;
@@ -32,7 +33,7 @@ The combined corrective delta from prematurely promoted commit `925696ca6dd75fc8
 9. `tests/IUIS.Tests/Pass11CorrectiveClosureTests.cs`;
 10. `tests/IUIS.Tests/Pass11CorrectiveAuditUnit2Tests.cs`.
 
-Documentation reconciliation adds this record plus updates to `README.md`, `docs/IMPLEMENTATION_STATE.md`, and `docs/passes/PASS_11_ENVELOPE_TOKEN_FINANCE.md`.
+PR #56 additionally reconciled `README.md`, `docs/IMPLEMENTATION_STATE.md`, `docs/passes/PASS_11_ENVELOPE_TOKEN_FINANCE.md`, and this evidence register.
 
 ## Corrective Unit 1
 
@@ -73,7 +74,7 @@ Corrective Unit 2 establishes:
 - Scholarship Award and Financial Adjustment two-repository rollback and successful retry;
 - dependency scanning across every C# file in SharedUI, UserApp, and AdminApp.
 
-### Unit 2 Windows evidence
+### Unit 2 code-head evidence
 
 - exact code head: `eac074c23da378e1cdae9a1abdf76090851b89a9`;
 - run: `29793780496`;
@@ -81,6 +82,18 @@ Corrective Unit 2 establishes:
 - artifact ID: `8481293446`;
 - SHA-256: `26a2b77fad29ceef6e695f30f7aeef7077b65b01652d152667142e89c63acc8b`;
 - expiration: `2026-08-04T01:43:19Z`;
+- compiler warnings/errors: `0 / 0`;
+- tests: `172 / 172` passed.
+
+### Documentation-inclusive PR #56 evidence
+
+- exact head: `ac7adb00c106c4752b12bfaa3e6df5070b39e5c0`;
+- run: `29795001964`;
+- run number: `207`;
+- artifact: `iuis-windows-build-evidence-207`;
+- artifact ID: `8481720544`;
+- SHA-256: `8e2d0c63396d34693d98e031d6165b24b821fedf6cc4ba78125ebda184da76cb`;
+- expiration: `2026-08-04T02:10:46Z`;
 - project boundaries: `7 / 7`;
 - production templates: `49 / 49`;
 - canonical envelope fields: `6`;
@@ -89,6 +102,34 @@ Corrective Unit 2 establishes:
 - compiler warnings/errors: `0 / 0`;
 - tests: `172 / 172` passed;
 - TRX verification and artifact publication: passed.
+
+## Exact merged-main validation
+
+PR #56 merged into `main` at `60536382383d9300000c9d042ad01ab6083a21e1` using an exact-head guard.
+
+Validation-only PR #57 used:
+
+- base `849396b3a00158b154cd9086cf0229cafd0868de`;
+- head exactly `60536382383d9300000c9d042ad01ab6083a21e1`;
+- no trigger commit, workflow change, or validation-only source modification.
+
+Exact merged-main evidence:
+
+- run: `29795300068`;
+- run number: `209`;
+- artifact: `iuis-windows-build-evidence-209`;
+- artifact ID: `8481826369`;
+- SHA-256: `288c4cb168b36701533cf9a219dd8622836ed3bd1bc5d21dd70fe8e738984800`;
+- expiration: `2026-08-04T02:17:47Z`;
+- project boundaries: `7 / 7`;
+- production templates: `49 / 49`;
+- canonical envelope fields: `6`;
+- all-UI dependency validation: passed;
+- compiler warnings/errors: `0 / 0`;
+- tests: `172 / 172` passed;
+- TRX verification and artifact publication: passed.
+
+The locally calculated ZIP digest matched the GitHub artifact digest.
 
 ## Locked boundaries preserved
 
@@ -109,24 +150,22 @@ Editable corrective-closure board:
 
 - `https://www.figma.com/board/VGyuqaZDhIBfGqBfGjQJUH`
 
-The board records original implementation, corrective Unit 1, deterministic migration rollback, mapper integrity, Scholarship rollback, audit recovery, UI dependency validation, Windows evidence, and the final promotion sequence.
+The board records original implementation, corrective Unit 1, deterministic migration rollback, mapper integrity, Scholarship rollback, audit recovery, UI dependency validation, exact merged-main validation, final evidence registration, and the Pass 12 boundary.
 
-## Final closure fields
+## Finalization protocol
 
-The following fields must be completed only from machine-generated and GitHub-verified evidence after PR #56 integration:
+This record is committed from exact validated merged-main commit `60536382383d9300000c9d042ad01ab6083a21e1` on `build/pass-11-final-evidence-registration`.
 
-| Field | State before final promotion |
-|---|---|
-| Documentation-inclusive PR #56 head | Pending Windows validation |
-| PR #56 merge commit | Pending |
-| Exact merged-main validation run | Pending |
-| Exact merged-main artifact and digest | Pending |
-| Final evidence-registration commit | Pending |
-| Exact final-main validation run | Pending |
-| Final `main` commit | Pending |
-| Final `develop` commit | Pending |
-| `main` ahead of `develop` | Must become `0` |
-| `main` behind `develop` | Must become `0` |
+The finalization sequence is:
+
+1. validate the exact evidence-registration head through the authoritative Windows workflow;
+2. merge that head into `main` with an exact-head guard;
+3. validate the resulting exact final `main` commit without a trigger commit;
+4. register that final validation in the merged evidence PR and validation-only PR metadata;
+5. create or restore `develop` at the exact final `main` commit;
+6. compare `main` and `develop` and require ahead `0`, behind `0`.
+
+This avoids an infinite evidence-documentation loop: the repository record contains the exact merged-main evidence, while the exact validation of the final documentation-inclusive `main` commit is registered in immutable GitHub workflow artifacts and the merged evidence PR metadata.
 
 ## Locked Pass 12 boundary
 
@@ -138,4 +177,4 @@ It covers the seven deferred adapters—LibraryBook, LibraryBorrowing, Counselin
 
 It excludes production-form completion, notification dispatch, operational backup scheduling, deployment packaging, and release certification.
 
-Pass 12 construction remains unauthorized until Pass 11 exact-final-main validation succeeds and `main`/`develop` comparison reports ahead `0`, behind `0`.
+Pass 12 construction remains unauthorized until the final evidence-registration commit is exact-main validated and `main`/`develop` comparison reports ahead `0`, behind `0`.
