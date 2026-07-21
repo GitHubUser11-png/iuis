@@ -18,5 +18,14 @@ namespace IUIS.SharedUI.Theme
         public const int MinimumWindowHeight = 680;
         public const int DefaultWindowWidth = 1440;
         public const int DefaultWindowHeight = 900;
+
+        // ---- Rounded design-system metrics ----
+        public const int CornerRadius = 8;
+        public const int CardCornerRadius = 10;
+        public const int InputCornerRadius = 6;
+        public const int GridRowHeight = 38;
+        public const int GridHeaderHeight = 42;
+        public const int SidebarItemHeight = 40;
+        public const int AccentBarWidth = 3;
     }
 }

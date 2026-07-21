@@ -2,14 +2,21 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+using IUIS.SharedUI.Theme;
+
 namespace IUIS.SharedUI.Controls
 {
+    /// <summary>
+    /// Rounded dashboard metric card: accent strip, muted title,
+    /// large value, caption subtitle. Layout is table-based (DPI safe).
+    /// </summary>
     public partial class DashboardMetricCardControl : UserControl
     {
         private Label _titleLabel;
         private Label _valueLabel;
         private Label _subtitleLabel;
-        private Panel _indicatorPanel;
+        private TableLayoutPanel _layout;
+        private Color _indicatorColor = UiTheme.InstitutionalPrimary;
 
         public DashboardMetricCardControl()
         {
@@ -19,99 +26,146 @@ namespace IUIS.SharedUI.Controls
 
         public string Title
         {
-            get => _titleLabel.Text;
-            set => _titleLabel.Text = value;
+            get { return _titleLabel.Text; }
+            set { _titleLabel.Text = value; }
         }
 
         public string Value
         {
-            get => _valueLabel.Text;
-            set => _valueLabel.Text = value;
+            get { return _valueLabel.Text; }
+            set { _valueLabel.Text = value; }
         }
 
         public string Subtitle
         {
-            get => _subtitleLabel.Text;
-            set => _subtitleLabel.Text = value;
+            get { return _subtitleLabel.Text; }
+            set { _subtitleLabel.Text = value; }
         }
 
         public Color IndicatorColor
         {
-            get => _indicatorPanel.BackColor;
-            set => _indicatorPanel.BackColor = value;
+            get { return _indicatorColor; }
+            set
+            {
+                _indicatorColor = value;
+                Invalidate();
+            }
         }
 
         private void InitializeComponent()
         {
-            this.Size = new Size(200, 100);
-            this.BackColor = Color.White;
-            this.BorderStyle = BorderStyle.FixedSingle;
+            SetStyle(
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.UserPaint |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw,
+                true);
+            Size = new Size(220, 108);
+            BackColor = UiTheme.Surface;
+            BorderStyle = BorderStyle.None;
         }
 
         private void SetupLayout()
         {
-            _indicatorPanel = new Panel
-            {
-                Size = new Size(4, 100),
-                Dock = DockStyle.Left,
-                BackColor = Color.FromArgb(79, 70, 229)
-            };
+            _layout = new TableLayoutPanel();
+            _layout.Dock = DockStyle.Fill;
+            _layout.BackColor = Color.Transparent;
+            _layout.ColumnCount = 1;
+            _layout.RowCount = 3;
+            _layout.Padding = new Padding(18, 12, 14, 10);
+            _layout.Margin = new Padding(0);
+            _layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            _layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            _layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+            _layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
             _titleLabel = new Label
             {
                 Text = "Metric Title",
-                Font = new Font("Segoe UI", 8F),
-                ForeColor = Color.FromArgb(107, 114, 128),
-                Location = new Point(12, 8),
-                AutoSize = true
+                Font = UiTheme.FieldLabelFont,
+                ForeColor = UiTheme.TextSecondary,
+                AutoSize = true,
+                Margin = new Padding(0, 0, 0, 0),
+                BackColor = Color.Transparent
             };
 
             _valueLabel = new Label
             {
                 Text = "0",
-                Font = new Font("Segoe UI", 18F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(17, 24, 39),
-                Location = new Point(12, 28),
-                AutoSize = true
+                Font = UiTheme.MetricValueFont,
+                ForeColor = UiTheme.TextPrimary,
+                AutoSize = true,
+                Margin = new Padding(0, 2, 0, 0),
+                BackColor = Color.Transparent
             };
 
             _subtitleLabel = new Label
             {
                 Text = "Subtitle",
-                Font = new Font("Segoe UI", 7F),
-                ForeColor = Color.FromArgb(156, 163, 175),
-                Location = new Point(12, 58),
-                AutoSize = true
+                Font = UiTheme.CaptionFont,
+                ForeColor = UiTheme.TextDisabled,
+                AutoSize = true,
+                Margin = new Padding(0, 0, 0, 0),
+                BackColor = Color.Transparent
             };
 
-            this.Controls.Add(_indicatorPanel);
-            this.Controls.Add(_titleLabel);
-            this.Controls.Add(_valueLabel);
-            this.Controls.Add(_subtitleLabel);
+            _layout.Controls.Add(_titleLabel, 0, 0);
+            _layout.Controls.Add(_valueLabel, 0, 1);
+            _layout.Controls.Add(_subtitleLabel, 0, 2);
+
+            Controls.Add(_layout);
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            base.OnPaintBackground(e);
+
+            var bounds = ClientRectangle;
+            var cardRect = new Rectangle(bounds.X, bounds.Y, bounds.Width, bounds.Height - 1);
+
+            UiPainting.PaintRoundedSurface(
+                e.Graphics,
+                cardRect,
+                UiMetrics.CardCornerRadius,
+                UiTheme.ElevatedSurface,
+                UiTheme.BorderNeutral);
+
+            UiPainting.PaintCardShadowLine(
+                e.Graphics,
+                bounds,
+                UiMetrics.CardCornerRadius,
+                UiTheme.InstitutionalDark);
+
+            // Rounded accent strip on the left.
+            var accentRect = new Rectangle(bounds.X + 8, bounds.Y + 12, UiMetrics.AccentBarWidth + 1, bounds.Height - 26);
+            using (var accentBrush = new SolidBrush(_indicatorColor))
+            {
+                e.Graphics.FillRectangle(accentBrush, accentRect);
+            }
         }
 
         public void SetWarningState()
         {
-            _indicatorPanel.BackColor = Color.FromArgb(245, 158, 11);
-            _valueLabel.ForeColor = Color.FromArgb(245, 158, 11);
+            IndicatorColor = UiTheme.Warning;
+            _valueLabel.ForeColor = UiTheme.Warning;
         }
 
         public void SetErrorState()
         {
-            _indicatorPanel.BackColor = Color.FromArgb(239, 68, 68);
-            _valueLabel.ForeColor = Color.FromArgb(239, 68, 68);
+            IndicatorColor = UiTheme.Error;
+            _valueLabel.ForeColor = UiTheme.Error;
         }
 
         public void SetSuccessState()
         {
-            _indicatorPanel.BackColor = Color.FromArgb(34, 197, 94);
-            _valueLabel.ForeColor = Color.FromArgb(34, 197, 94);
+            IndicatorColor = UiTheme.Success;
+            _valueLabel.ForeColor = UiTheme.Success;
         }
 
         public void SetNormalState()
         {
-            _indicatorPanel.BackColor = Color.FromArgb(79, 70, 229);
-            _valueLabel.ForeColor = Color.FromArgb(17, 24, 39);
+            IndicatorColor = UiTheme.InstitutionalPrimary;
+            _valueLabel.ForeColor = UiTheme.TextPrimary;
         }
     }
 }
