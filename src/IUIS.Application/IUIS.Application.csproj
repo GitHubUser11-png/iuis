@@ -23,7 +23,9 @@
     <Compile Include="Dtos\RestrictedDtos.cs" />
     <Compile Include="Dtos\RestrictedProjectionService.cs" />
     <Compile Include="Orchestration\ContactUpdateServices.cs" />
-    <Compile Include="Orchestration\CounselingDisciplineServices.cs" />
+    <Compile Include="Orchestration\CounselingServices.cs" />
+    <Compile Include="Orchestration\DisciplineServices.cs" />
+    <Compile Include="Orchestration\DisciplineCounselingCoordinationService.cs" />
     <Compile Include="Orchestration\EnrollmentFinanceCommandServices.cs" />
     <Compile Include="Orchestration\IdentityQueryServices.cs" />
     <Compile Include="Orchestration\LibraryCirculationServices.cs" />
