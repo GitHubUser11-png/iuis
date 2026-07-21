@@ -9,97 +9,15 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: iuis-windows-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  reconcile-pass12-readiness:
-    name: Reconcile Pass 12 readiness assertions
-    if: github.event_name == 'pull_request' && github.head_ref == 'build/pass-12-student-service-persistence' && github.actor != 'github-actions[bot]'
-    runs-on: windows-latest
-    outputs:
-      changed: ${{ steps.reconcile.outputs.changed }}
-    steps:
-      - name: Check out exact feature branch
-        uses: actions/checkout@v4
-        with:
-          ref: build/pass-12-student-service-persistence
-          fetch-depth: 0
-
-      - name: Apply line-scoped reconciliation and restore workflow baseline
-        id: reconcile
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-
-          $pass9Path = 'tests/IUIS.Tests/Pass9ApplicationInfrastructureTests.cs'
-          $pass9 = [System.Collections.Generic.List[string]]::new()
-          [System.IO.File]::ReadAllLines($pass9Path) | ForEach-Object { [void]$pass9.Add($_) }
-          $pass9Text = [System.IO.File]::ReadAllText($pass9Path)
-          if ($pass9Text -notmatch '(?s)Assert\.AreEqual\(\s*13,.*SpecializedMapperCompleted' `
-              -or $pass9Text -notmatch '(?s)Assert\.AreEqual\(\s*5,.*DeferredWithExplicitReason') {
-              throw 'The Pass 9 readiness assertion is not reconciled to 13 completed and 5 deferred.'
-          }
-
-          $closurePath = 'tests/IUIS.Tests/Pass10ClosureIntegrityTests.cs'
-          $closure = [System.Collections.Generic.List[string]]::new()
-          [System.IO.File]::ReadAllLines($closurePath) | ForEach-Object { [void]$closure.Add($_) }
-          $assessmentIndex = -1
-          for ($i = 0; $i -lt $closure.Count; $i++) {
-              if ($closure[$i].Trim() -eq '"assessments",') {
-                  $assessmentIndex = $i
-                  break
-              }
-          }
-          if ($assessmentIndex -lt 0) { throw 'Pass 10 activation-list assessments entry was not found.' }
-          if ($closure[$assessmentIndex + 1].Trim() -eq '"courses",') {
-              $indent = $closure[$assessmentIndex].Substring(
-                  0,
-                  $closure[$assessmentIndex].Length - $closure[$assessmentIndex].TrimStart().Length)
-              $closure.Insert($assessmentIndex + 1, $indent + '"books",')
-              $closure.Insert($assessmentIndex + 2, $indent + '"borrowings",')
-              [System.IO.File]::WriteAllLines(
-                  $closurePath,
-                  $closure,
-                  [System.Text.UTF8Encoding]::new($false))
-          }
-          elseif ($closure[$assessmentIndex + 1].Trim() -ne '"books",' `
-              -or $closure[$assessmentIndex + 2].Trim() -ne '"borrowings",') {
-              throw 'Pass 10 activation list has an unsupported order after assessments.'
-          }
-
-          $pass10 = [System.IO.File]::ReadAllText(
-              'tests/IUIS.Tests/Pass10CanonicalPersistenceTests.cs')
-          if ($pass10 -notmatch 'ReadinessCatalogActivatesExactlyThirteenSpecializedMappers' `
-              -or $pass10 -notmatch '(?s)Assert\.AreEqual\(\s*13,.*SpecializedMapperCompleted' `
-              -or $pass10 -notmatch '(?s)Assert\.AreEqual\(\s*5,.*DeferredWithExplicitReason') {
-              throw 'The Pass 10 canonical readiness assertion is not reconciled to 13 completed and 5 deferred.'
-          }
-
-          git fetch origin develop
-          git checkout origin/develop -- '.github/workflows/windows-build.yml'
-          if (Test-Path '.github/workflows/pass12-readiness-reconciliation.yml') {
-              git rm '.github/workflows/pass12-readiness-reconciliation.yml'
-          }
-
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add `
-              '.github/workflows/windows-build.yml' `
-              'tests/IUIS.Tests/Pass9ApplicationInfrastructureTests.cs' `
-              'tests/IUIS.Tests/Pass10CanonicalPersistenceTests.cs' `
-              'tests/IUIS.Tests/Pass10ClosureIntegrityTests.cs'
-          git commit -m 'test(pass12): reconcile readiness assertions after Library activation'
-          git push origin HEAD:build/pass-12-student-service-persistence
-          "changed=true" >> $env:GITHUB_OUTPUT
-
   release-build:
     name: Release MSBuild and MSTest
-    needs: reconcile-pass12-readiness
-    if: always() && (needs.reconcile-pass12-readiness.result == 'skipped' || needs.reconcile-pass12-readiness.outputs.changed != 'true')
     runs-on: windows-latest
     timeout-minutes: 25
 
