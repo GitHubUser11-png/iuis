@@ -37,6 +37,12 @@
     <Compile Include="Persistence\SpecializedAggregateJsonMappers.cs" />
     <Compile Include="Persistence\StudentServicePersistedRecords.cs" />
     <Compile Include="Persistence\TransactionCoordinator.cs" />
+    <Compile Include="Presentation\ApplicationRuntime.cs" />
+    <Compile Include="Presentation\AuthenticationPresentationService.cs" />
+    <Compile Include="Presentation\FirstLoginPasswordChangeService.cs" />
+    <Compile Include="Presentation\NetworkContextProvider.cs" />
+    <Compile Include="Presentation\SessionPresentationService.cs" />
+    <Compile Include="Presentation\StartupReadinessService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AuthenticationService.cs" />
     <Compile Include="Security\JsonAuthorizationPrincipalProvider.cs" />

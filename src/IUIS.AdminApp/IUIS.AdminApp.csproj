@@ -20,6 +20,23 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\AdministratorApplicationContext.cs" />
+    <Compile Include="Configuration\AdminAppSettings.cs" />
+    <Compile Include="Forms\Authentication\AdminLoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Shell\AdministratorShellForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Startup\AdministratorBootstrapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Startup\BootstrapResultDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Startup\RepositoryInitializationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AdminStartupForm.cs">
