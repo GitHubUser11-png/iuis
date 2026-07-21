@@ -5,7 +5,7 @@ using IUIS.SharedUI.Theme;
 
 namespace IUIS.SharedUI.Controls
 {
-    public sealed class ModulePagePanel : Panel
+    public sealed class ModulePagePanel : UserControl
     {
         private readonly Label _titleLabel;
         private readonly Label _pageKeyLabel;

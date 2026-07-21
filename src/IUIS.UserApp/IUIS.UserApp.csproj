@@ -25,6 +25,8 @@
     <Compile Include="Forms\**\*.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\**\*.cs" />
+    <Compile Include="UserPageFactory.cs" />
+    <Compile Include="UserStartupForm.cs" />
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>

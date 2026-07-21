@@ -11,7 +11,20 @@
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.Infrastructure\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup><Reference Include="System" /><Reference Include="System.Configuration" /><Reference Include="System.Core" /></ItemGroup>
-  <ItemGroup><PackageReference Include="System.Text.Json" Version="4.7.2" /></ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Text.Json">
+      <HintPath>..\..\packages\System.Text.Json.8.0.5\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>..\..\packages\System.Text.Json.8.0.5\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>..\..\packages\System.Text.Json.8.0.5\lib\net462\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>..\..\packages\System.Text.Json.8.0.5\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrap\ProductionBootstrapper.cs" />
     <Compile Include="Composition\IuisCompositionRoot.cs" />

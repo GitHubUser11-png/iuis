@@ -13,6 +13,7 @@ using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.Navigation;
 using IUIS.SharedUI.Shell;
 using IUIS.SharedUI.Theme;
+using IUIS.UserApp.Forms;
 
 namespace IUIS.UserApp.Forms.Shell
 {
@@ -49,7 +50,7 @@ namespace IUIS.UserApp.Forms.Shell
             var filtered = NavigationFilter.Filter(_navigationItems, _runtime.CurrentUser.Access);
             var groups = NavigationGroupBuilder.BuildGroups(filtered);
             var dashboard = ShellPageFactory.CreateDashboard(greeting, cards);
-            ShellPageFactory.RegisterModulePages(_shell, filtered, _dashboardPageKey, dashboard);
+            ShellPageFactory.RegisterModulePages(_shell, filtered, _dashboardPageKey, dashboard, UserPageFactory.CreatePage);
 
             _shell.InitializeShell(
                 portalLabel,

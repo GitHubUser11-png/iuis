@@ -23,18 +23,18 @@ namespace IUIS.Infrastructure.Presentation
             PermissionResolver = new PermissionResolver();
             AuthenticationPresentation = new AuthenticationPresentationService(
                 Authentication,
-                Composition.PrincipalProvider,
+                (JsonAuthorizationPrincipalProvider)Composition.PrincipalProvider,
                 PermissionResolver,
                 Catalog,
                 Options);
             SessionPresentation = new SessionPresentationService(
-                Composition.PrincipalProvider,
+                (JsonAuthorizationPrincipalProvider)Composition.PrincipalProvider,
                 PermissionResolver,
                 Catalog,
                 Options);
             PasswordChange = new FirstLoginPasswordChangeService(
                 Authentication,
-                Composition.PrincipalProvider,
+                (JsonAuthorizationPrincipalProvider)Composition.PrincipalProvider,
                 PermissionResolver);
             NetworkContext = new NetworkContextProvider();
             StartupReadiness = new StartupReadinessService(Catalog, Options);

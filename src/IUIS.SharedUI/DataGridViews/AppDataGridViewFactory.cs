@@ -37,12 +37,12 @@ namespace IUIS.SharedUI.DataGridViews
                 ForeColor = Color.FromArgb(55, 65, 81),
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
                 Alignment = DataGridViewContentAlignment.MiddleLeft,
-                Padding = new Padding(8, 4)
+                Padding = new Padding(8, 4, 8, 4)
             };
 
             dataGridView.DefaultCellStyle = new DataGridViewCellStyle
             {
-                Padding = new Padding(8, 4),
+                Padding = new Padding(8, 4, 8, 4),
                 SelectionBackColor = Color.FromArgb(79, 70, 229),
                 SelectionForeColor = Color.White
             };

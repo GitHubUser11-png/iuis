@@ -10,6 +10,7 @@ using IUIS.AdminApp.Configuration;
 using IUIS.AdminApp.Forms.Authentication;
 using IUIS.AdminApp.Forms.Shell;
 using IUIS.AdminApp.Forms.Startup;
+using AppUserSession = IUIS.Application.Security.UserSession;
 
 namespace IUIS.AdminApp.Application
 {
@@ -76,7 +77,7 @@ namespace IUIS.AdminApp.Application
             return true;
         }
 
-        private bool TryAuthenticate(out UserSession session, out EffectiveAccessSnapshot access)
+        private bool TryAuthenticate(out AppUserSession session, out EffectiveAccessSnapshot access)
         {
             session = null;
             access = null;
@@ -107,8 +108,8 @@ namespace IUIS.AdminApp.Application
         }
 
         private bool TryChangePassword(
-            UserSession session,
-            out UserSession updatedSession,
+            AppUserSession session,
+            out AppUserSession updatedSession,
             out EffectiveAccessSnapshot updatedAccess)
         {
             updatedSession = session;

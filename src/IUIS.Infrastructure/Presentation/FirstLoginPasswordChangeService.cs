@@ -3,8 +3,10 @@ using System;
 using IUIS.Application.Abstractions.Security;
 using IUIS.Application.Authorization;
 using IUIS.Application.Security;
+using IUIS.Domain.Identity;
 using IUIS.Infrastructure.Persistence;
 using IUIS.Infrastructure.Security;
+using AppUserSession = IUIS.Application.Security.UserSession;
 
 namespace IUIS.Infrastructure.Presentation
 {
@@ -74,7 +76,7 @@ namespace IUIS.Infrastructure.Presentation
                     infrastructureResult.SessionToken,
                     DateTime.UtcNow);
 
-                var session = new UserSession(
+                var session = new AppUserSession(
                     infrastructureResult.SessionId,
                     infrastructureResult.SessionToken,
                     infrastructureResult.UserId,

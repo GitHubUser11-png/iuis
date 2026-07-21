@@ -105,7 +105,7 @@ namespace IUIS.Infrastructure.Presentation
             if (!Enum.TryParse(applicationKind, true, out sessionApplicationKind))
                 sessionApplicationKind = SessionApplicationKind.UserApplication;
 
-            var session = new UserSession(
+            var session = new IUIS.Application.Security.UserSession(
                 infrastructureResult.SessionId,
                 infrastructureResult.SessionToken,
                 infrastructureResult.UserId,

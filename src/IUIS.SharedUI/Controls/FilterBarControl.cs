@@ -71,8 +71,18 @@ namespace IUIS.SharedUI.Controls
             {
                 Width = 200,
                 Height = 28,
-                PlaceholderText = "Search...",
+                Text = "Search...",
                 Font = new Font("Segoe UI", 9F)
+            };
+            _searchTextBox.GotFocus += (s, e) =>
+            {
+                if (_searchTextBox.Text == "Search...")
+                    _searchTextBox.Text = string.Empty;
+            };
+            _searchTextBox.LostFocus += (s, e) =>
+            {
+                if (string.IsNullOrWhiteSpace(_searchTextBox.Text))
+                    _searchTextBox.Text = "Search...";
             };
 
             _filterComboBox = new ComboBox
@@ -135,8 +145,4 @@ namespace IUIS.SharedUI.Controls
         }
     }
 
-    public static class TextBoxExtensions
-    {
-        public static string PlaceholderText { get; set; }
-    }
 }

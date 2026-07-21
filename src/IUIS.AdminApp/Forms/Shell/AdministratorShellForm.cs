@@ -12,6 +12,7 @@ using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.Navigation;
 using IUIS.SharedUI.Shell;
 using IUIS.SharedUI.Theme;
+using IUIS.AdminApp.Forms;
 
 namespace IUIS.AdminApp.Forms.Shell
 {
@@ -47,7 +48,7 @@ namespace IUIS.AdminApp.Forms.Shell
                 new DashboardCardModel { Title = "Repository", Value = "49", Caption = "Authoritative JSON files" },
                 new DashboardCardModel { Title = "Audit", Value = "—", Caption = "Recent administrative actions" });
 
-            ShellPageFactory.RegisterModulePages(_shell, filtered, "ADM-DASH-01", dashboard);
+            ShellPageFactory.RegisterModulePages(_shell, filtered, "ADM-DASH-01", dashboard, AdminPageFactory.CreatePage);
 
             _shell.InitializeShell(
                 "Administrator Portal",
