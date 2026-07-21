@@ -1,10 +1,10 @@
 # IUIS Implementation State
 
-Last updated: 2026-07-20
+Last updated: 2026-07-21
 
 ## Status vocabulary
 
-The project distinguishes Specified, Created, Committed, Verified in GitHub, Compiled, Tested, Merged, and Release-certified states. These states are not interchangeable.
+The project distinguishes Specified, Created, Committed, Verified in GitHub, Compiled, Tested, Merged, Closure-validated, Promoted, Synchronized, and Release-certified states. These states are not interchangeable.
 
 ## Authoritative baseline
 
@@ -16,32 +16,54 @@ The project distinguishes Specified, Created, Committed, Verified in GitHub, Com
 | Pass 9 implementation and closure | Completed, promoted, exact-mainline validated, and synchronized | PRs #35, #38–#42; final synchronized commit `81c4b78acb149cef5a9feef6f8c71ae8b9b3037e` |
 | Pass 10 implementation and closure | Completed, promoted, exact-final-mainline validated, and synchronized | PRs #43–#49; final synchronized commit `686aa29a3c9827975d711c6713838f5cc2d22918`; 148 tests passed |
 | Pass 11 prerequisite checkpoint | Integrated into `develop` before full pass completion | PR #51; integration commit `5d17748a550c79ac11b341b73acc1256d3b6d144` |
-| Pass 11 continuation | Implementation-validated; final evidence-updated PR head and merge pending | branch `build/pass-11-envelope-token-finance`; PR #52 |
+| Pass 11 implementation continuation | Completed and integrated | PR #52; exact head `fded5a9ac1f00176a9aeaae4c70a3f972c26ec84`; integration commit `69e69bb621cea80f135f073b79739f4833054eb0`; 160 tests passed |
+| Pass 11 premature promotion | Merged to `main` before independent closure evidence | PR #53; promoted commit `925696ca6dd75fc8be513e818835cde0ad85c812` |
+| Corrective Unit 1 | Independently validated and merged | PR #55; validated head `517af90bd2218dea471747b2da5c92e49526e3ac`; merge commit `849396b3a00158b154cd9086cf0229cafd0868de`; run `29792336074`; 167 tests passed |
+| Corrective Unit 2 | Independently validated; final documentation-inclusive PR head pending validation and merge | PR #56; validated code head `eac074c23da378e1cdae9a1abdf76090851b89a9`; run `29793780496`; 172 tests passed |
+| Production repository catalog and templates | Preserved and validated | exactly 49 descriptors and exactly 49 canonical JSON files |
 | Canonical repository envelopes | Implemented and validated | exact six-field canonical contract across runtime, validator, bootstrap outputs, and 49 templates |
-| Legacy envelope migration | Implemented and validated | compatibility reader; revision-preserving journaled one-way rewrite; idempotent all-49 migration; audit record |
 | Session-token digest security | Implemented and validated | raw token returned once; SHA-256 digest persisted; fixed-time verification; legacy sessions rejected and revoked |
-| Pass 11 canonical aggregate schemas | Implemented and validated | Enrollment, Tuition Assessment, Payment, Financial Adjustment, and Scholarship Award record schema v1 |
-| Aggregate mapper readiness | Updated and validated | 11 specialized-complete; 7 fail-closed with explicit reasons |
-| Student enrollment and finance reads | Implemented and validated | session-derived ownership; released Enrollment, Assessment, Payment, Scholarship, and balance projections |
-| Controlled Enrollment and Finance writes | Implemented and validated | Enrollment submission; Assessment posting; Payment allocation/posting; Adjustment posting; journaled Scholarship application |
-| Pass 11 implementation validation | Successful | run `29753253012`; head `df6e5997b83b999cab459f3baa4cf11245ebffc9`; 0 warnings; 0 errors; 160 tests passed |
-| Pass 11 artifact | Verified | `iuis-windows-build-evidence-158`; ID `8465588173`; SHA-256 `9fd73b4619feb125daeb3ee0ced0d9e3dd11a052f44a1c3754c985400eb189c5` |
-| Production repository catalog and templates | Preserved and validated | exactly 49 descriptors and 49 canonical JSON files |
-| Pass 11 Figma model | Completed | `https://www.figma.com/board/VGyuqaZDhIBfGqBfGjQJUH` |
-| Executable certification | Not achieved | final release gate only |
+| Pass 11 specialized aggregate schemas | Corrected and validated | exact record schema version `1` for Enrollment, Tuition Assessment, Payment, Financial Adjustment, and Scholarship Award |
+| Aggregate mapper readiness | Validated | 11 specialized-complete; 7 fail-closed with explicit reasons |
+| Student enrollment and finance reads | Corrected and validated | session-derived ownership and released-state allowlists |
+| Controlled Enrollment and Finance writes | Corrected and validated | entity/repository concurrency, pre-allocation validation, journaled related writes |
+| Migration rollback and recovery | Independently validated | deterministic failure injection; byte-for-byte rollback; journal failure evidence; retry; audit-registration recovery |
+| Broader UI dependency boundary | Independently validated | every C# file under SharedUI, UserApp, and AdminApp scanned; 0 `System.IO` or `System.Text.Json` findings |
+| Pass 11 Figma model | Updated | `https://www.figma.com/board/VGyuqaZDhIBfGqBfGjQJUH` |
+| Executable certification | Not achieved | deployment and final release gate only |
+
+## Historical reconciliation
+
+PR #52 completed the Pass 11 implementation and merged it into `develop`. PR #53 then promoted `develop` to `main` at `925696ca6dd75fc8be513e818835cde0ad85c812` before an independent closure run existed. Corrective closure does not recast PR #53 as closure-gated.
+
+PR #54 was an abandoned corrective draft and was not merged. PR #55 merged the first independently validated corrective unit. PR #56 contains the second corrective unit and the final reconciliation records.
+
+The combined corrective delta from promoted commit `925696ca6dd75fc8be513e818835cde0ad85c812` through validated Audit Unit 2 code head `eac074c23da378e1cdae9a1abdf76090851b89a9` is exactly ten files:
+
+1. `build/Test-IuisSourceTree.ps1`;
+2. `src/IUIS.Application/Orchestration/EnrollmentFinanceCommandServices.cs`;
+3. `src/IUIS.Application/Orchestration/StudentFinanceQueryService.cs`;
+4. `src/IUIS.Infrastructure/Persistence/RepositoryEnvelopeMigrationService.cs`;
+5. `src/IUIS.Infrastructure/Persistence/SpecializedAggregateJsonMappers.cs`;
+6. `src/IUIS.Infrastructure/Persistence/TransactionCoordinator.cs`;
+7. `tests/IUIS.Tests/IUIS.Tests.csproj`;
+8. `tests/IUIS.Tests/Pass10CanonicalPersistenceTests.cs`;
+9. `tests/IUIS.Tests/Pass11CorrectiveClosureTests.cs`;
+10. `tests/IUIS.Tests/Pass11CorrectiveAuditUnit2Tests.cs`.
 
 ## Pass 11 evidence
 
-| Stage | Run | Artifact | ID | SHA-256 |
-|---|---:|---|---:|---|
-| Prerequisite checkpoint | `29748882312` | checkpoint evidence | — | — |
-| Complete validated continuation head | `29753253012` | `iuis-windows-build-evidence-158` | `8465588173` | `9fd73b4619feb125daeb3ee0ced0d9e3dd11a052f44a1c3754c985400eb189c5` |
+| Stage | Commit | Run | Artifact | ID | SHA-256 |
+|---|---|---:|---|---:|---|
+| Complete implementation head | `fded5a9ac1f00176a9aeaae4c70a3f972c26ec84` | `29754011862` | `iuis-windows-build-evidence-161` | `8465908242` | `5e44960a8654022cdbc559d1c4b74e7af2566e7bbcb2dfda13c0921df9f05dbd` |
+| Corrective Unit 1 head | `517af90bd2218dea471747b2da5c92e49526e3ac` | `29792336074` | `iuis-windows-build-evidence-201` | `8480770463` | `77d60d81918f2df2adbc2f642fe92c5d8b0c9bcc4eb93e82646e20f235db8b2c` |
+| Corrective Unit 2 code head | `eac074c23da378e1cdae9a1abdf76090851b89a9` | `29793780496` | `iuis-windows-build-evidence-203` | `8481293446` | `26a2b77fad29ceef6e695f30f7aeef7077b65b01652d152667142e89c63acc8b` |
 
-Run `29753253012` passed source-tree and architecture validation, exactly 49 canonical templates, exactly six envelope fields, all seven project boundaries, NuGet restoration, .NET Framework 4.8 Release MSBuild, zero warnings, zero errors, all 160 MSTest cases, TRX verification, and artifact publication.
+Run `29793780496` passed source-tree and architecture validation, all seven project boundaries, exactly 49 canonical templates, exactly six envelope fields, eight UI C# files with zero prohibited dependency findings, NuGet restoration, .NET Framework 4.8 Release MSBuild, zero warnings, zero errors, all 172 MSTest cases, TRX verification, and artifact publication.
 
 ## Locked target
 
-C# 7.3; Windows Forms; .NET Framework 4.8; `System.Text.Json`; seven projects; separate User/Admin executables; shared synchronized JSON; exactly 49 authoritative JSON files; centralized IDs; journaled related mutations; no direct JSON/file access from Forms.
+C# 7.3; Windows Forms; .NET Framework 4.8; `System.Text.Json`; seven projects; separate User/Admin executables; shared synchronized JSON; exactly 49 authoritative JSON files; centralized IDs; journaled related mutations; no direct JSON/file access from any UI-layer C# source.
 
 ## Pass status
 
@@ -51,15 +73,35 @@ C# 7.3; Windows Forms; .NET Framework 4.8; `System.Text.Json`; seven projects; s
 | 8 | Production repository and security bootstrap | Completed, validated, closure-validated, promoted, exact-tree validated, synchronized |
 | 9 | Authorization, typed adapters, restricted projections, session-aware orchestration, transaction revision hardening, mapper readiness | Completed, validated, closure-validated, promoted, exact-mainline validated, synchronized |
 | 10 | Canonical persisted schemas, specialized mappers, typed activation, composition wiring, Student/Employee vertical slices | Completed, independently closure-validated, promoted, exact-final-mainline validated, synchronized |
-| 11 | Canonical envelopes, session-token digests, Enrollment and Finance specialized persistence, Student finance reads, controlled writes | Implementation complete and validated; exact final PR-head validation and merge pending |
-| 12+ | Remaining specialized mappers, production UI, operations, deployment, certification | Not started |
+| 11 | Canonical envelopes, token digests, Enrollment/Finance persistence, released finance projections, controlled writes, corrective closure | Corrective Units 1 and 2 independently validated; documentation-inclusive PR #56 head, merge, exact merged-main validation, and branch synchronization pending |
+| 12 | Seven remaining specialized adapters, confidential/released record segregation, controlled Student-service lifecycles | Boundary defined; construction not started or authorized |
+| 13+ | Production UI completion, notifications, operations, deployment, certification | Not started |
+
+## Locked Pass 12 boundary
+
+Pass 12 is titled:
+
+**Remaining Student-Service Specialized Persistence, Confidential Record Segregation, Controlled Lifecycle Orchestration, and Released Service Projections.**
+
+It is limited to:
+
+- LibraryBook, LibraryBorrowing, CounselingCase, DisciplineCase, ClinicAppointment, MedicalRecord, and MedicalClearance canonical persisted schemas and specialized mappers;
+- activation of the seven currently deferred adapters;
+- restricted persisted records and released projections for confidential Student-service domains;
+- session-derived ownership and permission enforcement;
+- concurrency-aware commands and queries;
+- journaled related mutations;
+- exhaustive mapper, authorization, confidentiality, rollback, and exception-atomicity tests;
+- Windows Release and Figma evidence.
+
+It excludes production-form completion, notification dispatch, operational backup scheduling, deployment packaging, and release certification.
 
 ## Current truthful completion statement
 
-Passes 0 through 10 are synchronized. Pass 11 has corrected the repository-envelope contract and session-token verifier, normalized all 49 templates and source validation, added journaled legacy-envelope migration, activated specialized persistence for Enrollment and four Finance aggregates, and connected Student financial read models and controlled Enrollment and Finance commands through the real composition root.
+Passes 0 through 10 are synchronized. Pass 11 implementation was promoted before independent closure existed. Corrective Unit 1 is merged; Corrective Unit 2 code is independently validated at `eac074c23da378e1cdae9a1abdf76090851b89a9` with 172 of 172 tests passed.
 
-The complete Pass 11 continuation head compiled with zero warnings and zero errors and passed 160 of 160 tests. PR #52 still requires validation of the evidence-updated final head and merge into `develop`. Pass 11 independent integrated-tree closure, mainline promotion, final branch synchronization, production Forms, operational deployment, and release certification are not complete.
+Pass 11 is not yet final because the documentation-inclusive PR #56 head must be validated and merged, the exact resulting `main` tree must receive an independent Windows run, `develop` must be restored or recreated at the final validated `main` commit, and zero divergence must be proven. Pass 12 has a defined boundary but has not started.
 
 ## Exact next gate
 
-Validate the evidence-updated final PR #52 head, merge it into `develop`, then begin Pass 11 Closure from the exact integration commit. Closure must independently validate the merged tree, register closure evidence, promote the completed baseline to `main`, validate exact mainline integration, synchronize `develop` and `main` with ahead `0` and behind `0`, and define Pass 12 only after synchronization.
+Validate the documentation-inclusive PR #56 head. If successful, mark PR #56 ready, merge it into `main` with an exact-head guard, independently validate the exact merged-main commit, register final closure evidence, restore `develop` to the final validated `main`, verify ahead `0` and behind `0`, and only then declare Pass 11 corrective closure complete.

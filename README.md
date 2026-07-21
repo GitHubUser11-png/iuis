@@ -14,23 +14,45 @@ Pass 11 implements the next persistence and security boundary:
 
 - the authoritative six-field repository envelope: `repositoryName`, `schemaVersion`, `revision`, `updatedAtUtc`, `updatedByUserId`, and `records`;
 - compatibility reads for legacy `repository` and `createdAtUtc` input with canonical-only writes;
-- an idempotent, revision-preserving, journaled one-way rewrite across all 49 repositories;
-- all 49 production templates and source-tree validation normalized to the canonical contract;
+- a revision-preserving, journaled one-way rewrite across all 49 repositories;
 - raw session tokens returned once, SHA-256 digests persisted, fixed-time verification, and legacy-session rejection and revocation;
-- canonical record schema v1 and specialized mappers for Enrollment, TuitionAssessment, Payment, FinancialAdjustment, and ScholarshipAward;
+- exact record schema version `1` enforcement for specialized persisted aggregates;
+- specialized persistence for Enrollment, TuitionAssessment, Payment, FinancialAdjustment, and ScholarshipAward;
 - eleven activated specialized adapters and seven remaining fail-closed adapters;
-- real Student Enrollment, Assessment, balance, Payment, and Scholarship read models;
-- controlled Enrollment submission, Assessment posting, Payment allocation and posting, Financial Adjustment posting, and journaled Scholarship Award application.
+- released-state Student Enrollment and Finance projections;
+- controlled Enrollment submission, Assessment posting, Payment allocation and posting, Financial Adjustment posting, and journaled Scholarship Award application;
+- deterministic transaction failure evidence, byte-for-byte rollback verification, migration audit-recovery classification, exhaustive five-mapper integrity, Scholarship coordination rollback, and all-UI dependency scanning.
 
-Pass 11 adds twelve regression and security tests, bringing the suite to 160 tests. GitHub Actions run `29753253012` validated continuation head `df6e5997b83b999cab459f3baa4cf11245ebffc9`: exactly 49 canonical templates, six canonical envelope fields, seven project boundaries, zero compiler warnings, zero compiler errors, 160 of 160 tests passed, valid TRX output, and artifact publication.
+## Pass 11 corrective-closure history
 
-PR #51 integrated the prerequisite checkpoint before the complete Pass 11 boundary was finished. Draft PR #52 is the controlled continuation carrying the complete implementation, expanded tests, documentation, Figma model, and final integration gate. Pass 11 is not closure-complete or release-certified until the exact final PR head is validated and merged, followed by independent integrated-tree closure.
+Pass 11 implementation was completed through PR #52 and promoted to `main` through PR #53 at commit `925696ca6dd75fc8be513e818835cde0ad85c812` before independent closure evidence existed. Corrective closure preserves that historical fact rather than describing PR #53 as closure-gated.
 
-Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md). The Pass 11 implementation record is [`docs/passes/PASS_11_ENVELOPE_TOKEN_FINANCE.md`](docs/passes/PASS_11_ENVELOPE_TOKEN_FINANCE.md).
+Corrective Unit 1 was independently validated and merged through PR #55 at `849396b3a00158b154cd9086cf0229cafd0868de`. It enforces exact persisted schema version `1`, validates Payment allocation Assessment entity versions before identifier consumption, applies released-state projection allowlists, and adds financial exception-atomicity regression tests.
 
-## Exact next gate
+Corrective Unit 2 is carried by PR #56. Exact validated head `eac074c23da378e1cdae9a1abdf76090851b89a9` passed Windows run `29793780496` with zero warnings, zero errors, and 172 of 172 tests. Artifact `iuis-windows-build-evidence-203`, ID `8481293446`, has SHA-256 `26a2b77fad29ceef6e695f30f7aeef7077b65b01652d152667142e89c63acc8b`.
 
-Validate the evidence-updated final PR #52 head, merge it into `develop`, then independently closure-validate the exact merged Pass 11 tree before any mainline promotion or Pass 12 construction.
+The combined corrective delta from prematurely promoted commit `925696ca6dd75fc8be513e818835cde0ad85c812` is exactly ten files. PR #56 remains the final corrective-closure promotion gate until its documentation-inclusive head is validated, merged into `main`, the exact merged tree is independently Windows-validated, and `develop` is restored to zero divergence.
+
+Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md). The Pass 11 implementation record is [`docs/passes/PASS_11_ENVELOPE_TOKEN_FINANCE.md`](docs/passes/PASS_11_ENVELOPE_TOKEN_FINANCE.md). Corrective-closure evidence is recorded in [`docs/passes/PASS_11_CORRECTIVE_CLOSURE.md`](docs/passes/PASS_11_CORRECTIVE_CLOSURE.md).
+
+## Locked Pass 12 boundary
+
+Pass 12 is defined, but construction is not authorized until Pass 11 reaches exact-main validation and `main`/`develop` zero divergence.
+
+**Pass 12: Remaining Student-Service Specialized Persistence, Confidential Record Segregation, Controlled Lifecycle Orchestration, and Released Service Projections.**
+
+The intended boundary is:
+
+- canonical persisted schema v1 and validated specialized mappers for LibraryBook, LibraryBorrowing, CounselingCase, DisciplineCase, ClinicAppointment, MedicalRecord, and MedicalClearance;
+- activation of the seven currently fail-closed adapters through the composition root;
+- separate restricted persisted state and released projections for counseling, discipline, medical, and clearance information;
+- session-derived ownership, role, application-kind, purpose, permission, confidentiality, repository-revision, and entity-version enforcement;
+- controlled library circulation, appointment, consultation/medical-record, clearance, counseling, and discipline lifecycle orchestration;
+- journaled multi-repository mutations where one command changes related authoritative repositories;
+- exhaustive mapper, authorization, confidentiality, rollback, concurrency, and exception-atomicity tests;
+- Windows Release validation and Figma architecture evidence.
+
+Pass 12 excludes production-form completion, notification dispatch, operational backup scheduling, deployment packaging, and release certification.
 
 ## Locked technical target
 
@@ -43,12 +65,12 @@ Validate the evidence-updated final PR #52 head, merge it into `develop`, then i
 - shared synchronized JSON persistence
 - exactly 49 authoritative production JSON files
 - centralized identifiers and journaled related mutations
-- no direct JSON or file-system access from Forms
+- no direct JSON or file-system access from any UI-layer C# source
 
 ## Branch model
 
-- `main`: reviewed release-ready baselines
+- `main`: reviewed, validated baseline
 - `develop`: synchronized integration branch
 - `build/pass-*`: controlled implementation and closure passes created from exact integration commits
 
-No component is described as compiled or tested unless machine-generated build or test evidence exists.
+No component is described as compiled or tested unless machine-generated build or test evidence exists. Pass 11 is not release-certified, and Pass 12 has not started.

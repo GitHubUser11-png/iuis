@@ -14,6 +14,28 @@ namespace IUIS.Infrastructure.Persistence
         RolledBack = 3
     }
 
+    public enum TransactionExecutionStage
+    {
+        PreparedJournalWritten = 0,
+        ApplyingJournalWritten = 1,
+        MutationApplied = 2,
+        CommittedJournalWritten = 3
+    }
+
+    public sealed class TransactionExecutionContext
+    {
+        public string TransactionId { get; set; }
+        public TransactionExecutionStage Stage { get; set; }
+        public int AppliedMutationCount { get; set; }
+        public int TotalMutationCount { get; set; }
+        public string RepositoryName { get; set; }
+    }
+
+    public interface ITransactionFailureInjector
+    {
+        void OnStage(TransactionExecutionContext context);
+    }
+
     public sealed class TransactionMutation
     {
         public TransactionMutation(string repositoryName, string completeJson)
@@ -84,6 +106,10 @@ namespace IUIS.Infrastructure.Persistence
         public TransactionJournalStatus Status { get; set; }
         public DateTime CreatedAtUtc { get; set; }
         public DateTime UpdatedAtUtc { get; set; }
+        public int AppliedMutationCount { get; set; }
+        public string LastAppliedRepositoryName { get; set; }
+        public string FailureType { get; set; }
+        public string FailureMessage { get; set; }
         public List<TransactionJournalEntry> Entries { get; set; }
     }
 
@@ -92,6 +118,7 @@ namespace IUIS.Infrastructure.Persistence
         private readonly ProductionRepositoryCatalog _catalog;
         private readonly JsonInfrastructureOptions _options;
         private readonly AtomicFileWriter _writer = new AtomicFileWriter();
+        private readonly ITransactionFailureInjector _failureInjector;
         private readonly JsonSerializerOptions _json = new JsonSerializerOptions
         {
             WriteIndented = true,
@@ -101,9 +128,18 @@ namespace IUIS.Infrastructure.Persistence
         public JournaledTransactionCoordinator(
             ProductionRepositoryCatalog catalog,
             JsonInfrastructureOptions options)
+            : this(catalog, options, null)
+        {
+        }
+
+        public JournaledTransactionCoordinator(
+            ProductionRepositoryCatalog catalog,
+            JsonInfrastructureOptions options,
+            ITransactionFailureInjector failureInjector)
         {
             _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
             _options = options ?? throw new ArgumentNullException(nameof(options));
+            _failureInjector = failureInjector;
         }
 
         public string Execute(IEnumerable<TransactionMutation> mutations)
@@ -119,19 +155,32 @@ namespace IUIS.Infrastructure.Persistence
 
             foreach (var item in items) _catalog.Get(item.RepositoryName);
 
+            var orderedItems = items
+                .OrderBy(
+                    value => _catalog.ResolvePath(
+                        _options.DataRoot,
+                        value.RepositoryName),
+                    StringComparer.OrdinalIgnoreCase)
+                .ToList();
             var transactionId = Guid.NewGuid().ToString("N");
-            var journalPath = _catalog.ResolvePath(_options.DataRoot, "transaction_journal");
-            var lockPaths = items
-                .Select(item => _catalog.ResolvePath(_options.DataRoot, item.RepositoryName))
+            var journalPath = _catalog.ResolvePath(
+                _options.DataRoot,
+                "transaction_journal");
+            var lockPaths = orderedItems
+                .Select(item => _catalog.ResolvePath(
+                    _options.DataRoot,
+                    item.RepositoryName))
                 .Concat(new[] { journalPath })
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
                 .ToList();
             var locks = AcquireAll(lockPaths);
+            var appliedMutationCount = 0;
+            string lastAppliedRepositoryName = null;
 
             try
             {
-                ValidateExpectedRevisionsLocked(items);
+                ValidateExpectedRevisionsLocked(orderedItems);
                 var now = DateTime.UtcNow;
                 var record = new TransactionJournalRecord
                 {
@@ -139,14 +188,15 @@ namespace IUIS.Infrastructure.Persistence
                     Status = TransactionJournalStatus.Prepared,
                     CreatedAtUtc = now,
                     UpdatedAtUtc = now,
+                    AppliedMutationCount = 0,
                     Entries = new List<TransactionJournalEntry>()
                 };
 
-                foreach (var item in items.OrderBy(
-                    value => _catalog.ResolvePath(_options.DataRoot, value.RepositoryName),
-                    StringComparer.OrdinalIgnoreCase))
+                foreach (var item in orderedItems)
                 {
-                    var target = _catalog.ResolvePath(_options.DataRoot, item.RepositoryName);
+                    var target = _catalog.ResolvePath(
+                        _options.DataRoot,
+                        item.RepositoryName);
                     var backup = target + ".txn-" + transactionId + ".bak";
                     var existed = File.Exists(target);
                     if (existed) File.Copy(target, backup, true);
@@ -162,26 +212,62 @@ namespace IUIS.Infrastructure.Persistence
                 }
 
                 WriteJournal(journalPath, record);
+                Notify(
+                    transactionId,
+                    TransactionExecutionStage.PreparedJournalWritten,
+                    0,
+                    orderedItems.Count,
+                    null);
+
                 record.Status = TransactionJournalStatus.Applying;
                 record.UpdatedAtUtc = DateTime.UtcNow;
                 WriteJournal(journalPath, record);
+                Notify(
+                    transactionId,
+                    TransactionExecutionStage.ApplyingJournalWritten,
+                    0,
+                    orderedItems.Count,
+                    null);
 
-                foreach (var item in items)
+                foreach (var item in orderedItems)
                 {
                     _writer.WriteUtf8(
-                        _catalog.ResolvePath(_options.DataRoot, item.RepositoryName),
+                        _catalog.ResolvePath(
+                            _options.DataRoot,
+                            item.RepositoryName),
                         item.CompleteJson);
+                    appliedMutationCount++;
+                    lastAppliedRepositoryName = item.RepositoryName;
+                    Notify(
+                        transactionId,
+                        TransactionExecutionStage.MutationApplied,
+                        appliedMutationCount,
+                        orderedItems.Count,
+                        item.RepositoryName);
                 }
 
+                record.AppliedMutationCount = appliedMutationCount;
+                record.LastAppliedRepositoryName = lastAppliedRepositoryName;
                 record.Status = TransactionJournalStatus.Committed;
                 record.UpdatedAtUtc = DateTime.UtcNow;
                 WriteJournal(journalPath, record);
+                Notify(
+                    transactionId,
+                    TransactionExecutionStage.CommittedJournalWritten,
+                    appliedMutationCount,
+                    orderedItems.Count,
+                    lastAppliedRepositoryName);
                 DeleteBackups(record);
                 return transactionId;
             }
-            catch
+            catch (Exception exception)
             {
-                TryRollbackLocked(journalPath, transactionId);
+                TryRollbackLocked(
+                    journalPath,
+                    transactionId,
+                    appliedMutationCount,
+                    lastAppliedRepositoryName,
+                    exception);
                 throw;
             }
             finally
@@ -192,11 +278,15 @@ namespace IUIS.Infrastructure.Persistence
 
         public bool RecoverIncompleteTransaction()
         {
-            var journalPath = _catalog.ResolvePath(_options.DataRoot, "transaction_journal");
+            var journalPath = _catalog.ResolvePath(
+                _options.DataRoot,
+                "transaction_journal");
             if (!File.Exists(journalPath)) return false;
 
             TransactionJournalRecord snapshot;
-            using (CrossProcessFileLock.Acquire(journalPath, _options.LockTimeout))
+            using (CrossProcessFileLock.Acquire(
+                journalPath,
+                _options.LockTimeout))
                 snapshot = ReadJournal(journalPath);
 
             if (snapshot == null
@@ -222,6 +312,11 @@ namespace IUIS.Infrastructure.Persistence
                 Restore(current);
                 current.Status = TransactionJournalStatus.RolledBack;
                 current.UpdatedAtUtc = DateTime.UtcNow;
+                if (string.IsNullOrWhiteSpace(current.FailureType))
+                    current.FailureType = "IncompleteTransactionRecovery";
+                if (string.IsNullOrWhiteSpace(current.FailureMessage))
+                    current.FailureMessage =
+                        "An incomplete transaction was recovered from retained journal and backup evidence.";
                 WriteJournal(journalPath, current);
                 DeleteBackups(current);
                 return true;
@@ -235,7 +330,8 @@ namespace IUIS.Infrastructure.Persistence
         private void ValidateExpectedRevisionsLocked(
             IEnumerable<TransactionMutation> mutations)
         {
-            foreach (var mutation in mutations.Where(item => item.ExpectedRevision.HasValue))
+            foreach (var mutation in mutations.Where(
+                item => item.ExpectedRevision.HasValue))
             {
                 var targetPath = _catalog.ResolvePath(
                     _options.DataRoot,
@@ -250,12 +346,15 @@ namespace IUIS.Infrastructure.Persistence
                     _json);
                 if (current == null || current.Records == null)
                     throw new InvalidDataException(
-                        "Repository envelope is invalid for " + mutation.RepositoryName + ".");
+                        "Repository envelope is invalid for "
+                        + mutation.RepositoryName + ".");
                 if (current.Revision != mutation.ExpectedRevision.Value)
                     throw new InvalidOperationException(
-                        "Repository revision conflict for " + mutation.RepositoryName + ".");
+                        "Repository revision conflict for "
+                        + mutation.RepositoryName + ".");
 
-                if (RepositoryEnvelopeJson.IsLegacy(mutation.CompleteJson))
+                if (RepositoryEnvelopeJson.IsLegacy(
+                    mutation.CompleteJson))
                     throw new InvalidDataException(
                         "Staged repository JSON must use the canonical envelope for "
                         + mutation.RepositoryName + ".");
@@ -278,13 +377,16 @@ namespace IUIS.Infrastructure.Persistence
             }
         }
 
-        private List<CrossProcessFileLock> AcquireAll(IEnumerable<string> paths)
+        private List<CrossProcessFileLock> AcquireAll(
+            IEnumerable<string> paths)
         {
             var locks = new List<CrossProcessFileLock>();
             try
             {
                 foreach (var path in paths)
-                    locks.Add(CrossProcessFileLock.Acquire(path, _options.LockTimeout));
+                    locks.Add(CrossProcessFileLock.Acquire(
+                        path,
+                        _options.LockTimeout));
                 return locks;
             }
             catch
@@ -294,30 +396,49 @@ namespace IUIS.Infrastructure.Persistence
             }
         }
 
-        private static void DisposeAll(IList<CrossProcessFileLock> locks)
+        private static void DisposeAll(
+            IList<CrossProcessFileLock> locks)
         {
             for (var index = locks.Count - 1; index >= 0; index--)
                 locks[index].Dispose();
         }
 
-        private void TryRollbackLocked(string journalPath, string transactionId)
+        private bool TryRollbackLocked(
+            string journalPath,
+            string transactionId,
+            int appliedMutationCount,
+            string lastAppliedRepositoryName,
+            Exception failure)
         {
             try
             {
-                if (!File.Exists(journalPath)) return;
+                if (!File.Exists(journalPath)) return false;
                 var record = ReadJournal(journalPath);
                 if (record == null
-                    || !string.Equals(record.TransactionId, transactionId, StringComparison.Ordinal))
-                    return;
+                    || !string.Equals(
+                        record.TransactionId,
+                        transactionId,
+                        StringComparison.Ordinal))
+                    return false;
+                record.AppliedMutationCount = appliedMutationCount;
+                record.LastAppliedRepositoryName = lastAppliedRepositoryName;
+                record.FailureType = failure == null
+                    ? null
+                    : failure.GetType().FullName;
+                record.FailureMessage = failure == null
+                    ? null
+                    : failure.Message;
                 Restore(record);
                 record.Status = TransactionJournalStatus.RolledBack;
                 record.UpdatedAtUtc = DateTime.UtcNow;
                 WriteJournal(journalPath, record);
                 DeleteBackups(record);
+                return true;
             }
             catch
             {
                 // Recovery remains possible from retained journal and backup files.
+                return false;
             }
         }
 
@@ -332,7 +453,8 @@ namespace IUIS.Infrastructure.Persistence
             }
         }
 
-        private static void DeleteBackups(TransactionJournalRecord record)
+        private static void DeleteBackups(
+            TransactionJournalRecord record)
         {
             foreach (var entry in record.Entries)
             {
@@ -344,22 +466,28 @@ namespace IUIS.Infrastructure.Persistence
 
         private TransactionJournalRecord ReadJournal(string path)
         {
-            var envelope = RepositoryEnvelopeJson.Deserialize<TransactionJournalRecord>(
-                File.ReadAllText(path),
-                _json);
-            return envelope == null || envelope.Records == null || envelope.Records.Count == 0
+            var envelope = RepositoryEnvelopeJson
+                .Deserialize<TransactionJournalRecord>(
+                    File.ReadAllText(path),
+                    _json);
+            return envelope == null
+                || envelope.Records == null
+                || envelope.Records.Count == 0
                 ? null
                 : envelope.Records[envelope.Records.Count - 1];
         }
 
-        private void WriteJournal(string path, TransactionJournalRecord record)
+        private void WriteJournal(
+            string path,
+            TransactionJournalRecord record)
         {
             RepositoryEnvelope<TransactionJournalRecord> envelope = null;
             if (File.Exists(path))
             {
-                envelope = RepositoryEnvelopeJson.Deserialize<TransactionJournalRecord>(
-                    File.ReadAllText(path),
-                    _json);
+                envelope = RepositoryEnvelopeJson
+                    .Deserialize<TransactionJournalRecord>(
+                        File.ReadAllText(path),
+                        _json);
             }
 
             if (envelope == null)
@@ -377,7 +505,10 @@ namespace IUIS.Infrastructure.Persistence
 
             envelope.RepositoryName = "transaction_journal";
             envelope.Records.RemoveAll(
-                item => string.Equals(item.TransactionId, record.TransactionId, StringComparison.Ordinal));
+                item => string.Equals(
+                    item.TransactionId,
+                    record.TransactionId,
+                    StringComparison.Ordinal));
             envelope.Records.Add(record);
             envelope.Revision = checked(envelope.Revision + 1);
             envelope.UpdatedAtUtc = DateTime.UtcNow;
@@ -385,6 +516,24 @@ namespace IUIS.Infrastructure.Persistence
             _writer.WriteUtf8(
                 path,
                 RepositoryEnvelopeJson.Serialize(envelope, _json));
+        }
+
+        private void Notify(
+            string transactionId,
+            TransactionExecutionStage stage,
+            int appliedMutationCount,
+            int totalMutationCount,
+            string repositoryName)
+        {
+            if (_failureInjector == null) return;
+            _failureInjector.OnStage(new TransactionExecutionContext
+            {
+                TransactionId = transactionId,
+                Stage = stage,
+                AppliedMutationCount = appliedMutationCount,
+                TotalMutationCount = totalMutationCount,
+                RepositoryName = repositoryName
+            });
         }
     }
 }
