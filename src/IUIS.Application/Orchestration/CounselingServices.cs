@@ -67,6 +67,16 @@ namespace IUIS.Application.Orchestration
             _discipline = discipline ?? throw new ArgumentNullException(nameof(discipline));
         }
 
+        public StudentCounselingDisciplineQueryService(
+            SessionAwareRequestExecutor executor,
+            ICounselingCaseRepository counseling,
+            IDisciplineCaseRepository discipline,
+            RestrictedProjectionService projections)
+            : this(executor, counseling, discipline)
+        {
+            if (projections == null) throw new ArgumentNullException(nameof(projections));
+        }
+
         public StudentCounselingDisciplineOverviewDto GetOwnOverview(
             string sessionId,
             string sessionToken,
@@ -157,6 +167,15 @@ namespace IUIS.Application.Orchestration
         {
             _executor = executor ?? throw new ArgumentNullException(nameof(executor));
             _cases = cases ?? throw new ArgumentNullException(nameof(cases));
+        }
+
+        public RestrictedCounselingCaseQueryService(
+            SessionAwareRequestExecutor executor,
+            ICounselingCaseRepository cases,
+            RestrictedProjectionService projections)
+            : this(executor, cases)
+        {
+            if (projections == null) throw new ArgumentNullException(nameof(projections));
         }
 
         public RestrictedCounselingCaseViewDto Get(
