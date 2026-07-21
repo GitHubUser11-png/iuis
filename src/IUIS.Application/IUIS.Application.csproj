@@ -17,6 +17,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="**\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\IUIS.Domain\IUIS.Domain.csproj">
       <Project>{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}</Project><Name>IUIS.Domain</Name>
     </ProjectReference>
