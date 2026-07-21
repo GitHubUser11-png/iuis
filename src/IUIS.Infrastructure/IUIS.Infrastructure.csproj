@@ -20,6 +20,7 @@
     <Compile Include="Persistence\AggregateRepositoryAdapters.cs" />
     <Compile Include="Persistence\AtomicFileWriter.cs" />
     <Compile Include="Persistence\CanonicalPersistedRecords.cs" />
+    <Compile Include="Persistence\ClinicJsonMappers.cs" />
     <Compile Include="Persistence\CrossProcessFileLock.cs" />
     <Compile Include="Persistence\EnrollmentFinanceJsonMappers.cs" />
     <Compile Include="Persistence\EnrollmentFinancePersistedRecords.cs" />
