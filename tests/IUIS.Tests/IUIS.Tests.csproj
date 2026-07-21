@@ -12,6 +12,7 @@
     </TargetFrameworkProfile>
     <OutputPath>..\..\artifacts\bin\$(Configuration)\IUIS.Tests\</OutputPath>
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.Tests\</IntermediateOutputPath>
+    <RuntimeIdentifiers>win</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
