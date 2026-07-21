@@ -89,6 +89,37 @@ namespace IUIS.Infrastructure.Bootstrap
             };
         }
 
+        public ProductionBootstrapResult CompleteBootstrap(ProductionBootstrapRequest request)
+        {
+            Validate(request);
+            if (!Directory.Exists(_options.DataRoot))
+                throw new InvalidOperationException("Production repository has not been initialized.");
+
+            var existing = Directory.GetFiles(_options.DataRoot, "*.json", SearchOption.TopDirectoryOnly);
+            if (existing.Length != 49)
+                throw new InvalidOperationException("Production repository is incomplete.");
+
+            var usersPath = _catalog.ResolvePath(_options.DataRoot, "users");
+            var usersContent = File.ReadAllText(usersPath);
+            if (!usersContent.Contains("\"records\": []") && !usersContent.Contains("\"records\":[]"))
+                throw new InvalidOperationException("Administrator bootstrap has already been completed.");
+
+            var employeeId = "EMP-" + request.BootstrapAtUtc.Year + "-000001";
+            var userId = "USR-" + request.BootstrapAtUtc.Year + "-000001";
+            SeedSecurityPolicy(request.BootstrapAtUtc);
+            SeedAdministrator(request, employeeId, userId);
+            SeedSequences(request.BootstrapAtUtc, userId);
+            SeedManifest(request.BootstrapAtUtc);
+
+            return new ProductionBootstrapResult
+            {
+                AdministratorEmployeeId = employeeId,
+                AdministratorUserId = userId,
+                RepositoryFileCount = existing.Length,
+                MustChangePassword = true
+            };
+        }
+
         private void SeedAdministrator(ProductionBootstrapRequest request, string employeeId, string userId)
         {
             var employee = new EmployeeRecord(

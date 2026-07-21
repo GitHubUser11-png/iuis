@@ -1,5 +1,7 @@
 using System;
 
+using IUIS.AdminApp.Application;
+
 namespace IUIS.AdminApp
 {
     internal static class Program
@@ -9,7 +11,7 @@ namespace IUIS.AdminApp
         {
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-            System.Windows.Forms.Application.Run(new AdminStartupForm());
+            System.Windows.Forms.Application.Run(new AdministratorApplicationContext());
         }
     }
 }
