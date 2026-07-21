@@ -146,7 +146,7 @@ namespace IUIS.UserApp.Forms.Employee.Counseling
             _pendingRequestsGrid.Size = new Size(570, 250);
             AppDataGridViewFactory.AddTextBoxColumn(_pendingRequestsGrid, "RequestId", "ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_pendingRequestsGrid, "StudentName", "Student", 150);
-            AppDataGridViewFactory.AddDateColumn(_pendingRequestsGrid, "RequestedAtUtc", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_pendingRequestsGrid, "RequestedAtUtc", "Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_pendingRequestsGrid, "Priority", "Priority", 100);
 
             mainPanel.Controls.Add(headerLabel);

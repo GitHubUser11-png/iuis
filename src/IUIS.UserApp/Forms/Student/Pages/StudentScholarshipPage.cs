@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Scholarship;
 using IUIS.SharedUI.DataGridViews;
+using IUIS.UserApp.Forms.Student.Dialogs;
 
 namespace IUIS.UserApp.Forms.Student.Pages
 {
@@ -67,7 +68,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             AppDataGridViewFactory.AddTextBoxColumn(_availableProgramsGrid, "CoverageType", "Coverage", 120);
             AppDataGridViewFactory.AddCurrencyColumn(_availableProgramsGrid, "CoverageAmount", "Amount", 120);
             AppDataGridViewFactory.AddDateColumn(_availableProgramsGrid, "ApplicationDeadline", "Deadline", "MM/dd/yyyy", 120);
-            AppDataGridViewFactory.AddButtonColumn(_availableProgramsGrid, "Apply", "Apply", 80);
+            AppDataGridViewFactory.AddButtonColumn(_availableProgramsGrid, "Apply", "Apply", "Apply", 80);
 
             _availableProgramsGrid.CellClick += OnAvailableProgramsGridCellClick;
             availableTabPage.Controls.Add(_availableProgramsGrid);

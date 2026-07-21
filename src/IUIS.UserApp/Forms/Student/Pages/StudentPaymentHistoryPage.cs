@@ -68,7 +68,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             AppDataGridViewFactory.AddTextBoxColumn(_paymentsGrid, "PaymentMethod", "Method", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_paymentsGrid, "ReceiptNumber", "Receipt", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_paymentsGrid, "Status", "Status", 100);
-            AppDataGridViewFactory.AddButtonColumn(_paymentsGrid, "ViewReceipt", "Receipt", 100);
+            AppDataGridViewFactory.AddButtonColumn(_paymentsGrid, "ViewReceipt", "Receipt", "View", 100);
 
             _filterBar.SearchRequested += (s, e) => LoadPaymentHistory();
             _filterBar.ClearRequested += (s, e) => LoadPaymentHistory();

@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Enrollment;
 using IUIS.SharedUI.DataGridViews;
+using IUIS.UserApp.Forms.Student.Dialogs;
 
 namespace IUIS.UserApp.Forms.Student.Pages
 {
@@ -59,7 +60,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             AppDataGridViewFactory.AddTextBoxColumn(_subjectsGrid, "Schedule", "Schedule", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_subjectsGrid, "Room", "Room", 80);
             AppDataGridViewFactory.AddTextBoxColumn(_subjectsGrid, "InstructorName", "Instructor", 200);
-            AppDataGridViewFactory.AddButtonColumn(_subjectsGrid, "ViewDetails", "Details", 80);
+            AppDataGridViewFactory.AddButtonColumn(_subjectsGrid, "ViewDetails", "Details", "View", 80);
 
             _subjectsGrid.CellClick += OnSubjectsGridCellClick;
 

@@ -118,11 +118,11 @@ namespace IUIS.UserApp.Forms.Employee.Counseling
             AppDataGridViewFactory.AddTextBoxColumn(grid, "StudentName", "Student", 150);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "StudentId", "Student ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "SessionType", "Type", 120);
-            AppDataGridViewFactory.AddDateColumn(grid, "ScheduledAtUtc", "Scheduled", 120);
+            AppDataGridViewFactory.AddDateColumn(grid, "ScheduledAtUtc", "Scheduled", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "StatusDisplay", "Status", 100);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "Priority", "Priority", 80);
-            AppDataGridViewFactory.AddButtonColumn(grid, "View", "View", 60);
-            AppDataGridViewFactory.AddButtonColumn(grid, "Edit", "Edit", 60);
+            AppDataGridViewFactory.AddButtonColumn(grid, "View", "View", "View", 60);
+            AppDataGridViewFactory.AddButtonColumn(grid, "Edit", "Edit", "Edit", 60);
             
             grid.CellClick += OnSessionsGridCellClick;
             return grid;

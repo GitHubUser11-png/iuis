@@ -130,7 +130,7 @@ namespace IUIS.UserApp.Forms.Employee.Clinic
             AppDataGridViewFactory.AddTextBoxColumn(_todayScheduleGrid, "ConsultationId", "ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_todayScheduleGrid, "PatientName", "Patient", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_todayScheduleGrid, "ConsultationType", "Type", 120);
-            AppDataGridViewFactory.AddDateColumn(_todayScheduleGrid, "ScheduledAtUtc", "Time", 120);
+            AppDataGridViewFactory.AddDateColumn(_todayScheduleGrid, "ScheduledAtUtc", "Time", "MM/dd/yyyy", 120);
 
             var pendingClearancesLabel = new Label
             {
@@ -147,7 +147,7 @@ namespace IUIS.UserApp.Forms.Employee.Clinic
             AppDataGridViewFactory.AddTextBoxColumn(_pendingClearancesGrid, "ClearanceId", "ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_pendingClearancesGrid, "StudentName", "Student", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_pendingClearancesGrid, "ClearanceType", "Type", 120);
-            AppDataGridViewFactory.AddDateColumn(_pendingClearancesGrid, "RequestedAtUtc", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_pendingClearancesGrid, "RequestedAtUtc", "Date", "MM/dd/yyyy", 120);
 
             mainPanel.Controls.Add(headerLabel);
             mainPanel.Controls.Add(metricsPanel);

@@ -122,9 +122,9 @@ namespace IUIS.UserApp.Forms.Employee.Library
             AppDataGridViewFactory.AddDateColumn(grid, "BorrowedAtUtc", "Issue Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddDateColumn(grid, "DueAtUtc", "Due Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "StatusDisplay", "Status", 100);
-            AppDataGridViewFactory.AddButtonColumn(grid, "View", "View", 60);
-            AppDataGridViewFactory.AddButtonColumn(grid, "Renew", "Renew", 60);
-            AppDataGridViewFactory.AddButtonColumn(grid, "Return", "Return", 60);
+            AppDataGridViewFactory.AddButtonColumn(grid, "View", "View", "View", 60);
+            AppDataGridViewFactory.AddButtonColumn(grid, "Renew", "Renew", "Renew", 60);
+            AppDataGridViewFactory.AddButtonColumn(grid, "Return", "Return", "Return", 60);
             
             grid.CellClick += OnBorrowingsGridCellClick;
             return grid;

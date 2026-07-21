@@ -147,7 +147,7 @@ namespace IUIS.UserApp.Forms.Employee.Discipline
             AppDataGridViewFactory.AddTextBoxColumn(_pendingReviewGrid, "IncidentId", "ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_pendingReviewGrid, "StudentName", "Student", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_pendingReviewGrid, "Severity", "Severity", 100);
-            AppDataGridViewFactory.AddDateColumn(_pendingReviewGrid, "ReportedAtUtc", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_pendingReviewGrid, "ReportedAtUtc", "Date", "MM/dd/yyyy", 120);
 
             mainPanel.Controls.Add(headerLabel);
             mainPanel.Controls.Add(metricsPanel);
