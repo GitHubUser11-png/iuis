@@ -62,10 +62,7 @@ namespace IUIS.Infrastructure.Persistence
         : MappedJsonRepository<AssessmentChargeRule>, IAssessmentChargeRuleRepository
     {
         public AssessmentChargeRuleRepositoryAdapter(JsonRepositoryStore store)
-            : base(
-                "assessment_charge_rules",
-                store,
-                new AssessmentChargeRuleJsonMapper()) { }
+            : base("assessment_charge_rules", store, new AssessmentChargeRuleJsonMapper()) { }
     }
 
     public sealed class PaymentRepositoryAdapter
@@ -79,82 +76,62 @@ namespace IUIS.Infrastructure.Persistence
         : MappedJsonRepository<FinancialAdjustment>, IFinancialAdjustmentRepository
     {
         public FinancialAdjustmentRepositoryAdapter(JsonRepositoryStore store)
-            : base(
-                "financial_adjustments",
-                store,
-                new FinancialAdjustmentJsonMapper()) { }
+            : base("financial_adjustments", store, new FinancialAdjustmentJsonMapper()) { }
     }
 
     public sealed class ScholarshipAwardRepositoryAdapter
         : MappedJsonRepository<ScholarshipAward>, IScholarshipAwardRepository
     {
         public ScholarshipAwardRepositoryAdapter(JsonRepositoryStore store)
-            : base(
-                "scholarship_awards",
-                store,
-                new ScholarshipAwardJsonMapper()) { }
+            : base("scholarship_awards", store, new ScholarshipAwardJsonMapper()) { }
     }
 
     public sealed class LibraryBookRepositoryAdapter
         : MappedJsonRepository<LibraryBook>, ILibraryBookRepository
     {
-        public LibraryBookRepositoryAdapter(
-            JsonRepositoryStore store,
-            IJsonRecordMapper<LibraryBook> mapper)
-            : base("books", store, mapper) { }
+        public LibraryBookRepositoryAdapter(JsonRepositoryStore store)
+            : base("books", store, new LibraryBookJsonMapper()) { }
     }
 
     public sealed class LibraryBorrowingRepositoryAdapter
         : MappedJsonRepository<LibraryBorrowing>, ILibraryBorrowingRepository
     {
-        public LibraryBorrowingRepositoryAdapter(
-            JsonRepositoryStore store,
-            IJsonRecordMapper<LibraryBorrowing> mapper)
-            : base("borrowings", store, mapper) { }
+        public LibraryBorrowingRepositoryAdapter(JsonRepositoryStore store)
+            : base("borrowings", store, new LibraryBorrowingJsonMapper()) { }
     }
 
     public sealed class CounselingCaseRepositoryAdapter
         : MappedJsonRepository<CounselingCase>, ICounselingCaseRepository
     {
-        public CounselingCaseRepositoryAdapter(
-            JsonRepositoryStore store,
-            IJsonRecordMapper<CounselingCase> mapper)
-            : base("counseling", store, mapper) { }
+        public CounselingCaseRepositoryAdapter(JsonRepositoryStore store)
+            : base("counseling", store, new CounselingCaseJsonMapper()) { }
     }
 
     public sealed class DisciplineCaseRepositoryAdapter
         : MappedJsonRepository<DisciplineCase>, IDisciplineCaseRepository
     {
-        public DisciplineCaseRepositoryAdapter(
-            JsonRepositoryStore store,
-            IJsonRecordMapper<DisciplineCase> mapper)
-            : base("discipline_incidents", store, mapper) { }
+        public DisciplineCaseRepositoryAdapter(JsonRepositoryStore store)
+            : base("discipline_incidents", store, new DisciplineCaseJsonMapper()) { }
     }
 
     public sealed class ClinicAppointmentRepositoryAdapter
         : MappedJsonRepository<ClinicAppointment>, IClinicAppointmentRepository
     {
-        public ClinicAppointmentRepositoryAdapter(
-            JsonRepositoryStore store,
-            IJsonRecordMapper<ClinicAppointment> mapper)
-            : base("appointments", store, mapper) { }
+        public ClinicAppointmentRepositoryAdapter(JsonRepositoryStore store)
+            : base("appointments", store, new ClinicAppointmentJsonMapper()) { }
     }
 
     public sealed class MedicalRecordRepositoryAdapter
         : MappedJsonRepository<MedicalRecord>, IMedicalRecordRepository
     {
-        public MedicalRecordRepositoryAdapter(
-            JsonRepositoryStore store,
-            IJsonRecordMapper<MedicalRecord> mapper)
-            : base("medical_records", store, mapper) { }
+        public MedicalRecordRepositoryAdapter(JsonRepositoryStore store)
+            : base("medical_records", store, new MedicalRecordJsonMapper()) { }
     }
 
     public sealed class MedicalClearanceRepositoryAdapter
         : MappedJsonRepository<MedicalClearance>, IMedicalClearanceRepository
     {
-        public MedicalClearanceRepositoryAdapter(
-            JsonRepositoryStore store,
-            IJsonRecordMapper<MedicalClearance> mapper)
-            : base("clearances", store, mapper) { }
+        public MedicalClearanceRepositoryAdapter(JsonRepositoryStore store)
+            : base("clearances", store, new MedicalClearanceJsonMapper()) { }
     }
 }

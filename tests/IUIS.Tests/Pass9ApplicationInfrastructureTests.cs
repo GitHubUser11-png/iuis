@@ -203,12 +203,8 @@ namespace IUIS.Tests
             foreach (var type in types)
             {
                 Assert.IsFalse(type.GetProperties().Any(property =>
-                    property.Name.IndexOf(
-                        "Internal",
-                        StringComparison.OrdinalIgnoreCase) >= 0
-                    || property.Name.IndexOf(
-                        "Confidential",
-                        StringComparison.OrdinalIgnoreCase) >= 0));
+                    property.Name.IndexOf("Internal", StringComparison.OrdinalIgnoreCase) >= 0
+                    || property.Name.IndexOf("Confidential", StringComparison.OrdinalIgnoreCase) >= 0));
             }
         }
 
@@ -222,10 +218,7 @@ namespace IUIS.Tests
                     new PermissionResolver()),
                 new InMemoryStudentRepository(student),
                 new RestrictedProjectionService());
-            var result = service.GetOwnRecord(
-                "SES-2026-000001",
-                "token",
-                Now);
+            var result = service.GetOwnRecord("SES-2026-000001", "token", Now);
             Assert.AreEqual(student.Id, result.StudentId);
             Assert.AreEqual(student.Version, result.EntityVersion);
         }
@@ -236,8 +229,7 @@ namespace IUIS.Tests
             var repository = new InMemoryEmployeeRepository();
             var service = new EmployeeRecordQueryService(
                 new SessionAwareRequestExecutor(
-                    new FixedPrincipalProvider(
-                        StudentPrincipal("STU-2026-000001")),
+                    new FixedPrincipalProvider(StudentPrincipal("STU-2026-000001")),
                     new PermissionResolver()),
                 repository,
                 new RestrictedProjectionService());
@@ -262,11 +254,7 @@ namespace IUIS.Tests
                 repository.Write(
                     new[]
                     {
-                        new TestAggregate
-                        {
-                            Id = "TST-2026-000001",
-                            Value = "Alpha"
-                        }
+                        new TestAggregate { Id = "TST-2026-000001", Value = "Alpha" }
                     },
                     0,
                     bootstrap.AdministratorUserId);
@@ -282,20 +270,16 @@ namespace IUIS.Tests
                         .Distinct(StringComparer.Ordinal)
                         .Count());
                 Assert.AreEqual(
-                    11,
+                    16,
                     readiness.Count(item =>
-                        item.Readiness
-                        == AggregateMapperReadiness.SpecializedMapperCompleted));
+                        item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted));
                 Assert.AreEqual(
-                    7,
+                    2,
                     readiness.Count(item =>
-                        item.Readiness
-                        == AggregateMapperReadiness.DeferredWithExplicitReason));
+                        item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason));
                 Assert.IsFalse(readiness.Any(item =>
-                    item.Readiness
-                    == AggregateMapperReadiness.GenericMapperCompatible
-                    || item.Readiness
-                    == AggregateMapperReadiness.RequiresSpecializedMapper));
+                    item.Readiness == AggregateMapperReadiness.GenericMapperCompatible
+                    || item.Readiness == AggregateMapperReadiness.RequiresSpecializedMapper));
             });
         }
 
@@ -310,18 +294,11 @@ namespace IUIS.Tests
                     new SystemTextJsonRecordMapper<TestAggregate>());
                 var records = new[]
                 {
-                    new TestAggregate
-                    {
-                        Id = "TST-2026-000001",
-                        Value = "Alpha"
-                    }
+                    new TestAggregate { Id = "TST-2026-000001", Value = "Alpha" }
                 };
                 repository.Write(records, 0, bootstrap.AdministratorUserId);
                 Assert.ThrowsException<InvalidOperationException>(() =>
-                    repository.Write(
-                        records,
-                        0,
-                        bootstrap.AdministratorUserId));
+                    repository.Write(records, 0, bootstrap.AdministratorUserId));
             });
         }
 
@@ -347,26 +324,12 @@ namespace IUIS.Tests
                 {
                     scope.Stage(
                         courses,
-                        new[]
-                        {
-                            new TestAggregate
-                            {
-                                Id = "TST-2026-000001",
-                                Value = "Course"
-                            }
-                        },
+                        new[] { new TestAggregate { Id = "TST-2026-000001", Value = "Course" } },
                         0,
                         bootstrap.AdministratorUserId);
                     scope.Stage(
                         subjects,
-                        new[]
-                        {
-                            new TestAggregate
-                            {
-                                Id = "TST-2026-000002",
-                                Value = "Subject"
-                            }
-                        },
+                        new[] { new TestAggregate { Id = "TST-2026-000002", Value = "Subject" } },
                         0,
                         bootstrap.AdministratorUserId);
                 });
@@ -380,9 +343,7 @@ namespace IUIS.Tests
                     var blockingCourses = new MappedJsonRepository<TestAggregate>(
                         "courses",
                         store,
-                        new BlockingJsonRecordMapper(
-                            stageReadCompleted,
-                            releaseStage));
+                        new BlockingJsonRecordMapper(stageReadCompleted, releaseStage));
                     Exception transactionFailure = null;
                     var staleTask = Task.Run(() =>
                     {
@@ -406,10 +367,7 @@ namespace IUIS.Tests
                             transactionFailure = exception;
                         }
                     });
-
-                    Assert.IsTrue(
-                        stageReadCompleted.Wait(TimeSpan.FromSeconds(10)),
-                        "The transaction did not finish its pre-lock revision read.");
+                    Assert.IsTrue(stageReadCompleted.Wait(TimeSpan.FromSeconds(10)));
                     courses.Write(
                         new[]
                         {
@@ -422,18 +380,11 @@ namespace IUIS.Tests
                         1,
                         bootstrap.AdministratorUserId);
                     releaseStage.Set();
-                    Assert.IsTrue(
-                        staleTask.Wait(TimeSpan.FromSeconds(10)),
-                        "The stale transaction did not complete after the stage was released.");
-                    Assert.IsInstanceOfType(
-                        transactionFailure,
-                        typeof(InvalidOperationException));
-
+                    Assert.IsTrue(staleTask.Wait(TimeSpan.FromSeconds(10)));
+                    Assert.IsInstanceOfType(transactionFailure, typeof(InvalidOperationException));
                     var finalSnapshot = courses.Read();
                     Assert.AreEqual(2L, finalSnapshot.Revision);
-                    Assert.AreEqual(
-                        "Concurrent committed value",
-                        finalSnapshot.Records.Single().Value);
+                    Assert.AreEqual("Concurrent committed value", finalSnapshot.Records.Single().Value);
                 }
             });
         }
@@ -445,24 +396,12 @@ namespace IUIS.Tests
             {
                 var store = NewStore(root);
                 var users = store.Read<PersistedUserAccount>("users");
-                var account = users.Records.Single(
-                    item => item.Id == bootstrap.AdministratorUserId);
-                account.PermissionProfileIds = new List<string>
-                {
-                    "PPR-2026-000001"
-                };
-                account.DirectPermissionGrants = new List<string>
-                {
-                    "admin.report.read"
-                };
-                account.DirectPermissionRestrictions = new List<string>
-                {
-                    "admin.user.delete"
-                };
+                var account = users.Records.Single(item => item.Id == bootstrap.AdministratorUserId);
+                account.PermissionProfileIds = new List<string> { "PPR-2026-000001" };
+                account.DirectPermissionGrants = new List<string> { "admin.report.read" };
+                account.DirectPermissionRestrictions = new List<string> { "admin.user.delete" };
                 store.Write("users", users, users.Revision);
-
-                var profiles = store.Read<PersistedPermissionProfileRecord>(
-                    "permission_profiles");
+                var profiles = store.Read<PersistedPermissionProfileRecord>("permission_profiles");
                 profiles.Records.Add(new PersistedPermissionProfileRecord
                 {
                     Id = "PPR-2026-000001",
@@ -473,24 +412,16 @@ namespace IUIS.Tests
                     UpdatedByUserId = bootstrap.AdministratorUserId,
                     Version = 1
                 });
-                store.Write(
-                    "permission_profiles",
-                    profiles,
-                    profiles.Revision);
+                store.Write("permission_profiles", profiles, profiles.Revision);
 
                 var principal = new JsonAuthorizationPrincipalProvider(
                     new ProductionRepositoryCatalog(),
                     new JsonInfrastructureOptions(root))
-                    .Load(
-                        authentication.SessionId,
-                        authentication.SessionToken,
-                        Now.AddMinutes(4));
-                var effective = new PermissionResolver()
-                    .ResolveEffectivePermissions(principal);
+                    .Load(authentication.SessionId, authentication.SessionToken, Now.AddMinutes(4));
+                var effective = new PermissionResolver().ResolveEffectivePermissions(principal);
                 Assert.IsTrue(effective.Contains("admin.user.read"));
                 Assert.IsTrue(effective.Contains("admin.report.read"));
-                Assert.IsTrue(
-                    principal.DirectRestrictions.Contains("admin.user.delete"));
+                Assert.IsTrue(principal.DirectRestrictions.Contains("admin.user.delete"));
             });
         }
 
@@ -503,10 +434,7 @@ namespace IUIS.Tests
                     new ProductionRepositoryCatalog(),
                     new JsonInfrastructureOptions(root));
                 Assert.ThrowsException<InvalidOperationException>(() =>
-                    provider.Load(
-                        authentication.SessionId,
-                        authentication.SessionToken,
-                        Now.AddHours(10)));
+                    provider.Load(authentication.SessionId, authentication.SessionToken, Now.AddHours(10)));
             });
         }
 
@@ -517,18 +445,14 @@ namespace IUIS.Tests
             {
                 var store = NewStore(root);
                 var users = store.Read<PersistedUserAccount>("users");
-                users.Records.Single(
-                    item => item.Id == bootstrap.AdministratorUserId)
+                users.Records.Single(item => item.Id == bootstrap.AdministratorUserId)
                     .SecurityStamp = Guid.NewGuid().ToString("N");
                 store.Write("users", users, users.Revision);
                 var provider = new JsonAuthorizationPrincipalProvider(
                     new ProductionRepositoryCatalog(),
                     new JsonInfrastructureOptions(root));
                 Assert.ThrowsException<InvalidOperationException>(() =>
-                    provider.Load(
-                        authentication.SessionId,
-                        authentication.SessionToken,
-                        Now.AddMinutes(4)));
+                    provider.Load(authentication.SessionId, authentication.SessionToken, Now.AddMinutes(4)));
             });
         }
 
@@ -539,12 +463,7 @@ namespace IUIS.Tests
             string ownerId,
             params PrimaryRole[] roles)
         {
-            return new AuthorizationRequest(
-                permission,
-                applicationKind,
-                confidentiality,
-                ownerId,
-                roles);
+            return new AuthorizationRequest(permission, applicationKind, confidentiality, ownerId, roles);
         }
 
         private static AuthorizationPrincipal StudentPrincipal(string studentId)
@@ -592,18 +511,8 @@ namespace IUIS.Tests
                 id,
                 id,
                 new PersonName("Ada", null, "Lovelace", null),
-                new ContactInformation(
-                    "ada@example.edu",
-                    "+639171234567",
-                    null),
-                new PostalAddress(
-                    "1 University Road",
-                    null,
-                    "Poblacion",
-                    "Malvar",
-                    "Batangas",
-                    "4233",
-                    "PH"),
+                new ContactInformation("ada@example.edu", "+639171234567", null),
+                new PostalAddress("1 University Road", null, "Poblacion", "Malvar", "Batangas", "4233", "PH"),
                 new InstitutionLocalDate(2000, 1, 1),
                 "CRS-2026-000001",
                 StudentStatus.Active,
@@ -640,8 +549,7 @@ namespace IUIS.Tests
             });
         }
 
-        private static void WithBootstrap(
-            Action<string, ProductionBootstrapResult> action)
+        private static void WithBootstrap(Action<string, ProductionBootstrapResult> action)
         {
             var root = Path.Combine(
                 Path.GetTempPath(),
@@ -655,8 +563,7 @@ namespace IUIS.Tests
                     .Initialize(new ProductionBootstrapRequest
                     {
                         AdministratorLoginId = "root.admin",
-                        AdministratorInitialPassword =
-                            "Temporary-Admin-Password-1",
+                        AdministratorInitialPassword = "Temporary-Admin-Password-1",
                         AdministratorGivenName = "Initial",
                         AdministratorFamilyName = "Administrator",
                         AdministratorEmailAddress = "admin@example.edu",
@@ -681,8 +588,7 @@ namespace IUIS.Tests
             }
         }
 
-        private sealed class BlockingJsonRecordMapper :
-            IJsonRecordMapper<TestAggregate>
+        private sealed class BlockingJsonRecordMapper : IJsonRecordMapper<TestAggregate>
         {
             private readonly ManualResetEventSlim _stageReadCompleted;
             private readonly ManualResetEventSlim _releaseStage;
@@ -710,67 +616,34 @@ namespace IUIS.Tests
             {
                 _stageReadCompleted.Set();
                 if (!_releaseStage.Wait(TimeSpan.FromSeconds(10)))
-                {
-                    throw new TimeoutException(
-                        "The test did not release the staged mutation.");
-                }
-
+                    throw new TimeoutException("The test did not release the staged mutation.");
                 return _inner.ToJson(value, options);
             }
         }
 
-        private sealed class FixedPrincipalProvider :
-            IAuthorizationPrincipalProvider
+        private sealed class FixedPrincipalProvider : IAuthorizationPrincipalProvider
         {
             private readonly AuthorizationPrincipal _principal;
-
-            public FixedPrincipalProvider(AuthorizationPrincipal principal)
-            {
-                _principal = principal;
-            }
-
-            public AuthorizationPrincipal Load(
-                string sessionId,
-                string sessionToken,
-                DateTime utcNow)
+            public FixedPrincipalProvider(AuthorizationPrincipal principal) { _principal = principal; }
+            public AuthorizationPrincipal Load(string sessionId, string sessionToken, DateTime utcNow)
             {
                 return _principal;
             }
         }
 
-        private sealed class InMemoryStudentRepository :
-            IStudentRecordRepository
+        private sealed class InMemoryStudentRepository : IStudentRecordRepository
         {
             private readonly StudentRecord _record;
-
-            public InMemoryStudentRepository(StudentRecord record)
-            {
-                _record = record;
-            }
-
-            public string RepositoryName
-            {
-                get { return "students"; }
-            }
-
+            public InMemoryStudentRepository(StudentRecord record) { _record = record; }
+            public string RepositoryName { get { return "students"; } }
             public RepositorySnapshot<StudentRecord> Read()
             {
-                return new RepositorySnapshot<StudentRecord>(
-                    RepositoryName,
-                    0,
-                    new[] { _record });
+                return new RepositorySnapshot<StudentRecord>(RepositoryName, 0, new[] { _record });
             }
-
             public StudentRecord FindById(string id)
             {
-                return string.Equals(
-                    _record.Id,
-                    id,
-                    StringComparison.Ordinal)
-                    ? _record
-                    : null;
+                return string.Equals(_record.Id, id, StringComparison.Ordinal) ? _record : null;
             }
-
             public void Write(
                 IReadOnlyCollection<StudentRecord> records,
                 long expectedRevision,
@@ -780,16 +653,10 @@ namespace IUIS.Tests
             }
         }
 
-        private sealed class InMemoryEmployeeRepository :
-            IEmployeeRecordRepository
+        private sealed class InMemoryEmployeeRepository : IEmployeeRecordRepository
         {
             public int ReadCount { get; private set; }
-
-            public string RepositoryName
-            {
-                get { return "employees"; }
-            }
-
+            public string RepositoryName { get { return "employees"; } }
             public RepositorySnapshot<EmployeeRecord> Read()
             {
                 ReadCount++;
@@ -798,13 +665,11 @@ namespace IUIS.Tests
                     0,
                     new EmployeeRecord[0]);
             }
-
             public EmployeeRecord FindById(string id)
             {
                 ReadCount++;
                 return null;
             }
-
             public void Write(
                 IReadOnlyCollection<EmployeeRecord> records,
                 long expectedRevision,
