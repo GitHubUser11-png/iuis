@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
@@ -90,7 +89,9 @@ namespace IUIS.Tests
             Assert.IsNotNull(counseling.ReleasedSummaries);
             Assert.AreEqual(0, counseling.ConfidentialSessions.Count);
             Assert.AreEqual(0, counseling.ReleasedSummaries.Count);
-            Assert.AreNotSame(counseling.ConfidentialSessions, counseling.ReleasedSummaries);
+            Assert.AreNotSame(
+                (object)counseling.ConfidentialSessions,
+                (object)counseling.ReleasedSummaries);
 
             Assert.IsNotNull(discipline.RestrictedEvidence);
             Assert.IsNotNull(discipline.StudentResponses);
@@ -103,7 +104,9 @@ namespace IUIS.Tests
             Assert.IsNotNull(medical.ReleasedSummaries);
             Assert.AreEqual(0, medical.ConfidentialConsultations.Count);
             Assert.AreEqual(0, medical.ReleasedSummaries.Count);
-            Assert.AreNotSame(medical.ConfidentialConsultations, medical.ReleasedSummaries);
+            Assert.AreNotSame(
+                (object)medical.ConfidentialConsultations,
+                (object)medical.ReleasedSummaries);
 
             Assert.IsNotNull(clearance.RestrictedHistory);
             Assert.AreEqual(0, clearance.RestrictedHistory.Count);
