@@ -153,13 +153,13 @@ namespace IUIS.Application.Orchestration
     public sealed class StudentLibraryCirculationQueryService
     {
         private readonly SessionAwareRequestExecutor _executor;
-        private readonly ILibraryBookRepository _books;
-        private readonly ILibraryBorrowingRepository _borrowings;
+        private readonly IVersionedRepository<LibraryBook> _books;
+        private readonly IVersionedRepository<LibraryBorrowing> _borrowings;
 
         public StudentLibraryCirculationQueryService(
             SessionAwareRequestExecutor executor,
-            ILibraryBookRepository books,
-            ILibraryBorrowingRepository borrowings)
+            IVersionedRepository<LibraryBook> books,
+            IVersionedRepository<LibraryBorrowing> borrowings)
         {
             _executor = executor ?? throw new ArgumentNullException(nameof(executor));
             _books = books ?? throw new ArgumentNullException(nameof(books));
@@ -252,15 +252,15 @@ namespace IUIS.Application.Orchestration
     public sealed class LibraryCirculationCommandService
     {
         private readonly SessionAwareRequestExecutor _executor;
-        private readonly ILibraryBookRepository _books;
-        private readonly ILibraryBorrowingRepository _borrowings;
+        private readonly IVersionedRepository<LibraryBook> _books;
+        private readonly IVersionedRepository<LibraryBorrowing> _borrowings;
         private readonly IApplicationTransactionCoordinator _transactions;
         private readonly IApplicationIdentifierAllocator _ids;
 
         public LibraryCirculationCommandService(
             SessionAwareRequestExecutor executor,
-            ILibraryBookRepository books,
-            ILibraryBorrowingRepository borrowings,
+            IVersionedRepository<LibraryBook> books,
+            IVersionedRepository<LibraryBorrowing> borrowings,
             IApplicationTransactionCoordinator transactions,
             IApplicationIdentifierAllocator ids)
         {
