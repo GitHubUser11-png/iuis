@@ -32,6 +32,7 @@
     <Compile Include="Persistence\RepositoryEnvelopeJson.cs" />
     <Compile Include="Persistence\RepositoryEnvelopeMigrationService.cs" />
     <Compile Include="Persistence\SpecializedAggregateJsonMappers.cs" />
+    <Compile Include="Persistence\StudentServicePersistedRecords.cs" />
     <Compile Include="Persistence\TransactionCoordinator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AuthenticationService.cs" />
