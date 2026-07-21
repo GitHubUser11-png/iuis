@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using IUIS.Application.Abstractions.StudentSelfService;
+using IUIS.Application.Common;
 using IUIS.Application.StudentSelfService.Scholarship;
 using IUIS.Application.StudentSelfService.Access;
 
@@ -17,7 +19,7 @@ namespace IUIS.Application.StudentSelfService.Scholarship
             _projectionDataSource = projectionDataSource;
         }
 
-        public System.Collections.Generic.IReadOnlyList<ScholarshipProgramView> GetAvailablePrograms(string sessionId)
+        public IReadOnlyList<ScholarshipProgramView> GetAvailablePrograms(string sessionId)
         {
             var context = _accessGuard.RequireStudent(
                 sessionId,
@@ -26,10 +28,10 @@ namespace IUIS.Application.StudentSelfService.Scholarship
             var snapshot = _projectionDataSource.ReadStudentSources(context.StudentId);
 
             // TODO: Implement actual lookup from scholarships.json
-            return System.Collections.Generic.List<ScholarshipProgramView>.Empty;
+            return List<ScholarshipProgramView>.Empty;
         }
 
-        public System.Collections.Generic.IReadOnlyList<StudentScholarshipApplicationView> GetMyApplications(string sessionId)
+        public IReadOnlyList<StudentScholarshipApplicationView> GetMyApplications(string sessionId)
         {
             var context = _accessGuard.RequireStudent(
                 sessionId,
@@ -38,7 +40,7 @@ namespace IUIS.Application.StudentSelfService.Scholarship
             var snapshot = _projectionDataSource.ReadStudentSources(context.StudentId);
 
             // TODO: Implement actual lookup from scholarship_applications.json
-            return System.Collections.Generic.List<StudentScholarshipApplicationView>.Empty;
+            return List<StudentScholarshipApplicationView>.Empty;
         }
 
         public OperationResult SubmitApplication(

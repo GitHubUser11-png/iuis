@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
 using IUIS.Application.Abstractions.StudentSelfService;
+using IUIS.Application.Common;
 using IUIS.Application.StudentSelfService.Profile;
 using IUIS.Application.StudentSelfService.Access;
 using IUIS.Domain.Students;
+using IUIS.Infrastructure.Projections.Student;
 
 namespace IUIS.Application.StudentSelfService.Profile
 {
@@ -67,14 +71,14 @@ namespace IUIS.Application.StudentSelfService.Profile
             return OperationResult.Success();
         }
 
-        public System.Collections.Generic.IReadOnlyList<CorrectionRequestView> GetCorrectionRequests(string sessionId)
+        public IReadOnlyList<StudentProfileCorrectionRequest> GetCorrectionRequests(string sessionId)
         {
             var context = _accessGuard.RequireStudent(
                 sessionId,
                 "Student.Profile.ViewCorrections");
 
             // TODO: Implement actual lookup from student_profile_corrections.json
-            return System.Collections.Generic.List<CorrectionRequestView>.Empty;
+            return List<StudentProfileCorrectionRequest>.Empty;
         }
 
         private string GetProgramName(StudentProjectionSnapshot snapshot, string studentId)

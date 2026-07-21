@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Finance;
 using IUIS.Application.StudentSelfService.Access;
+using IUIS.Infrastructure.Projections.Student;
 
 namespace IUIS.Application.StudentSelfService.Finance
 {
@@ -38,7 +41,7 @@ namespace IUIS.Application.StudentSelfService.Finance
                 ScholarshipDeduction = GetScholarshipDeduction(snapshot, context.StudentId),
                 TotalPaid = GetTotalPaid(snapshot, context.StudentId),
                 OutstandingBalance = GetOutstandingBalance(snapshot, context.StudentId),
-                AssessmentStatus = GetAssessmentStatus(snapshot, context.StudentId)
+                AssessmentStatus = GetCurrentAssessmentStatus(snapshot, context.StudentId)
             };
         }
 
@@ -64,7 +67,7 @@ namespace IUIS.Application.StudentSelfService.Finance
             };
         }
 
-        public System.Collections.Generic.IReadOnlyList<StudentPaymentListItem> GetPaymentHistory(string sessionId)
+        public IReadOnlyList<StudentPaymentListItem> GetPaymentHistory(string sessionId)
         {
             var context = _accessGuard.RequireStudent(
                 sessionId,
@@ -73,7 +76,7 @@ namespace IUIS.Application.StudentSelfService.Finance
             var snapshot = _projectionDataSource.ReadStudentSources(context.StudentId);
 
             // TODO: Implement actual lookup from payments.json
-            return System.Collections.Generic.List<StudentPaymentListItem>.Empty;
+            return List<StudentPaymentListItem>.Empty;
         }
 
         public StudentPaymentReceiptView GetPaymentReceipt(string sessionId, string paymentId)
@@ -169,7 +172,7 @@ namespace IUIS.Application.StudentSelfService.Finance
             return 15000m;
         }
 
-        private string GetAssessmentStatus(StudentProjectionSnapshot snapshot, string studentId)
+        private string GetCurrentAssessmentStatus(StudentProjectionSnapshot snapshot, string studentId)
         {
             // TODO: Implement actual lookup
             return "Partially Paid";
@@ -187,18 +190,18 @@ namespace IUIS.Application.StudentSelfService.Finance
             return "First Semester";
         }
 
-        private System.Collections.Generic.IReadOnlyList<AssessmentChargeItem> GetAssessmentCharges(
+        private IReadOnlyList<AssessmentChargeItem> GetAssessmentCharges(
             StudentProjectionSnapshot snapshot, string assessmentId)
         {
             // TODO: Implement actual lookup
-            return System.Collections.Generic.List<AssessmentChargeItem>.Empty;
+            return List<AssessmentChargeItem>.Empty;
         }
 
-        private System.Collections.Generic.IReadOnlyList<AssessmentPaymentItem> GetAssessmentPayments(
+        private IReadOnlyList<AssessmentPaymentItem> GetAssessmentPayments(
             StudentProjectionSnapshot snapshot, string assessmentId)
         {
             // TODO: Implement actual lookup
-            return System.Collections.Generic.List<AssessmentPaymentItem>.Empty;
+            return List<AssessmentPaymentItem>.Empty;
         }
 
         private decimal GetAssessmentTotal(StudentProjectionSnapshot snapshot, string assessmentId)

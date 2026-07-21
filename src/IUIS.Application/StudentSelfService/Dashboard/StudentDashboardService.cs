@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Dashboard;
 using IUIS.Application.StudentSelfService.Access;
+using IUIS.Infrastructure.Projections.Student;
 
 namespace IUIS.Application.StudentSelfService.Dashboard
 {
@@ -112,18 +114,18 @@ namespace IUIS.Application.StudentSelfService.Dashboard
             return 1;
         }
 
-        private System.Collections.Generic.IReadOnlyList<DashboardAppointmentItem> GetUpcomingAppointments(
+        private IReadOnlyList<DashboardAppointmentItem> GetUpcomingAppointments(
             StudentProjectionSnapshot snapshot, string studentId)
         {
             // TODO: Implement actual lookup
-            return System.Collections.Generic.List<DashboardAppointmentItem>.Empty;
+            return List<DashboardAppointmentItem>.Empty;
         }
 
-        private System.Collections.Generic.IReadOnlyList<DashboardNotificationItem> GetRecentNotifications(
+        private IReadOnlyList<DashboardNotificationItem> GetRecentNotifications(
             StudentProjectionSnapshot snapshot, string userId)
         {
             // TODO: Implement actual lookup
-            return System.Collections.Generic.List<DashboardNotificationItem>.Empty;
+            return List<DashboardNotificationItem>.Empty;
         }
     }
 }

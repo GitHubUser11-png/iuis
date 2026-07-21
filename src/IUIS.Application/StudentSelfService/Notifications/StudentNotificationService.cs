@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using IUIS.Application.Abstractions.StudentSelfService;
+using IUIS.Application.Common;
 using IUIS.Application.StudentSelfService.Notifications;
 using IUIS.Application.StudentSelfService.Access;
 
@@ -17,7 +19,7 @@ namespace IUIS.Application.StudentSelfService.Notifications
             _projectionDataSource = projectionDataSource;
         }
 
-        public System.Collections.Generic.IReadOnlyList<StudentNotificationView> GetNotifications(string sessionId)
+        public IReadOnlyList<StudentNotificationView> GetNotifications(string sessionId)
         {
             var context = _accessGuard.RequireStudent(
                 sessionId,
@@ -26,7 +28,7 @@ namespace IUIS.Application.StudentSelfService.Notifications
             var snapshot = _projectionDataSource.ReadStudentSources(context.StudentId);
 
             // TODO: Implement actual lookup from notifications.json
-            return System.Collections.Generic.List<StudentNotificationView>.Empty;
+            return List<StudentNotificationView>.Empty;
         }
 
         public OperationResult MarkAsRead(string sessionId, string notificationId)

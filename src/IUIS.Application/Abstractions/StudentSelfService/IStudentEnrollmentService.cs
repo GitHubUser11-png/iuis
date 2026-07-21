@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using IUIS.Application.StudentSelfService.Enrollment;
 
 namespace IUIS.Application.Abstractions.StudentSelfService

@@ -25,20 +25,25 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IUIS.Domain\IUIS.Domain.csproj">
-      <Project>{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}</Project><Name>IUIS.Domain</Name>
+      <Project>{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}</Project>
+      <Name>IUIS.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\IUIS.Application\IUIS.Application.csproj">
-      <Project>{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}</Project><Name>IUIS.Application</Name>
+      <Project>{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}</Project>
+      <Name>IUIS.Application</Name>
     </ProjectReference>
     <ProjectReference Include="..\IUIS.Infrastructure\IUIS.Infrastructure.csproj">
-      <Project>{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}</Project><Name>IUIS.Infrastructure</Name>
+      <Project>{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}</Project>
+      <Name>IUIS.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\IUIS.SharedUI\IUIS.SharedUI.csproj">
-      <Project>{40D9067F-C8E7-4EEA-D5BE-91A6C9DC5004}</Project><Name>IUIS.SharedUI</Name>
+      <Project>{40D9067F-C8E7-4EEA-D5BE-91A6C9DC5004}</Project>
+      <Name>IUIS.SharedUI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Enrollment;
 using IUIS.Application.StudentSelfService.Access;
+using IUIS.Infrastructure.Projections.Student;
 
 namespace IUIS.Application.StudentSelfService.Enrollment
 {
@@ -33,8 +36,8 @@ namespace IUIS.Application.StudentSelfService.Enrollment
                 Section = GetSection(snapshot, context.StudentId),
                 AcademicYear = GetCurrentAcademicYear(snapshot),
                 Semester = GetCurrentSemester(snapshot),
-                EnrollmentStatus = GetEnrollmentStatus(snapshot, context.StudentId),
-                EnrollmentDate = GetEnrollmentDate(snapshot, context.StudentId),
+                EnrollmentStatus = GetCurrentEnrollmentStatus(snapshot, context.StudentId),
+                EnrollmentDate = GetCurrentEnrollmentDate(snapshot, context.StudentId),
                 TotalUnits = GetTotalUnits(snapshot, context.StudentId),
                 SubjectCount = GetSubjectCount(snapshot, context.StudentId),
                 OutstandingBalance = GetOutstandingBalance(snapshot, context.StudentId)
@@ -63,7 +66,7 @@ namespace IUIS.Application.StudentSelfService.Enrollment
             };
         }
 
-        public System.Collections.Generic.IReadOnlyList<StudentEnrollmentListItem> GetEnrollmentHistory(string sessionId)
+        public IReadOnlyList<StudentEnrollmentListItem> GetEnrollmentHistory(string sessionId)
         {
             var context = _accessGuard.RequireStudent(
                 sessionId,
@@ -72,7 +75,7 @@ namespace IUIS.Application.StudentSelfService.Enrollment
             var snapshot = _projectionDataSource.ReadStudentSources(context.StudentId);
 
             // TODO: Implement actual lookup from enrollments.json
-            return System.Collections.Generic.List<StudentEnrollmentListItem>.Empty;
+            return List<StudentEnrollmentListItem>.Empty;
         }
 
         private string GetCurrentEnrollmentId(StudentProjectionSnapshot snapshot, string studentId)
@@ -111,13 +114,13 @@ namespace IUIS.Application.StudentSelfService.Enrollment
             return "First Semester";
         }
 
-        private string GetEnrollmentStatus(StudentProjectionSnapshot snapshot, string studentId)
+        private string GetCurrentEnrollmentStatus(StudentProjectionSnapshot snapshot, string studentId)
         {
             // TODO: Implement actual lookup
             return "Enrolled";
         }
 
-        private System.DateTime GetEnrollmentDate(StudentProjectionSnapshot snapshot, string studentId)
+        private System.DateTime GetCurrentEnrollmentDate(StudentProjectionSnapshot snapshot, string studentId)
         {
             // TODO: Implement actual lookup
             return new System.DateTime(2026, 8, 15);
@@ -165,11 +168,11 @@ namespace IUIS.Application.StudentSelfService.Enrollment
             return new System.DateTime(2026, 8, 15);
         }
 
-        private System.Collections.Generic.IReadOnlyList<EnrolledSubjectView> GetEnrolledSubjects(
+        private IReadOnlyList<EnrolledSubjectView> GetEnrolledSubjects(
             StudentProjectionSnapshot snapshot, string enrollmentId)
         {
             // TODO: Implement actual lookup
-            return System.Collections.Generic.List<EnrolledSubjectView>.Empty;
+            return List<EnrolledSubjectView>.Empty;
         }
     }
 }
