@@ -61,6 +61,10 @@ namespace IUIS.UserApp.Forms.Shell
                 _dashboardPageKey, 
                 dashboard, 
                 (pageKey, displayText, token) => pageFactory.CreatePage(pageKey, displayText));
+            // Instantiate page factory with composition root and session token for service injection
+            var sessionToken = _runtime.CurrentUser.Session?.SessionToken ?? string.Empty;
+            var pageFactory = new UserPageFactory(_runtime.Composition, sessionToken);
+            ShellPageFactory.RegisterModulePages(_shell, filtered, _dashboardPageKey, dashboard, pageFactory.CreatePage);
 
             _shell.InitializeShell(
                 portalLabel,
