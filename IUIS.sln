@@ -3,6 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.37502.11
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.Domain", "src\IUIS.Domain\IUIS.Domain.csproj", "{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.Application", "src\IUIS.Application\IUIS.Application.csproj", "{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.Infrastructure", "src\IUIS.Infrastructure\IUIS.Infrastructure.csproj", "{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.SharedUI", "src\IUIS.SharedUI\IUIS.SharedUI.csproj", "{40D9067F-C8E7-4EEA-D5BE-91A6C9DC5004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.UserApp", "src\IUIS.UserApp\IUIS.UserApp.csproj", "{50EA1780-D9F8-4FFB-E6CF-A2B7DAED6105}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.AdminApp", "src\IUIS.AdminApp\IUIS.AdminApp.csproj", "{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.Tests", "src\IUIS.Tests\IUIS.Tests.csproj", "{70C8F56E-B7D6-4DD9-C4AD-8095B8CB4F04}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iuis", "iuis\iuis.csproj", "{46134FFC-219E-4515-99D9-387C29074839}"
 EndProject
 Global
@@ -11,6 +25,34 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40D9067F-C8E7-4EEA-D5BE-91A6C9DC5004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40D9067F-C8E7-4EEA-D5BE-91A6C9DC5004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40D9067F-C8E7-4EEA-D5BE-91A6C9DC5004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40D9067F-C8E7-4EEA-D5BE-91A6C9DC5004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50EA1780-D9F8-4FFB-E6CF-A2B7DAED6105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50EA1780-D9F8-4FFB-E6CF-A2B7DAED6105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50EA1780-D9F8-4FFB-E6CF-A2B7DAED6105}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50EA1780-D9F8-4FFB-E6CF-A2B7DAED6105}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70C8F56E-B7D6-4DD9-C4AD-8095B8CB4F04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70C8F56E-B7D6-4DD9-C4AD-8095B8CB4F04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70C8F56E-B7D6-4DD9-C4AD-8095B8CB4F04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70C8F56E-B7D6-4DD9-C4AD-8095B8CB4F04}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46134FFC-219E-4515-99D9-387C29074839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{46134FFC-219E-4515-99D9-387C29074839}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46134FFC-219E-4515-99D9-387C29074839}.Release|Any CPU.ActiveCfg = Release|Any CPU

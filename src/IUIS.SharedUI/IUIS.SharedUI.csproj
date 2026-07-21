@@ -30,6 +30,10 @@
       <Project>{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}</Project>
       <Name>IUIS.Application</Name>
     </ProjectReference>
+    <ProjectReference Include="..\IUIS.Infrastructure\IUIS.Infrastructure.csproj">
+      <Project>{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}</Project>
+      <Name>IUIS.Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -9,7 +9,6 @@
     <AssemblyName>IUIS.Infrastructure</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <LangVersion>7.3</LangVersion>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <OutputPath>..\..\artifacts\bin\$(Configuration)\IUIS.Infrastructure\</OutputPath>
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.Infrastructure\</IntermediateOutputPath>
   </PropertyGroup>
@@ -19,8 +18,18 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
-    <PackageReference Include="jprog" Version="1.0.0" />
+    <Reference Include="System.Text.Json">
+      <HintPath>..\..\packages\System.Text.Json.8.0.5\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>..\..\packages\System.Text.Json.8.0.5\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>..\..\packages\System.Text.Json.8.0.5\lib\net462\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>..\..\packages\System.Text.Json.8.0.5\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" />

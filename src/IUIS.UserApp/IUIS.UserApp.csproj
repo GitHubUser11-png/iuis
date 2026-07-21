@@ -10,7 +10,6 @@
     <StartupObject>IUIS.UserApp.Program</StartupObject>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <LangVersion>7.3</LangVersion>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <OutputPath>..\..\artifacts\bin\$(Configuration)\IUIS.UserApp\</OutputPath>
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.UserApp\</IntermediateOutputPath>
   </PropertyGroup>
@@ -20,9 +19,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="jprog" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" />
