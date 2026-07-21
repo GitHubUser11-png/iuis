@@ -3,7 +3,7 @@
 ## Starting point
 
 - final synchronized Pass 11 commit: `b546152ab6d284b6d142311ebf941f94484aa1b3`;
-- `main` and `develop`: identical, ahead `0`, behind `0`;
+- `main` and `develop`: identical, ahead `0`, behind `0` at construction start;
 - implementation branch: `build/pass-12-student-service-persistence`;
 - exactly seven projects;
 - exactly 49 authoritative production JSON repositories;
@@ -82,7 +82,7 @@ Exercise journaled multi-repository commands, stale repository and entity revisi
 - Medical confidential consultations and released summaries;
 - Medical Clearance restricted history and released current state.
 
-Unit 1 tests require:
+Unit 1 tests prove:
 
 - exactly seven top-level aggregate record types derived from `PersistedEntityRecord`;
 - parameterless serialization construction;
@@ -92,12 +92,47 @@ Unit 1 tests require:
 - canonical camel-case JSON names for restricted/released collections;
 - all seven repository adapters remaining `DeferredWithExplicitReason` until specialized mappers pass.
 
+## Unit 1 GitHub history
+
+Draft PR #60 was closed without merge after run `29797409211` exposed two MSTest compile-time generic-inference errors at head `67edcf083e0caeda7fc63e36d59bb7ab05dad100`. Source validation and restore had passed; the production schema implementation did not produce a compiler error. The failed artifact was `iuis-windows-build-evidence-214`, ID `8482477436`, SHA-256 `62935a54acd845211426c7c84ae130916a21e502d223dd537764a1ceda78b6de`.
+
+The assertions were corrected without changing production behavior. Replacement draft PR #61 validates corrected exact head `f97bb72ce8e9e33a4b9539c96be07a1ad1bed996`.
+
+## Successful Unit 1 Windows evidence
+
+GitHub Actions run `29797763890` (run 216) validated exact corrected head `f97bb72ce8e9e33a4b9539c96be07a1ad1bed996`.
+
+- source-tree and architecture validation: passed;
+- project boundaries: exactly `7 / 7`;
+- production templates: exactly `49 / 49`;
+- canonical repository-envelope fields: exactly `6`;
+- UI C# files scanned: `8`;
+- prohibited UI dependency findings: `0`;
+- NuGet restoration: passed;
+- .NET Framework 4.8 Release MSBuild: passed;
+- compiler warnings: `0`;
+- compiler errors: `0`;
+- MSTest: `178 / 178` passed;
+- TRX production and verification: passed;
+- artifact publication: passed.
+
+Evidence artifact:
+
+- name: `iuis-windows-build-evidence-216`;
+- artifact ID: `8482666736`;
+- SHA-256: `af49f327d5dcf05d020d3210f1853a017ca22f6b9979c9b6c8832b65401f102c`;
+- expiration: `2026-08-04T03:13:17Z`.
+
+The locally calculated ZIP digest matched the GitHub artifact digest.
+
 ## Current evidence boundary
 
-Unit 1 schema contracts and tests are committed on the Pass 12 branch. They are not yet described as compiled or tested until the authoritative Windows workflow produces machine-generated evidence.
+Unit 1 canonical schemas and confidentiality-segregation tests are implemented and independently Windows-validated. All seven target adapters remain fail-closed. No Pass 12 adapter has been activated, no composition-root registration has been added, and no production Application command, query, or UI has been introduced.
 
-No Pass 12 adapter has been activated. No production Application command, query, or UI has been added. Pass 12 is not merged, closure-validated, promoted, synchronized, deployed, or release-certified.
+Pass 12 remains under construction in draft PR #61. It is not merged, closure-validated, promoted, synchronized, deployed, or release-certified.
 
 ## Exact next gate
 
-Open a draft pull request to `develop`, validate the exact Unit 1 head through the authoritative Windows workflow, record Release/MSBuild/MSTest/TRX/artifact evidence, and proceed to Library reconstruction only after the schema boundary passes.
+Validate this documentation-inclusive Unit 1 head through the authoritative Windows workflow. After that exact head passes, begin Unit 2 from the same branch:
+
+**LibraryBook and LibraryBorrowing Invariant-Preserving Rehydration, Specialized Mappers, Repository Activation, Composition Registration, Restart Round Trips, Concurrency Enforcement, and Journaled Circulation Coordination.**
