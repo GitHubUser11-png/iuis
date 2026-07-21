@@ -270,11 +270,11 @@ namespace IUIS.Tests
                         .Distinct(StringComparer.Ordinal)
                         .Count());
                 Assert.AreEqual(
-                    16,
+                    18,
                     readiness.Count(item =>
                         item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted));
                 Assert.AreEqual(
-                    2,
+                    0,
                     readiness.Count(item =>
                         item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason));
                 Assert.IsFalse(readiness.Any(item =>
@@ -497,7 +497,6 @@ namespace IUIS.Tests
                 new[]
                 {
                     new PermissionProfileAssignment(
-                        "PPR-2026-000001",
                         true,
                         profilePermissions ?? new string[0])
                 },
