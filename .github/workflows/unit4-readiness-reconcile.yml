@@ -1,23 +1,26 @@
 name: Unit 4 Readiness Reconciliation
 
 on:
-  push:
+  pull_request:
     branches:
-      - build/pass-12-student-service-persistence
-    paths:
-      - .github/workflows/unit4-readiness-reconcile.yml
+      - develop
 
 permissions:
   contents: write
 
+concurrency:
+  group: unit4-readiness-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
 jobs:
   reconcile:
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
-          fetch-depth: 1
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
 
       - name: Reconcile final mapper readiness assertions
         shell: bash
@@ -207,4 +210,4 @@ jobs:
           git rm .github/workflows/unit4-readiness-reconcile.yml
           git add tests/IUIS.Tests
           git commit -m "test(pass12): reconcile final 18-of-18 mapper readiness"
-          git push origin HEAD:${{ github.ref_name }}
+          git push --force-with-lease origin HEAD:${{ github.event.pull_request.head.ref }}
