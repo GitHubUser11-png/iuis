@@ -63,24 +63,29 @@ namespace IUIS.Application.Orchestration
             var scholarshipSnapshot = _scholarships.Read();
 
             var enrollments = enrollmentSnapshot.Records
-                .Where(item => StringComparer.Ordinal.Equals(item.StudentId, studentId))
+                .Where(item => StringComparer.Ordinal.Equals(item.StudentId, studentId)
+                    && IsStudentVisible(item))
                 .OrderByDescending(item => item.UpdatedAtUtc)
                 .Select(ToEnrollment)
                 .ToList();
             var assessmentRecords = assessmentSnapshot.Records
-                .Where(item => StringComparer.Ordinal.Equals(item.StudentId, studentId))
+                .Where(item => StringComparer.Ordinal.Equals(item.StudentId, studentId)
+                    && IsStudentVisible(item))
                 .OrderByDescending(item => item.UpdatedAtUtc)
                 .ToList();
             var paymentRecords = paymentSnapshot.Records
-                .Where(item => StringComparer.Ordinal.Equals(item.StudentId, studentId))
+                .Where(item => StringComparer.Ordinal.Equals(item.StudentId, studentId)
+                    && IsStudentVisible(item))
                 .OrderByDescending(item => item.ReceivedAtUtc)
                 .ToList();
             var adjustmentRecords = adjustmentSnapshot.Records
-                .Where(item => StringComparer.Ordinal.Equals(item.StudentId, studentId))
+                .Where(item => StringComparer.Ordinal.Equals(item.StudentId, studentId)
+                    && IsStudentVisible(item))
                 .OrderByDescending(item => item.UpdatedAtUtc)
                 .ToList();
             var scholarshipRecords = scholarshipSnapshot.Records
-                .Where(item => StringComparer.Ordinal.Equals(item.StudentId, studentId))
+                .Where(item => StringComparer.Ordinal.Equals(item.StudentId, studentId)
+                    && IsStudentVisible(item))
                 .OrderByDescending(item => item.UpdatedAtUtc)
                 .ToList();
 
@@ -133,6 +138,36 @@ namespace IUIS.Application.Orchestration
                 Payments = paymentRecords.Select(ToPayment).ToList().AsReadOnly(),
                 Scholarships = scholarshipRecords.Select(ToScholarship).ToList().AsReadOnly()
             };
+        }
+
+        private static bool IsStudentVisible(Enrollment value)
+        {
+            return value.Status != EnrollmentStatus.Unspecified
+                && value.Status != EnrollmentStatus.Draft;
+        }
+
+        private static bool IsStudentVisible(TuitionAssessment value)
+        {
+            return value.Status == TuitionAssessmentStatus.Posted
+                || value.Status == TuitionAssessmentStatus.Cancelled;
+        }
+
+        private static bool IsStudentVisible(Payment value)
+        {
+            return value.Status == PaymentStatus.Posted
+                || value.Status == PaymentStatus.Voided;
+        }
+
+        private static bool IsStudentVisible(FinancialAdjustment value)
+        {
+            return value.Status == FinancialAdjustmentStatus.Posted;
+        }
+
+        private static bool IsStudentVisible(ScholarshipAward value)
+        {
+            return value.Status == ScholarshipAwardStatus.Approved
+                || value.Status == ScholarshipAwardStatus.Applied
+                || value.Status == ScholarshipAwardStatus.Cancelled;
         }
 
         private static StudentEnrollmentDto ToEnrollment(Enrollment value)
