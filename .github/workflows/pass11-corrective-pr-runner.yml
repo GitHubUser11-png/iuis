@@ -41,16 +41,16 @@ jobs:
           script = '\n'.join(lines) + '\n'
           guard_start = script.index('mapper_path =')
           guard_end = script.index('command_path =', guard_start)
-          corrected_guard = '''mapper_path = Path("src/IUIS.Infrastructure/Persistence/SpecializedAggregateJsonMappers.cs")
-mapper_text = mapper_path.read_text(encoding="utf-8")
-old_mapper_guard = ("if (record.RecordSchemaVersion != 0\\n"
-                    "                && record.RecordSchemaVersion != CurrentRecordSchemaVersion)")
-new_mapper_guard = "if (record.RecordSchemaVersion != CurrentRecordSchemaVersion)"
-if mapper_text.count(old_mapper_guard) != 1:
-    raise RuntimeError("Persisted record schema guard did not match the expected Pass 11 baseline.")
-mapper_path.write_text(mapper_text.replace(old_mapper_guard, new_mapper_guard, 1), encoding="utf-8")
-
-'''
+          corrected_guard = (
+              'mapper_path = Path("src/IUIS.Infrastructure/Persistence/SpecializedAggregateJsonMappers.cs")\n'
+              'mapper_text = mapper_path.read_text(encoding="utf-8")\n'
+              'old_mapper_guard = ("if (record.RecordSchemaVersion != 0\\n"\n'
+              '                    "                && record.RecordSchemaVersion != CurrentRecordSchemaVersion)")\n'
+              'new_mapper_guard = "if (record.RecordSchemaVersion != CurrentRecordSchemaVersion)"\n'
+              'if mapper_text.count(old_mapper_guard) != 1:\n'
+              '    raise RuntimeError("Persisted record schema guard did not match the expected Pass 11 baseline.")\n'
+              'mapper_path.write_text(mapper_text.replace(old_mapper_guard, new_mapper_guard, 1), encoding="utf-8")\n\n'
+          )
           script = script[:guard_start] + corrected_guard + script[guard_end:]
           Path('/tmp/apply_pass11_corrective_patch.py').write_text(
               script,
