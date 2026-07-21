@@ -1,0 +1,238 @@
+name: Pass 12 Unit 4 Readiness Reconciliation
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pass12-unit4-reconcile-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  reconcile:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: windows-latest
+    steps:
+      - name: Check out pull-request head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Reconcile final mapper-readiness assertions
+        shell: pwsh
+        run: |
+          @'
+          from pathlib import Path
+
+          def replace(path, old, new):
+              file = Path(path)
+              text = file.read_text(encoding="utf-8")
+              if old not in text:
+                  raise RuntimeError(f"Expected readiness block not found in {path}")
+              file.write_text(text.replace(old, new, 1), encoding="utf-8")
+
+          replace(
+              "tests/IUIS.Tests/Pass9ApplicationInfrastructureTests.cs",
+              '''                Assert.AreEqual(
+                      16,
+                      readiness.Count(item =>
+                          item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted));
+                  Assert.AreEqual(
+                      2,
+                      readiness.Count(item =>
+                          item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason));''',
+              '''                Assert.AreEqual(
+                      18,
+                      readiness.Count(item =>
+                          item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted));
+                  Assert.AreEqual(
+                      0,
+                      readiness.Count(item =>
+                          item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason));''')
+
+          replace(
+              "tests/IUIS.Tests/Pass10CanonicalPersistenceTests.cs",
+              '''        public void ReadinessCatalogActivatesExactlySixteenSpecializedMappers()
+                  {
+                      var records = AggregateMapperReadinessCatalog.All;
+                      Assert.AreEqual(18, records.Count);
+                      Assert.AreEqual(
+                          16,
+                          records.Count(item => item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted));
+                      Assert.AreEqual(
+                          2,
+                          records.Count(item => item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason));''',
+              '''        public void ReadinessCatalogActivatesExactlyEighteenSpecializedMappers()
+                  {
+                      var records = AggregateMapperReadinessCatalog.All;
+                      Assert.AreEqual(18, records.Count);
+                      Assert.AreEqual(
+                          18,
+                          records.Count(item => item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted));
+                      Assert.AreEqual(
+                          0,
+                          records.Count(item => item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason));''')
+
+          replace(
+              "tests/IUIS.Tests/Pass10ClosureIntegrityTests.cs",
+              '''                    "clearances",
+                      "courses",''',
+              '''                    "clearances",
+                      "counseling",
+                      "courses",''')
+          replace(
+              "tests/IUIS.Tests/Pass10ClosureIntegrityTests.cs",
+              '''                    "courses",
+                      "employees",''',
+              '''                    "courses",
+                      "discipline_incidents",
+                      "employees",''')
+
+          replace(
+              "tests/IUIS.Tests/Pass11EnvelopeTokenFinanceTests.cs",
+              '''        public void ReadinessCatalogReflectsPass12ClinicMedicalActivation()
+                  {
+                      Assert.AreEqual(
+                          16,
+                          AggregateMapperReadinessCatalog.All.Count(item =>
+                              item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted));
+                      Assert.AreEqual(
+                          2,
+                          AggregateMapperReadinessCatalog.All.Count(item =>
+                              item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason));
+                  }''',
+              '''        public void ReadinessCatalogReflectsFinalPass12StudentServiceActivation()
+                  {
+                      Assert.AreEqual(
+                          18,
+                          AggregateMapperReadinessCatalog.All.Count(item =>
+                              item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted));
+                      Assert.AreEqual(
+                          0,
+                          AggregateMapperReadinessCatalog.All.Count(item =>
+                              item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason));
+                  }''')
+
+          replace(
+              "tests/IUIS.Tests/Pass12StudentServiceSchemaTests.cs",
+              '''        public void TwoAdaptersRemainFailClosedAfterClinicMedicalActivation()
+                  {
+                      var records = AggregateMapperReadinessCatalog.All;
+                      var completed = records
+                          .Where(item => item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted)
+                          .ToList();
+                      var deferred = records
+                          .Where(item => item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason)
+                          .OrderBy(item => item.AdapterName, StringComparer.Ordinal)
+                          .ToList();
+
+                      Assert.AreEqual(16, completed.Count);
+                      Assert.AreEqual(2, deferred.Count);
+                      CollectionAssert.AreEqual(
+                          new[]
+                          {
+                              "CounselingCaseRepositoryAdapter",
+                              "DisciplineCaseRepositoryAdapter"
+                          },
+                          deferred.Select(item => item.AdapterName).ToArray());
+                      Assert.IsTrue(deferred.All(item => !string.IsNullOrWhiteSpace(item.Reason)));
+                  }''',
+              '''        public void AllStudentServiceAdaptersAreSpecializedAndActive()
+                  {
+                      var records = AggregateMapperReadinessCatalog.All;
+                      var completed = records
+                          .Where(item => item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted)
+                          .Select(item => item.AdapterName)
+                          .ToList();
+                      var deferred = records
+                          .Where(item => item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason)
+                          .ToList();
+
+                      Assert.AreEqual(18, completed.Count);
+                      Assert.AreEqual(0, deferred.Count);
+                      CollectionAssert.Contains(completed, "CounselingCaseRepositoryAdapter");
+                      CollectionAssert.Contains(completed, "DisciplineCaseRepositoryAdapter");
+                  }''')
+
+          replace(
+              "tests/IUIS.Tests/Pass12LibraryPersistenceTests.cs",
+              '''            Assert.AreEqual(16, completed.Count);''',
+              '''            Assert.AreEqual(18, completed.Count);''')
+          replace(
+              "tests/IUIS.Tests/Pass12LibraryPersistenceTests.cs",
+              '''            Assert.AreEqual(2, deferred.Count);''',
+              '''            CollectionAssert.Contains(completed, "CounselingCaseRepositoryAdapter");
+                  CollectionAssert.Contains(completed, "DisciplineCaseRepositoryAdapter");
+                  Assert.AreEqual(0, deferred.Count);''')
+
+          replace(
+              "tests/IUIS.Tests/Pass12ClinicMedicalIntegrationTests.cs",
+              '''        public void MapperReadinessMovesToSixteenCompletedAndTwoDeferred()
+                  {
+                      var completed = AggregateMapperReadinessCatalog.All
+                          .Where(item => item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted)
+                          .Select(item => item.AdapterName)
+                          .ToList();
+                      var deferred = AggregateMapperReadinessCatalog.All
+                          .Where(item => item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason)
+                          .Select(item => item.AdapterName)
+                          .ToList();
+
+                      Assert.AreEqual(16, completed.Count);
+                      CollectionAssert.Contains(completed, "ClinicAppointmentRepositoryAdapter");
+                      CollectionAssert.Contains(completed, "MedicalRecordRepositoryAdapter");
+                      CollectionAssert.Contains(completed, "MedicalClearanceRepositoryAdapter");
+                      Assert.AreEqual(2, deferred.Count);
+                      CollectionAssert.AreEquivalent(
+                          new[]
+                          {
+                              "CounselingCaseRepositoryAdapter",
+                              "DisciplineCaseRepositoryAdapter"
+                          },
+                          deferred);
+                  }''',
+              '''        public void MapperReadinessMovesToEighteenCompletedAndZeroDeferred()
+                  {
+                      var completed = AggregateMapperReadinessCatalog.All
+                          .Where(item => item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted)
+                          .Select(item => item.AdapterName)
+                          .ToList();
+                      var deferred = AggregateMapperReadinessCatalog.All
+                          .Where(item => item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason)
+                          .Select(item => item.AdapterName)
+                          .ToList();
+
+                      Assert.AreEqual(18, completed.Count);
+                      CollectionAssert.Contains(completed, "ClinicAppointmentRepositoryAdapter");
+                      CollectionAssert.Contains(completed, "MedicalRecordRepositoryAdapter");
+                      CollectionAssert.Contains(completed, "MedicalClearanceRepositoryAdapter");
+                      CollectionAssert.Contains(completed, "CounselingCaseRepositoryAdapter");
+                      CollectionAssert.Contains(completed, "DisciplineCaseRepositoryAdapter");
+                      Assert.AreEqual(0, deferred.Count);
+                  }''')
+          '@ | Set-Content -Path reconcile_unit4.py -Encoding utf8
+
+          python reconcile_unit4.py
+          Remove-Item reconcile_unit4.py
+
+          if (git diff --quiet) {
+            Write-Host "Readiness assertions are already reconciled."
+            exit 0
+          }
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/IUIS.Tests/Pass9ApplicationInfrastructureTests.cs
+          git add tests/IUIS.Tests/Pass10CanonicalPersistenceTests.cs
+          git add tests/IUIS.Tests/Pass10ClosureIntegrityTests.cs
+          git add tests/IUIS.Tests/Pass11EnvelopeTokenFinanceTests.cs
+          git add tests/IUIS.Tests/Pass12StudentServiceSchemaTests.cs
+          git add tests/IUIS.Tests/Pass12LibraryPersistenceTests.cs
+          git add tests/IUIS.Tests/Pass12ClinicMedicalIntegrationTests.cs
+          git commit -m "Pass 12 Unit 4: reconcile final mapper readiness tests"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
