@@ -18,12 +18,14 @@
     <Compile Include="Authorization\SessionAwareRequestExecutor.cs" />
     <Compile Include="Dtos\EnrollmentFinanceDtos.cs" />
     <Compile Include="Dtos\LibraryDtos.cs" />
+    <Compile Include="Dtos\MedicalDtos.cs" />
     <Compile Include="Dtos\RestrictedDtos.cs" />
     <Compile Include="Dtos\RestrictedProjectionService.cs" />
     <Compile Include="Orchestration\ContactUpdateServices.cs" />
     <Compile Include="Orchestration\EnrollmentFinanceCommandServices.cs" />
     <Compile Include="Orchestration\IdentityQueryServices.cs" />
     <Compile Include="Orchestration\LibraryCirculationServices.cs" />
+    <Compile Include="Orchestration\MedicalServices.cs" />
     <Compile Include="Orchestration\StudentFinanceQueryService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AggregateRepositoryContracts.cs" />
