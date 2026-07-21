@@ -74,16 +74,16 @@ namespace IUIS.Infrastructure.Persistence
                     "Pass 12 schema v1 reconstructs bibliographic state, embedded copy inventory, copy condition and status invariants, lifecycle state, metadata, and entity versions."),
                 Completed("LibraryBorrowingRepositoryAdapter", "LibraryBorrowing", "borrowings",
                     "Pass 12 schema v1 reconstructs issue, renewal, overdue, return, lost, cancellation, archive, timestamp, actor, and entity-version state."),
+                Completed("ClinicAppointmentRepositoryAdapter", "ClinicAppointment", "appointments",
+                    "Pass 12 schema v1 reconstructs requested, scheduled, confirmed, checked-in, completed, cancelled, and no-show appointment state with actor, timestamp, archive, and entity-version invariants."),
+                Completed("MedicalRecordRepositoryAdapter", "MedicalRecord", "medical_records",
+                    "Pass 12 schema v1 reconstructs confidential consultations and released summaries as segregated collections while preserving retained lifecycle and entity metadata."),
+                Completed("MedicalClearanceRepositoryAdapter", "MedicalClearance", "clearances",
+                    "Pass 12 schema v1 reconstructs request, review, issue, denial, revocation, validity, numbering, restricted history, archive, and entity-version state."),
                 Deferred("CounselingCaseRepositoryAdapter", "CounselingCase", "counseling",
                     "Confidential sessions and released summaries require separate persisted projections and strict reconstruction."),
                 Deferred("DisciplineCaseRepositoryAdapter", "DisciplineCase", "discipline_incidents",
-                    "Evidence, findings, responses, notices, and decisions require restricted persisted shapes and explicit hydration."),
-                Deferred("ClinicAppointmentRepositoryAdapter", "ClinicAppointment", "appointments",
-                    "Appointment workflow and consultation linkage require explicit lifecycle hydration."),
-                Deferred("MedicalRecordRepositoryAdapter", "MedicalRecord", "medical_records",
-                    "Confidential consultations and released summaries require separate persisted projections and explicit hydration."),
-                Deferred("MedicalClearanceRepositoryAdapter", "MedicalClearance", "clearances",
-                    "Clearance history, numbering, validity, issue, denial, and revocation require explicit reconstruction.")
+                    "Evidence, findings, responses, notices, and decisions require restricted persisted shapes and explicit hydration.")
             }.AsReadOnly();
 
         public static IReadOnlyList<AggregateMapperReadinessRecord> All
