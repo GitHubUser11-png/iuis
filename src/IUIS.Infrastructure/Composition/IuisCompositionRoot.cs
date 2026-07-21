@@ -153,18 +153,15 @@ namespace IUIS.Infrastructure.Composition
                 new StudentCounselingDisciplineQueryService(
                     RequestExecutor,
                     CounselingCases,
-                    DisciplineCases,
-                    Projections);
+                    DisciplineCases);
             RestrictedCounselingCases =
                 new RestrictedCounselingCaseQueryService(
                     RequestExecutor,
-                    CounselingCases,
-                    Projections);
+                    CounselingCases);
             RestrictedDisciplineCases =
                 new RestrictedDisciplineCaseQueryService(
                     RequestExecutor,
-                    DisciplineCases,
-                    Projections);
+                    DisciplineCases);
             CounselingCommands = new CounselingCaseCommandService(
                 RequestExecutor,
                 CounselingCases,
