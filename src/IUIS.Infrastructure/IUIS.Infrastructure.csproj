@@ -26,6 +26,7 @@
     <Compile Include="Persistence\IdSequenceService.cs" />
     <Compile Include="Persistence\JsonInfrastructureOptions.cs" />
     <Compile Include="Persistence\JsonRepositoryStore.cs" />
+    <Compile Include="Persistence\LibraryJsonMappers.cs" />
     <Compile Include="Persistence\MappedJsonRepository.cs" />
     <Compile Include="Persistence\RepositoryCatalog.cs" />
     <Compile Include="Persistence\RepositoryEnvelope.cs" />
