@@ -25,6 +25,9 @@ namespace IUIS.Application.Orchestration
         public long ExpectedRepositoryRevision { get; set; }
         public long ExpectedEntityVersion { get; set; }
         public string CaseId { get; set; }
+        public string ReleasedDecisionSummary { get; set; }
+        public string ResponseText { get; set; }
+        public string ResponseEvidenceReference { get; set; }
     }
 
     public sealed class DisciplineEvidenceRequest : DisciplineCaseMutationRequest
@@ -48,7 +51,6 @@ namespace IUIS.Application.Orchestration
 
     public sealed class DisciplineStudentResponseRequest : DisciplineCaseMutationRequest
     {
-        public string ResponseText { get; set; }
         public string EvidenceReference { get; set; }
     }
 
@@ -67,7 +69,6 @@ namespace IUIS.Application.Orchestration
 
     public sealed class DisciplineReleaseDecisionRequest : DisciplineCaseMutationRequest
     {
-        public string ReleasedDecisionSummary { get; set; }
     }
 
     public sealed class DisciplineDismissRequest : DisciplineCaseMutationRequest
@@ -86,6 +87,15 @@ namespace IUIS.Application.Orchestration
         {
             _executor = executor ?? throw new ArgumentNullException(nameof(executor));
             _cases = cases ?? throw new ArgumentNullException(nameof(cases));
+        }
+
+        public RestrictedDisciplineCaseQueryService(
+            SessionAwareRequestExecutor executor,
+            IDisciplineCaseRepository cases,
+            RestrictedProjectionService projections)
+            : this(executor, cases)
+        {
+            if (projections == null) throw new ArgumentNullException(nameof(projections));
         }
 
         public RestrictedDisciplineCaseViewDto Get(
@@ -325,6 +335,27 @@ namespace IUIS.Application.Orchestration
                 });
         }
 
+        public StudentServiceCommandResult RecordStudentResponse(
+            string sessionId,
+            string sessionToken,
+            DisciplineCaseMutationRequest request,
+            DateTime utcNow)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            return SubmitOwnResponse(
+                sessionId,
+                sessionToken,
+                new DisciplineStudentResponseRequest
+                {
+                    ExpectedRepositoryRevision = request.ExpectedRepositoryRevision,
+                    ExpectedEntityVersion = request.ExpectedEntityVersion,
+                    CaseId = request.CaseId,
+                    ResponseText = request.ResponseText,
+                    EvidenceReference = request.ResponseEvidenceReference
+                },
+                utcNow);
+        }
+
         public StudentServiceCommandResult RecordFinding(
             string sessionId,
             string sessionToken,
@@ -385,6 +416,26 @@ namespace IUIS.Application.Orchestration
                     request.ReleasedDecisionSummary,
                     utcNow,
                     principal.UserId));
+        }
+
+        public StudentServiceCommandResult ReleaseDecision(
+            string sessionId,
+            string sessionToken,
+            DisciplineCaseMutationRequest request,
+            DateTime utcNow)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            return ReleaseDecision(
+                sessionId,
+                sessionToken,
+                new DisciplineReleaseDecisionRequest
+                {
+                    ExpectedRepositoryRevision = request.ExpectedRepositoryRevision,
+                    ExpectedEntityVersion = request.ExpectedEntityVersion,
+                    CaseId = request.CaseId,
+                    ReleasedDecisionSummary = request.ReleasedDecisionSummary
+                },
+                utcNow);
         }
 
         public StudentServiceCommandResult Close(
