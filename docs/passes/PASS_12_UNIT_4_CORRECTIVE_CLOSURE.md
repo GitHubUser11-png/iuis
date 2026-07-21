@@ -9,6 +9,6 @@ Purpose:
 - preserve all Unit 4 production behavior unchanged;
 - obtain an independent Windows Release build, full MSTest result, TRX, and evidence artifact on the corrected exact head.
 
-The branch-local corrective workflow has been staged. This metadata update provides the second push event required for that self-deleting workflow to execute against the already-registered branch definition.
+The registered Windows workflow on `develop` now contains a temporary branch-scoped correction step. This synchronization triggers that step for PR #62. The step must commit the test-only reconciliation, remove all target-branch maintenance workflows, and then allow the normal build/test workflow to rerun on the corrected exact head.
 
 Final run identifiers, artifact digest, and closure state will be registered after independent validation.
