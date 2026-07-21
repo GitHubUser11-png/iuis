@@ -133,7 +133,7 @@ namespace IUIS.UserApp.Forms.Employee.Library
             _currentBorrowingsGrid.Location = new Point(0, 475);
             _currentBorrowingsGrid.Size = new Size(840, 100);
             AppDataGridViewFactory.AddTextBoxColumn(_currentBorrowingsGrid, "BookTitle", "Book", 300);
-            AppDataGridViewFactory.AddDateColumn(_currentBorrowingsGrid, "DueAtUtc", "Due Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_currentBorrowingsGrid, "DueAtUtc", "Due Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_currentBorrowingsGrid, "Status", "Status", 100);
 
             var issueDateLabel = new Label

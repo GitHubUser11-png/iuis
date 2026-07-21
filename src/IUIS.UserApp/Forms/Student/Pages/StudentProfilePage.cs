@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Profile;
 using IUIS.SharedUI.Controls;
+using IUIS.UserApp.Forms.Student.Dialogs;
 
 namespace IUIS.UserApp.Forms.Student.Pages
 {
@@ -96,7 +97,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             AppDataGridViewFactory.AddTextBoxColumn(_correctionsGrid, "RequestedField", "Field", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_correctionsGrid, "CurrentValue", "Current Value", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_correctionsGrid, "RequestedValue", "Requested Value", 150);
-            AppDataGridViewFactory.AddDateColumn(_correctionsGrid, "RequestDateUtc", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_correctionsGrid, "RequestDateUtc", "Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_correctionsGrid, "Status", "Status", 120);
 
             mainPanel.Controls.Add(headerLabel);
@@ -118,7 +119,6 @@ namespace IUIS.UserApp.Forms.Student.Pages
                 _statusCard.StudentName = $"{profile.LastName}, {profile.FirstName}";
                 _statusCard.Program = profile.ProgramName;
                 _statusCard.YearLevel = $"Year Level: {profile.YearLevel}";
-                _statusCard.Section = profile.Section;
                 _statusCard.SetActive();
 
                 BuildProfilePanel(profile);

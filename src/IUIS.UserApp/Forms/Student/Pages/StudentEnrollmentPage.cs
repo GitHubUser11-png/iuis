@@ -79,8 +79,8 @@ namespace IUIS.UserApp.Forms.Student.Pages
             AppDataGridViewFactory.AddTextBoxColumn(_enrollmentsGrid, "YearLevel", "Year", 80);
             AppDataGridViewFactory.AddTextBoxColumn(_enrollmentsGrid, "Section", "Section", 80);
             AppDataGridViewFactory.AddTextBoxColumn(_enrollmentsGrid, "Status", "Status", 100);
-            AppDataGridViewFactory.AddDateColumn(_enrollmentsGrid, "EnrollmentDate", "Date", 120);
-            AppDataGridViewFactory.AddButtonColumn(_enrollmentsGrid, "ViewDetails", "Details", 80);
+            AppDataGridViewFactory.AddDateColumn(_enrollmentsGrid, "EnrollmentDate", "Date", "MM/dd/yyyy", 120);
+            AppDataGridViewFactory.AddButtonColumn(_enrollmentsGrid, "ViewDetails", "Details", "View", 80);
 
             var subjectsLabel = new Label
             {
@@ -100,7 +100,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             AppDataGridViewFactory.AddTextBoxColumn(_subjectsGrid, "Schedule", "Schedule", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_subjectsGrid, "Room", "Room", 80);
             AppDataGridViewFactory.AddTextBoxColumn(_subjectsGrid, "InstructorName", "Instructor", 200);
-            AppDataGridViewFactory.AddButtonColumn(_subjectsGrid, "ViewSubject", "Details", 80);
+            AppDataGridViewFactory.AddButtonColumn(_subjectsGrid, "ViewSubject", "Details", "View", 80);
 
             _enrollmentsGrid.CellClick += OnEnrollmentsGridCellClick;
             _subjectsGrid.CellClick += OnSubjectsGridCellClick;

@@ -1,9 +1,11 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Dashboard;
 using IUIS.SharedUI.Controls;
+using IUIS.SharedUI.DataGridViews;
 
 namespace IUIS.UserApp.Forms.Student.Pages
 {
@@ -116,7 +118,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             _appointmentsGrid.Location = new Point(0, 350);
             _appointmentsGrid.Size = new Size(470, 300);
             AppDataGridViewFactory.AddTextBoxColumn(_appointmentsGrid, "AppointmentType", "Type", 150);
-            AppDataGridViewFactory.AddDateColumn(_appointmentsGrid, "ScheduledDateUtc", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_appointmentsGrid, "ScheduledDateUtc", "Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_appointmentsGrid, "Location", "Location", 200);
 
             var notificationsLabel = new Label
@@ -132,7 +134,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             _notificationsGrid.Location = new Point(490, 350);
             _notificationsGrid.Size = new Size(470, 300);
             AppDataGridViewFactory.AddTextBoxColumn(_notificationsGrid, "Title", "Title", 200);
-            AppDataGridViewFactory.AddDateColumn(_notificationsGrid, "CreatedAtUtc", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_notificationsGrid, "CreatedAtUtc", "Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_notificationsGrid, "IsRead", "Status", 150);
 
             mainPanel.Controls.Add(headerLabel);

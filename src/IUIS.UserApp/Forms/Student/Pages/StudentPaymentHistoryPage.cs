@@ -5,6 +5,7 @@ using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Finance;
 using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.DataGridViews;
+using IUIS.UserApp.Forms.Student.Dialogs;
 
 namespace IUIS.UserApp.Forms.Student.Pages
 {
@@ -62,7 +63,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             _paymentsGrid = AppDataGridViewFactory.CreateStyledDataGridView();
             _paymentsGrid.Location = new Point(0, 90);
             _paymentsGrid.Size = new Size(960, 570);
-            AppDataGridViewFactory.AddDateColumn(_paymentsGrid, "PaymentDate", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_paymentsGrid, "PaymentDate", "Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddCurrencyColumn(_paymentsGrid, "Amount", "Amount", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_paymentsGrid, "PaymentMethod", "Method", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_paymentsGrid, "ReceiptNumber", "Receipt", 150);

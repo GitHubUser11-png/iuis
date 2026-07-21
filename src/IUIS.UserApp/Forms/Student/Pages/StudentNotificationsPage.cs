@@ -65,10 +65,10 @@ namespace IUIS.UserApp.Forms.Student.Pages
             AppDataGridViewFactory.AddTextBoxColumn(_notificationsGrid, "Title", "Title", 250);
             AppDataGridViewFactory.AddTextBoxColumn(_notificationsGrid, "Message", "Message", 350);
             AppDataGridViewFactory.AddTextBoxColumn(_notificationsGrid, "Category", "Category", 120);
-            AppDataGridViewFactory.AddDateColumn(_notificationsGrid, "CreatedAtUtc", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_notificationsGrid, "CreatedAtUtc", "Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_notificationsGrid, "IsRead", "Status", 80);
-            AppDataGridViewFactory.AddButtonColumn(_notificationsGrid, "MarkRead", "Mark Read", 100);
-            AppDataGridViewFactory.AddButtonColumn(_notificationsGrid, "Archive", "Archive", 80);
+            AppDataGridViewFactory.AddButtonColumn(_notificationsGrid, "MarkRead", "Mark Read", "Mark Read", 100);
+            AppDataGridViewFactory.AddButtonColumn(_notificationsGrid, "Archive", "Archive", "Archive", 80);
 
             _filterBar.SearchRequested += (s, e) => LoadNotifications();
             _filterBar.ClearRequested += (s, e) => LoadNotifications();

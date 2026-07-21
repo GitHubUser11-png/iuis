@@ -90,11 +90,11 @@ namespace IUIS.UserApp.Forms.Student.Pages
             _paymentsGrid = AppDataGridViewFactory.CreateStyledDataGridView();
             _paymentsGrid.Location = new Point(0, 460);
             _paymentsGrid.Size = new Size(960, 200);
-            AppDataGridViewFactory.AddDateColumn(_paymentsGrid, "PaymentDate", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_paymentsGrid, "PaymentDate", "Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddCurrencyColumn(_paymentsGrid, "Amount", "Amount", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_paymentsGrid, "PaymentMethod", "Method", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_paymentsGrid, "ReceiptNumber", "Receipt", 150);
-            AppDataGridViewFactory.AddButtonColumn(_paymentsGrid, "ViewReceipt", "Receipt", 100);
+            AppDataGridViewFactory.AddButtonColumn(_paymentsGrid, "ViewReceipt", "Receipt", "View", 100);
 
             _paymentsGrid.CellClick += OnPaymentsGridCellClick;
 
