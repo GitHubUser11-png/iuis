@@ -100,7 +100,7 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        public void MapperReadinessActivatesBothLibraryAdaptersOnly()
+        public void MapperReadinessIncludesLibraryAndClinicMedicalAdapters()
         {
             var completed = AggregateMapperReadinessCatalog.All
                 .Where(item => item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted)
@@ -111,10 +111,13 @@ namespace IUIS.Tests
                 .Select(item => item.AdapterName)
                 .ToList();
 
-            Assert.AreEqual(13, completed.Count);
+            Assert.AreEqual(16, completed.Count);
             CollectionAssert.Contains(completed, "LibraryBookRepositoryAdapter");
             CollectionAssert.Contains(completed, "LibraryBorrowingRepositoryAdapter");
-            Assert.AreEqual(5, deferred.Count);
+            CollectionAssert.Contains(completed, "ClinicAppointmentRepositoryAdapter");
+            CollectionAssert.Contains(completed, "MedicalRecordRepositoryAdapter");
+            CollectionAssert.Contains(completed, "MedicalClearanceRepositoryAdapter");
+            Assert.AreEqual(2, deferred.Count);
         }
 
         [TestMethod]
