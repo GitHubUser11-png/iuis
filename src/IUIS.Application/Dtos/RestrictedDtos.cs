@@ -48,6 +48,7 @@ namespace IUIS.Application.Dtos
         public DateTime RequestedAppointmentAtUtc { get; set; }
         public DateTime? ConfirmedAppointmentAtUtc { get; set; }
         public DateTime? ClosedAtUtc { get; set; }
+        public long EntityVersion { get; set; }
         public IReadOnlyList<ReleasedSummaryDto> ReleasedSummaries { get; set; }
     }
 
@@ -82,6 +83,7 @@ namespace IUIS.Application.Dtos
         public string ResponseDueDate { get; set; }
         public string ReleasedDecisionSummary { get; set; }
         public string SanctionSummary { get; set; }
+        public long EntityVersion { get; set; }
     }
 
     public sealed class DisciplineInternalCaseDto
