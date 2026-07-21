@@ -17,8 +17,7 @@ namespace IUIS.Infrastructure.Persistence
         public static TRecord Read<TRecord>(
             JsonElement element,
             JsonSerializerOptions options,
-            string aggregateName,
-            bool allowUnversionedMigrationInput = false)
+            string aggregateName)
             where TRecord : PersistedEntityRecord
         {
             TRecord record;
@@ -39,9 +38,7 @@ namespace IUIS.Infrastructure.Persistence
                     aggregateName + " persisted record is missing.");
             }
 
-            if (record.RecordSchemaVersion != CurrentRecordSchemaVersion
-                && !(allowUnversionedMigrationInput
-                    && record.RecordSchemaVersion == 0))
+            if (record.RecordSchemaVersion != CurrentRecordSchemaVersion)
             {
                 throw new InvalidOperationException(
                     aggregateName + " persisted record schema version is unsupported.");
@@ -160,8 +157,7 @@ namespace IUIS.Infrastructure.Persistence
             var record = PersistedRecordMapperGuard.Read<PersistedStudentRecord>(
                 element,
                 options,
-                "StudentRecord",
-                true);
+                "StudentRecord");
             return StudentRecord.Rehydrate(
                 record.Id,
                 record.StudentNumber,
@@ -218,8 +214,7 @@ namespace IUIS.Infrastructure.Persistence
             var record = PersistedRecordMapperGuard.Read<PersistedEmployeeMasterRecord>(
                 element,
                 options,
-                "EmployeeRecord",
-                true);
+                "EmployeeRecord");
             return EmployeeRecord.Rehydrate(
                 record.Id,
                 record.EmployeeNumber,
@@ -280,8 +275,7 @@ namespace IUIS.Infrastructure.Persistence
             var record = PersistedRecordMapperGuard.Read<PersistedCourseRecord>(
                 element,
                 options,
-                "Course",
-                true);
+                "Course");
             return Course.Rehydrate(
                 record.Id,
                 record.Code,
@@ -334,8 +328,7 @@ namespace IUIS.Infrastructure.Persistence
             var record = PersistedRecordMapperGuard.Read<PersistedSubjectRecord>(
                 element,
                 options,
-                "Subject",
-                true);
+                "Subject");
             return Subject.Rehydrate(
                 record.Id,
                 record.Code,
@@ -390,8 +383,7 @@ namespace IUIS.Infrastructure.Persistence
             var record = PersistedRecordMapperGuard.Read<PersistedAcademicPeriodRecord>(
                 element,
                 options,
-                "AcademicPeriod",
-                true);
+                "AcademicPeriod");
             return AcademicPeriod.Rehydrate(
                 record.Id,
                 record.Code,
@@ -448,8 +440,7 @@ namespace IUIS.Infrastructure.Persistence
             var record = PersistedRecordMapperGuard.Read<PersistedAssessmentChargeRuleRecord>(
                 element,
                 options,
-                "AssessmentChargeRule",
-                true);
+                "AssessmentChargeRule");
             return AssessmentChargeRule.Rehydrate(
                 record.Id,
                 record.Code,
