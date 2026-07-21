@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using IUIS.Application.Common;
 using IUIS.Application.StudentSelfService.Profile;
-using IUIS.Domain.Students;
 
 namespace IUIS.Application.Abstractions.StudentSelfService
 {
@@ -10,9 +10,9 @@ namespace IUIS.Application.Abstractions.StudentSelfService
         
         OperationResult SubmitCorrectionRequest(
             string sessionId,
-            StudentSelfService.Profile.StudentProfileCorrectionRequest request);
+            StudentProfileCorrectionRequest request);
         
-        IReadOnlyList<StudentSelfService.Profile.StudentProfileCorrectionRequest> 
+        IReadOnlyList<StudentProfileCorrectionRequest> 
             GetCorrectionRequests(string sessionId);
     }
 }

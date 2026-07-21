@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Dashboard;
 using IUIS.Application.StudentSelfService.Access;
-using IUIS.Infrastructure.Projections.Student;
+using IUIS.Domain.Projections.Student;
 
 namespace IUIS.Application.StudentSelfService.Dashboard
 {
@@ -29,7 +29,7 @@ namespace IUIS.Application.StudentSelfService.Dashboard
 
             var dashboard = new StudentDashboardView
             {
-                StudentName = $"{context.Student.LastName}, {context.Student.FirstName}",
+                StudentName = context.Student.Name.ToString(),
                 ProgramName = GetProgramName(snapshot, context.StudentId),
                 YearLevel = GetYearLevel(snapshot, context.StudentId),
                 Section = GetSection(snapshot, context.StudentId),
@@ -118,14 +118,14 @@ namespace IUIS.Application.StudentSelfService.Dashboard
             StudentProjectionSnapshot snapshot, string studentId)
         {
             // TODO: Implement actual lookup
-            return List<DashboardAppointmentItem>.Empty;
+            return new List<DashboardAppointmentItem>();
         }
 
         private IReadOnlyList<DashboardNotificationItem> GetRecentNotifications(
             StudentProjectionSnapshot snapshot, string userId)
         {
             // TODO: Implement actual lookup
-            return List<DashboardNotificationItem>.Empty;
+            return new List<DashboardNotificationItem>();
         }
     }
 }

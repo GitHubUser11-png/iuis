@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using IUIS.Application.StudentSelfService.Finance;
 
 namespace IUIS.Application.Abstractions.StudentSelfService

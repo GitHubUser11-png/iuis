@@ -3,6 +3,7 @@ using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.Common;
 using IUIS.Application.StudentSelfService.Notifications;
 using IUIS.Application.StudentSelfService.Access;
+using IUIS.Domain.Projections.Student;
 
 namespace IUIS.Application.StudentSelfService.Notifications
 {
@@ -28,7 +29,7 @@ namespace IUIS.Application.StudentSelfService.Notifications
             var snapshot = _projectionDataSource.ReadStudentSources(context.StudentId);
 
             // TODO: Implement actual lookup from notifications.json
-            return List<StudentNotificationView>.Empty;
+            return new List<StudentNotificationView>();
         }
 
         public OperationResult MarkAsRead(string sessionId, string notificationId)

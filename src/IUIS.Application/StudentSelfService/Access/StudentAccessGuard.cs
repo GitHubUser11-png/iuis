@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IUIS.Application.Abstractions.StudentSelfService;
-using IUIS.Domain.Security;
-using IUIS.Domain.Students;
+using IUIS.Domain.Identity;
+using IUIS.Domain.People;
 
 namespace IUIS.Application.StudentSelfService.Access
 {

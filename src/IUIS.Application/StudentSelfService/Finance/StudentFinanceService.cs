@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Finance;
 using IUIS.Application.StudentSelfService.Access;
-using IUIS.Infrastructure.Projections.Student;
+using IUIS.Domain.Projections.Student;
 
 namespace IUIS.Application.StudentSelfService.Finance
 {
@@ -76,7 +76,7 @@ namespace IUIS.Application.StudentSelfService.Finance
             var snapshot = _projectionDataSource.ReadStudentSources(context.StudentId);
 
             // TODO: Implement actual lookup from payments.json
-            return List<StudentPaymentListItem>.Empty;
+            return new List<StudentPaymentListItem>();
         }
 
         public StudentPaymentReceiptView GetPaymentReceipt(string sessionId, string paymentId)
@@ -92,7 +92,7 @@ namespace IUIS.Application.StudentSelfService.Finance
             {
                 PaymentId = paymentId,
                 ReceiptNumber = "REC-2026-000001",
-                StudentName = $"{context.Student.LastName}, {context.Student.FirstName}",
+                StudentName = context.Student.Name.SortName,
                 StudentId = context.Student.Id,
                 PaymentDate = System.DateTime.UtcNow,
                 Amount = 5000m,
@@ -194,14 +194,14 @@ namespace IUIS.Application.StudentSelfService.Finance
             StudentProjectionSnapshot snapshot, string assessmentId)
         {
             // TODO: Implement actual lookup
-            return List<AssessmentChargeItem>.Empty;
+            return new List<AssessmentChargeItem>();
         }
 
         private IReadOnlyList<AssessmentPaymentItem> GetAssessmentPayments(
             StudentProjectionSnapshot snapshot, string assessmentId)
         {
             // TODO: Implement actual lookup
-            return List<AssessmentPaymentItem>.Empty;
+            return new List<AssessmentPaymentItem>();
         }
 
         private decimal GetAssessmentTotal(StudentProjectionSnapshot snapshot, string assessmentId)

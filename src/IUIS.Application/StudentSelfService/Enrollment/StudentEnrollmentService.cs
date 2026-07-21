@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Enrollment;
 using IUIS.Application.StudentSelfService.Access;
-using IUIS.Infrastructure.Projections.Student;
+using IUIS.Domain.Projections.Student;
 
 namespace IUIS.Application.StudentSelfService.Enrollment
 {
@@ -75,7 +75,7 @@ namespace IUIS.Application.StudentSelfService.Enrollment
             var snapshot = _projectionDataSource.ReadStudentSources(context.StudentId);
 
             // TODO: Implement actual lookup from enrollments.json
-            return List<StudentEnrollmentListItem>.Empty;
+            return new List<StudentEnrollmentListItem>();
         }
 
         private string GetCurrentEnrollmentId(StudentProjectionSnapshot snapshot, string studentId)
@@ -172,7 +172,7 @@ namespace IUIS.Application.StudentSelfService.Enrollment
             StudentProjectionSnapshot snapshot, string enrollmentId)
         {
             // TODO: Implement actual lookup
-            return List<EnrolledSubjectView>.Empty;
+            return new List<EnrolledSubjectView>();
         }
     }
 }

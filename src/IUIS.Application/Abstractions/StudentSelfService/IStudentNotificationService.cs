@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using IUIS.Application.Common;
 using IUIS.Application.StudentSelfService.Notifications;
 
 namespace IUIS.Application.Abstractions.StudentSelfService

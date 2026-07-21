@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using IUIS.Domain.Security;
-using IUIS.Domain.Students;
+using System.Linq;
+using IUIS.Domain.Identity;
+using IUIS.Domain.People;
 
 namespace IUIS.Application.StudentSelfService.Access
 {
@@ -25,7 +26,7 @@ namespace IUIS.Application.StudentSelfService.Access
 
         public UserSession Session { get; set; }
 
-        public Student Student { get; set; }
+        public StudentRecord Student { get; set; }
 
         public IReadOnlyCollection<string>
             Permissions { get; set; }

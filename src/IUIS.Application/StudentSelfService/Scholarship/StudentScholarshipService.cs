@@ -3,6 +3,7 @@ using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.Common;
 using IUIS.Application.StudentSelfService.Scholarship;
 using IUIS.Application.StudentSelfService.Access;
+using IUIS.Domain.Projections.Student;
 
 namespace IUIS.Application.StudentSelfService.Scholarship
 {
@@ -28,7 +29,7 @@ namespace IUIS.Application.StudentSelfService.Scholarship
             var snapshot = _projectionDataSource.ReadStudentSources(context.StudentId);
 
             // TODO: Implement actual lookup from scholarships.json
-            return List<ScholarshipProgramView>.Empty;
+            return new List<ScholarshipProgramView>();
         }
 
         public IReadOnlyList<StudentScholarshipApplicationView> GetMyApplications(string sessionId)
@@ -40,7 +41,7 @@ namespace IUIS.Application.StudentSelfService.Scholarship
             var snapshot = _projectionDataSource.ReadStudentSources(context.StudentId);
 
             // TODO: Implement actual lookup from scholarship_applications.json
-            return List<StudentScholarshipApplicationView>.Empty;
+            return new List<StudentScholarshipApplicationView>();
         }
 
         public OperationResult SubmitApplication(

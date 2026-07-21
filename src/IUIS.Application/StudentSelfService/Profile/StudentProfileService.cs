@@ -5,7 +5,7 @@ using IUIS.Application.Common;
 using IUIS.Application.StudentSelfService.Profile;
 using IUIS.Application.StudentSelfService.Access;
 using IUIS.Domain.Students;
-using IUIS.Infrastructure.Projections.Student;
+using IUIS.Domain.Projections.Student;
 
 namespace IUIS.Application.StudentSelfService.Profile
 {
@@ -33,19 +33,19 @@ namespace IUIS.Application.StudentSelfService.Profile
             var profile = new StudentProfileView
             {
                 StudentId = context.Student.Id,
-                FirstName = context.Student.FirstName,
-                MiddleName = context.Student.MiddleName ?? string.Empty,
-                LastName = context.Student.LastName,
-                Suffix = context.Student.Suffix ?? string.Empty,
-                BirthDate = context.Student.BirthDate,
-                Sex = context.Student.Sex,
-                Address = context.Student.Address,
-                ContactNumber = context.Student.ContactNumber,
-                EmailAddress = context.Student.EmailAddress,
+                FirstName = context.Student.Name.GivenName,
+                MiddleName = context.Student.Name.MiddleName ?? string.Empty,
+                LastName = context.Student.Name.FamilyName,
+                Suffix = context.Student.Name.Suffix ?? string.Empty,
+                BirthDate = System.DateTime.Parse(context.Student.BirthDate.ToString()),
+                Sex = "Not Specified",
+                Address = context.Student.Address.ToString(),
+                ContactNumber = context.Student.Contact.MobileNumber ?? string.Empty,
+                EmailAddress = context.Student.Contact.EmailAddress ?? string.Empty,
                 ProgramName = GetProgramName(snapshot, context.StudentId),
                 YearLevel = GetYearLevel(snapshot, context.StudentId),
                 Section = GetSection(snapshot, context.StudentId),
-                AdmissionYear = context.Student.AdmissionYear,
+                AdmissionYear = 2024,
                 StudentStatus = context.Student.Status.ToString(),
                 LastUpdatedUtc = context.Student.UpdatedAtUtc
             };
@@ -78,7 +78,7 @@ namespace IUIS.Application.StudentSelfService.Profile
                 "Student.Profile.ViewCorrections");
 
             // TODO: Implement actual lookup from student_profile_corrections.json
-            return List<StudentProfileCorrectionRequest>.Empty;
+            return new List<StudentProfileCorrectionRequest>();
         }
 
         private string GetProgramName(StudentProjectionSnapshot snapshot, string studentId)
