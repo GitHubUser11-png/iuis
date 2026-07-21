@@ -80,10 +80,10 @@ namespace IUIS.Infrastructure.Persistence
                     "Pass 12 schema v1 reconstructs confidential consultations and released summaries as segregated collections while preserving retained lifecycle and entity metadata."),
                 Completed("MedicalClearanceRepositoryAdapter", "MedicalClearance", "clearances",
                     "Pass 12 schema v1 reconstructs request, review, issue, denial, revocation, validity, numbering, restricted history, archive, and entity-version state."),
-                Deferred("CounselingCaseRepositoryAdapter", "CounselingCase", "counseling",
-                    "Confidential sessions and released summaries require separate persisted projections and strict reconstruction."),
-                Deferred("DisciplineCaseRepositoryAdapter", "DisciplineCase", "discipline_incidents",
-                    "Evidence, findings, responses, notices, and decisions require restricted persisted shapes and explicit hydration.")
+                Completed("CounselingCaseRepositoryAdapter", "CounselingCase", "counseling",
+                    "Pass 12 schema v1 reconstructs requested, confirmed, assigned, active, closed, and cancelled state while segregating confidential Sessions from authorized released summaries."),
+                Completed("DisciplineCaseRepositoryAdapter", "DisciplineCase", "discipline_incidents",
+                    "Pass 12 schema v1 reconstructs restricted incident, Evidence, Findings, and Decision rationale separately from released Notice and Decision projections, Student responses, lifecycle state, and metadata.")
             }.AsReadOnly();
 
         public static IReadOnlyList<AggregateMapperReadinessRecord> All
@@ -102,20 +102,6 @@ namespace IUIS.Infrastructure.Persistence
                 aggregate,
                 repository,
                 AggregateMapperReadiness.SpecializedMapperCompleted,
-                reason);
-        }
-
-        private static AggregateMapperReadinessRecord Deferred(
-            string adapter,
-            string aggregate,
-            string repository,
-            string reason)
-        {
-            return new AggregateMapperReadinessRecord(
-                adapter,
-                aggregate,
-                repository,
-                AggregateMapperReadiness.DeferredWithExplicitReason,
                 reason);
         }
     }
