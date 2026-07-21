@@ -1,5 +1,6 @@
 name: Pass 12 Unit 4 Main Dispatcher
 
+# Second default-branch synchronization activates the registered dispatcher.
 on:
   push:
     branches:
