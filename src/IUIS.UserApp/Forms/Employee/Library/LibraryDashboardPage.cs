@@ -149,7 +149,7 @@ namespace IUIS.UserApp.Forms.Employee.Library
             AppDataGridViewFactory.AddTextBoxColumn(_dueTodayGrid, "BorrowingId", "ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_dueTodayGrid, "StudentName", "Student", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_dueTodayGrid, "BookTitle", "Book", 150);
-            AppDataGridViewFactory.AddDateColumn(_dueTodayGrid, "DueAtUtc", "Due Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_dueTodayGrid, "DueAtUtc", "Due Date", "MM/dd/yyyy", 120);
 
             var overdueLabel = new Label
             {
@@ -166,7 +166,7 @@ namespace IUIS.UserApp.Forms.Employee.Library
             AppDataGridViewFactory.AddTextBoxColumn(_overdueGrid, "BorrowingId", "ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_overdueGrid, "StudentName", "Student", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_overdueGrid, "BookTitle", "Book", 150);
-            AppDataGridViewFactory.AddDateColumn(_overdueGrid, "DueAtUtc", "Due Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_overdueGrid, "DueAtUtc", "Due Date", "MM/dd/yyyy", 120);
 
             mainPanel.Controls.Add(headerLabel);
             mainPanel.Controls.Add(metricsPanel);

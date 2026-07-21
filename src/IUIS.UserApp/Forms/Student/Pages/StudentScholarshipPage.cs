@@ -66,7 +66,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             AppDataGridViewFactory.AddTextBoxColumn(_availableProgramsGrid, "Provider", "Provider", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_availableProgramsGrid, "CoverageType", "Coverage", 120);
             AppDataGridViewFactory.AddCurrencyColumn(_availableProgramsGrid, "CoverageAmount", "Amount", 120);
-            AppDataGridViewFactory.AddDateColumn(_availableProgramsGrid, "ApplicationDeadline", "Deadline", 120);
+            AppDataGridViewFactory.AddDateColumn(_availableProgramsGrid, "ApplicationDeadline", "Deadline", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddButtonColumn(_availableProgramsGrid, "Apply", "Apply", 80);
 
             _availableProgramsGrid.CellClick += OnAvailableProgramsGridCellClick;
@@ -77,7 +77,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             _myApplicationsGrid.Dock = DockStyle.Fill;
             AppDataGridViewFactory.AddTextBoxColumn(_myApplicationsGrid, "ScholarshipName", "Name", 200);
             AppDataGridViewFactory.AddTextBoxColumn(_myApplicationsGrid, "Provider", "Provider", 150);
-            AppDataGridViewFactory.AddDateColumn(_myApplicationsGrid, "ApplicationDate", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_myApplicationsGrid, "ApplicationDate", "Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_myApplicationsGrid, "Status", "Status", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_myApplicationsGrid, "AcademicYear", "Year", 100);
             AppDataGridViewFactory.AddTextBoxColumn(_myApplicationsGrid, "Semester", "Sem", 80);

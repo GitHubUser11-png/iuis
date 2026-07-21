@@ -119,8 +119,8 @@ namespace IUIS.UserApp.Forms.Employee.Library
             AppDataGridViewFactory.AddTextBoxColumn(grid, "StudentId", "Student ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "BookTitle", "Book", 200);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "BookId", "Book ID", 120);
-            AppDataGridViewFactory.AddDateColumn(grid, "BorrowedAtUtc", "Issue Date", 120);
-            AppDataGridViewFactory.AddDateColumn(grid, "DueAtUtc", "Due Date", 120);
+            AppDataGridViewFactory.AddDateColumn(grid, "BorrowedAtUtc", "Issue Date", "MM/dd/yyyy", 120);
+            AppDataGridViewFactory.AddDateColumn(grid, "DueAtUtc", "Due Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "StatusDisplay", "Status", 100);
             AppDataGridViewFactory.AddButtonColumn(grid, "View", "View", 60);
             AppDataGridViewFactory.AddButtonColumn(grid, "Renew", "Renew", 60);
