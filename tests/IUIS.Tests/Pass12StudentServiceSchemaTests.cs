@@ -149,7 +149,7 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        public void SevenAdaptersRemainFailClosedUntilSpecializedMappersPass()
+        public void FiveAdaptersRemainFailClosedAfterLibraryActivation()
         {
             var records = AggregateMapperReadinessCatalog.All;
             var completed = records
@@ -160,16 +160,14 @@ namespace IUIS.Tests
                 .OrderBy(item => item.AdapterName, StringComparer.Ordinal)
                 .ToList();
 
-            Assert.AreEqual(11, completed.Count);
-            Assert.AreEqual(7, deferred.Count);
+            Assert.AreEqual(13, completed.Count);
+            Assert.AreEqual(5, deferred.Count);
             CollectionAssert.AreEqual(
                 new[]
                 {
                     "ClinicAppointmentRepositoryAdapter",
                     "CounselingCaseRepositoryAdapter",
                     "DisciplineCaseRepositoryAdapter",
-                    "LibraryBookRepositoryAdapter",
-                    "LibraryBorrowingRepositoryAdapter",
                     "MedicalClearanceRepositoryAdapter",
                     "MedicalRecordRepositoryAdapter"
                 },
