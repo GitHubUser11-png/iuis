@@ -40,6 +40,8 @@ namespace IUIS.Infrastructure.Composition
             ScholarshipAwards = new ScholarshipAwardRepositoryAdapter(Store);
             LibraryBooks = new LibraryBookRepositoryAdapter(Store);
             LibraryBorrowings = new LibraryBorrowingRepositoryAdapter(Store);
+            CounselingCases = new CounselingCaseRepositoryAdapter(Store);
+            DisciplineCases = new DisciplineCaseRepositoryAdapter(Store);
             ClinicAppointments = new ClinicAppointmentRepositoryAdapter(Store);
             MedicalRecords = new MedicalRecordRepositoryAdapter(Store);
             MedicalClearances = new MedicalClearanceRepositoryAdapter(Store);
@@ -147,6 +149,39 @@ namespace IUIS.Infrastructure.Composition
                 MedicalClearances,
                 Transactions,
                 IdentifierAllocator);
+            StudentCounselingDiscipline =
+                new StudentCounselingDisciplineQueryService(
+                    RequestExecutor,
+                    CounselingCases,
+                    DisciplineCases,
+                    Projections);
+            RestrictedCounselingCases =
+                new RestrictedCounselingCaseQueryService(
+                    RequestExecutor,
+                    CounselingCases,
+                    Projections);
+            RestrictedDisciplineCases =
+                new RestrictedDisciplineCaseQueryService(
+                    RequestExecutor,
+                    DisciplineCases,
+                    Projections);
+            CounselingCommands = new CounselingCaseCommandService(
+                RequestExecutor,
+                CounselingCases,
+                Transactions,
+                IdentifierAllocator);
+            DisciplineCommands = new DisciplineCaseCommandService(
+                RequestExecutor,
+                DisciplineCases,
+                Transactions,
+                IdentifierAllocator);
+            DisciplineCounselingCoordination =
+                new DisciplineCounselingCoordinationService(
+                    RequestExecutor,
+                    DisciplineCases,
+                    CounselingCases,
+                    Transactions,
+                    IdentifierAllocator);
         }
 
         public ProductionRepositoryCatalog Catalog { get; private set; }
@@ -166,6 +201,8 @@ namespace IUIS.Infrastructure.Composition
         public IScholarshipAwardRepository ScholarshipAwards { get; private set; }
         public ILibraryBookRepository LibraryBooks { get; private set; }
         public ILibraryBorrowingRepository LibraryBorrowings { get; private set; }
+        public ICounselingCaseRepository CounselingCases { get; private set; }
+        public IDisciplineCaseRepository DisciplineCases { get; private set; }
         public IClinicAppointmentRepository ClinicAppointments { get; private set; }
         public IMedicalRecordRepository MedicalRecords { get; private set; }
         public IMedicalClearanceRepository MedicalClearances { get; private set; }
@@ -195,5 +232,11 @@ namespace IUIS.Infrastructure.Composition
         public ClinicAppointmentCommandService ClinicAppointmentCommands { get; private set; }
         public MedicalRecordCommandService MedicalRecordCommands { get; private set; }
         public MedicalClearanceCommandService MedicalClearanceCommands { get; private set; }
+        public StudentCounselingDisciplineQueryService StudentCounselingDiscipline { get; private set; }
+        public RestrictedCounselingCaseQueryService RestrictedCounselingCases { get; private set; }
+        public RestrictedDisciplineCaseQueryService RestrictedDisciplineCases { get; private set; }
+        public CounselingCaseCommandService CounselingCommands { get; private set; }
+        public DisciplineCaseCommandService DisciplineCommands { get; private set; }
+        public DisciplineCounselingCoordinationService DisciplineCounselingCoordination { get; private set; }
     }
 }
