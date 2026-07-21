@@ -74,6 +74,9 @@ namespace IUIS.Application.Dtos
 
     public sealed class DisciplineReleasedCaseDto
     {
+        private string _releasedDecisionSummary;
+        private string _sanctionSummary;
+
         public string CaseId { get; set; }
         public string StudentId { get; set; }
         public string Status { get; set; }
@@ -81,8 +84,32 @@ namespace IUIS.Application.Dtos
         public string ViolationDescription { get; set; }
         public string ReleasedNoticeSummary { get; set; }
         public string ResponseDueDate { get; set; }
-        public string ReleasedDecisionSummary { get; set; }
-        public string SanctionSummary { get; set; }
+
+        public string ReleasedDecisionSummary
+        {
+            get { return _releasedDecisionSummary; }
+            set
+            {
+                _releasedDecisionSummary = string.IsNullOrWhiteSpace(value)
+                    ? null
+                    : value;
+                if (_releasedDecisionSummary == null)
+                    _sanctionSummary = null;
+            }
+        }
+
+        public string SanctionSummary
+        {
+            get { return _sanctionSummary; }
+            set
+            {
+                _sanctionSummary = _releasedDecisionSummary == null
+                    || string.IsNullOrWhiteSpace(value)
+                    ? null
+                    : value;
+            }
+        }
+
         public long EntityVersion { get; set; }
     }
 
