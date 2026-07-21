@@ -311,14 +311,14 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        public void ReadinessCatalogReflectsPass12ClinicMedicalActivation()
+        public void ReadinessCatalogReflectsFinalPass12Activation()
         {
             Assert.AreEqual(
-                16,
+                18,
                 AggregateMapperReadinessCatalog.All.Count(item =>
                     item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted));
             Assert.AreEqual(
-                2,
+                0,
                 AggregateMapperReadinessCatalog.All.Count(item =>
                     item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason));
         }
