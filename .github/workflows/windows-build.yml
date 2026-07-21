@@ -29,44 +29,47 @@ jobs:
           ref: build/pass-12-student-service-persistence
           fetch-depth: 0
 
-      - name: Apply exact reconciliation and restore workflow baseline
+      - name: Apply line-scoped reconciliation and restore workflow baseline
         id: reconcile
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
 
-          function Replace-ExactOnce {
-              param(
-                  [Parameter(Mandatory = $true)][string]$Path,
-                  [Parameter(Mandatory = $true)][string]$Old,
-                  [Parameter(Mandatory = $true)][string]$New
-              )
-
-              $content = [System.IO.File]::ReadAllText($Path).Replace("`r`n", "`n")
-              $matches = [regex]::Matches($content, [regex]::Escape($Old)).Count
-              if ($matches -ne 1) {
-                  throw "Expected exactly one target block in $Path but found $matches."
-              }
-
-              [System.IO.File]::WriteAllText(
-                  $Path,
-                  $content.Replace($Old, $New),
-                  [System.Text.UTF8Encoding]::new($false))
+          $pass9Path = 'tests/IUIS.Tests/Pass9ApplicationInfrastructureTests.cs'
+          $pass9 = [System.Collections.Generic.List[string]]::new()
+          [System.IO.File]::ReadAllLines($pass9Path) | ForEach-Object { [void]$pass9.Add($_) }
+          $pass9Text = [System.IO.File]::ReadAllText($pass9Path)
+          if ($pass9Text -notmatch '(?s)Assert\.AreEqual\(\s*13,.*SpecializedMapperCompleted' `
+              -or $pass9Text -notmatch '(?s)Assert\.AreEqual\(\s*5,.*DeferredWithExplicitReason') {
+              throw 'The Pass 9 readiness assertion is not reconciled to 13 completed and 5 deferred.'
           }
 
-          $pass9Old = "                Assert.AreEqual(`n                    11,`n                    readiness.Count(item =>`n                        item.Readiness`n                        == AggregateMapperReadiness.SpecializedMapperCompleted));`n                Assert.AreEqual(`n                    7,`n                    readiness.Count(item =>`n                        item.Readiness`n                        == AggregateMapperReadiness.DeferredWithExplicitReason));"
-          $pass9New = "                Assert.AreEqual(`n                    13,`n                    readiness.Count(item =>`n                        item.Readiness`n                        == AggregateMapperReadiness.SpecializedMapperCompleted));`n                Assert.AreEqual(`n                    5,`n                    readiness.Count(item =>`n                        item.Readiness`n                        == AggregateMapperReadiness.DeferredWithExplicitReason));"
-          Replace-ExactOnce `
-              'tests/IUIS.Tests/Pass9ApplicationInfrastructureTests.cs' `
-              $pass9Old `
-              $pass9New
-
-          $activationOld = "                    `"assessments`",`n                    `"courses`","
-          $activationNew = "                    `"assessments`",`n                    `"books`",`n                    `"borrowings`",`n                    `"courses`","
-          Replace-ExactOnce `
-              'tests/IUIS.Tests/Pass10ClosureIntegrityTests.cs' `
-              $activationOld `
-              $activationNew
+          $closurePath = 'tests/IUIS.Tests/Pass10ClosureIntegrityTests.cs'
+          $closure = [System.Collections.Generic.List[string]]::new()
+          [System.IO.File]::ReadAllLines($closurePath) | ForEach-Object { [void]$closure.Add($_) }
+          $assessmentIndex = -1
+          for ($i = 0; $i -lt $closure.Count; $i++) {
+              if ($closure[$i].Trim() -eq '"assessments",') {
+                  $assessmentIndex = $i
+                  break
+              }
+          }
+          if ($assessmentIndex -lt 0) { throw 'Pass 10 activation-list assessments entry was not found.' }
+          if ($closure[$assessmentIndex + 1].Trim() -eq '"courses",') {
+              $indent = $closure[$assessmentIndex].Substring(
+                  0,
+                  $closure[$assessmentIndex].Length - $closure[$assessmentIndex].TrimStart().Length)
+              $closure.Insert($assessmentIndex + 1, $indent + '"books",')
+              $closure.Insert($assessmentIndex + 2, $indent + '"borrowings",')
+              [System.IO.File]::WriteAllLines(
+                  $closurePath,
+                  $closure,
+                  [System.Text.UTF8Encoding]::new($false))
+          }
+          elseif ($closure[$assessmentIndex + 1].Trim() -ne '"books",' `
+              -or $closure[$assessmentIndex + 2].Trim() -ne '"borrowings",') {
+              throw 'Pass 10 activation list has an unsupported order after assessments.'
+          }
 
           $pass10 = [System.IO.File]::ReadAllText(
               'tests/IUIS.Tests/Pass10CanonicalPersistenceTests.cs')
