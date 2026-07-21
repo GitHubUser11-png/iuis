@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -8,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using IUIS.Application.Authorization;
 using IUIS.Application.Dtos;
 using IUIS.Application.Orchestration;
+using IUIS.Application.Repositories;
 using IUIS.Domain.Common;
 using IUIS.Domain.Counseling;
 using IUIS.Domain.Discipline;
@@ -33,29 +35,21 @@ namespace IUIS.Tests
         public void CounselingMapperRoundTripPreservesConfidentialAndReleasedState()
         {
             var value = ClosedCounselingCase(
-                "CNS-2026-000001",
-                StudentId,
-                "CSN-2026-000001",
-                "CSR-2026-000001");
+                "CNS-2026-000001", StudentId,
+                "CSN-2026-000001", "CSR-2026-000001");
             var mapper = new CounselingCaseJsonMapper();
             var options = JsonOptions();
-
-            var restored = mapper.FromJson(
-                mapper.ToJson(value, options),
-                options);
+            var restored = mapper.FromJson(mapper.ToJson(value, options), options);
 
             Assert.AreEqual(CounselingCaseStatus.Closed, restored.Status);
             Assert.AreEqual(value.Version, restored.Version);
             Assert.AreEqual(1, restored.ConfidentialSessions.Count);
             Assert.AreEqual(1, restored.ReleasedSummaries.Count);
-            Assert.AreEqual(
-                "Restricted counseling notes",
+            Assert.AreEqual("Restricted counseling notes",
                 restored.ConfidentialSessions[0].InternalNotes);
-            Assert.AreEqual(
-                "Released counseling summary",
+            Assert.AreEqual("Released counseling summary",
                 restored.ReleasedSummaries[0].Summary);
-            Assert.AreEqual(
-                "Counseling objectives completed",
+            Assert.AreEqual("Counseling objectives completed",
                 restored.ClosureSummary);
         }
 
@@ -63,30 +57,19 @@ namespace IUIS.Tests
         public void AssignedCancellationRoundTripPreservesPriorWorkflowMetadata()
         {
             var value = new CounselingCase(
-                "CNS-2026-000002",
-                StudentId,
-                StartUtc.AddMinutes(5),
-                "Student requested support",
-                StartUtc,
-                ActorUserId);
+                "CNS-2026-000002", StudentId,
+                StartUtc.AddMinutes(5), "Student requested support",
+                StartUtc, ActorUserId);
             value.ConfirmAppointment(
-                StartUtc.AddMinutes(5),
-                StartUtc.AddMinutes(1),
-                ActorUserId);
+                StartUtc.AddMinutes(5), StartUtc.AddMinutes(1), ActorUserId);
             value.AssignCounselor(
-                CounselorEmployeeId,
-                StartUtc.AddMinutes(2),
-                ActorUserId);
+                CounselorEmployeeId, StartUtc.AddMinutes(2), ActorUserId);
             value.Cancel(
                 "Student rescheduled outside the current case.",
-                StartUtc.AddMinutes(6),
-                ActorUserId);
+                StartUtc.AddMinutes(6), ActorUserId);
             var mapper = new CounselingCaseJsonMapper();
             var options = JsonOptions();
-
-            var restored = mapper.FromJson(
-                mapper.ToJson(value, options),
-                options);
+            var restored = mapper.FromJson(mapper.ToJson(value, options), options);
 
             Assert.AreEqual(CounselingCaseStatus.Cancelled, restored.Status);
             Assert.AreEqual(value.ConfirmedAppointmentAtUtc,
@@ -100,12 +83,9 @@ namespace IUIS.Tests
         [TestMethod]
         public void DisciplineMapperRoundTripPreservesRestrictedAndReleasedDecisionShapes()
         {
-            var value = ClosedDisciplineCase(
-                "DIN-2026-000001",
-                StudentId);
+            var value = ClosedDisciplineCase("DIN-2026-000001", StudentId);
             var mapper = new DisciplineCaseJsonMapper();
             var options = JsonOptions();
-
             var json = mapper.ToJson(value, options);
             var restored = mapper.FromJson(json, options);
 
@@ -114,11 +94,9 @@ namespace IUIS.Tests
             Assert.AreEqual(1, restored.RestrictedEvidence.Count);
             Assert.AreEqual(1, restored.StudentResponses.Count);
             Assert.AreEqual(1, restored.RestrictedFindings.Count);
-            Assert.AreEqual(
-                "Restricted decision rationale",
+            Assert.AreEqual("Restricted decision rationale",
                 restored.Decision.InternalRationale);
-            Assert.AreEqual(
-                "Released decision summary",
+            Assert.AreEqual("Released decision summary",
                 restored.Decision.ReleasedDecisionSummary);
             Assert.IsTrue(json.TryGetProperty("restrictedDecision", out _));
             Assert.IsTrue(json.TryGetProperty("releasedDecision", out _));
@@ -140,73 +118,45 @@ namespace IUIS.Tests
 
             Assert.ThrowsException<DomainValidationException>(() =>
                 CounselingCase.Rehydrate(
-                    "CNS-2026-000004",
-                    StudentId,
-                    StartUtc,
-                    "Support request",
-                    CounselingCaseStatus.Active,
-                    null,
-                    null,
-                    null,
-                    null,
+                    "CNS-2026-000004", StudentId, StartUtc,
+                    "Support request", CounselingCaseStatus.Active,
+                    null, null, null, null,
                     new CounselingSessionRecord[0],
                     new CounselingReleasedSummary[0],
-                    1,
-                    false,
-                    StartUtc,
-                    ActorUserId,
-                    StartUtc,
-                    ActorUserId,
-                    null,
-                    null));
+                    1, false, StartUtc, ActorUserId,
+                    StartUtc, ActorUserId, null, null));
 
             Assert.ThrowsException<DomainValidationException>(() =>
                 DisciplineCase.Rehydrate(
-                    "DIN-2026-000004",
-                    StudentId,
-                    StartUtc.AddMinutes(-1),
-                    "Campus",
-                    "Restricted incident narrative",
-                    ActorUserId,
+                    "DIN-2026-000004", StudentId,
+                    StartUtc.AddMinutes(-1), "Campus",
+                    "Restricted incident narrative", ActorUserId,
                     DisciplineCaseStatus.DecisionReleased,
-                    null,
-                    null,
-                    null,
+                    null, null, null,
                     new DisciplineEvidenceReference[0],
                     new DisciplineStudentResponse[0],
                     new DisciplineFinding[0],
-                    1,
-                    false,
-                    StartUtc,
-                    ActorUserId,
-                    StartUtc,
-                    ActorUserId,
-                    null,
-                    null));
+                    1, false, StartUtc, ActorUserId,
+                    StartUtc, ActorUserId, null, null));
         }
 
         [TestMethod]
         public void MapperReadinessIsEighteenCompletedAndZeroDeferred()
         {
             var all = AggregateMapperReadinessCatalog.All;
-            var completed = all
-                .Where(item => item.Readiness
+            var completed = all.Where(item => item.Readiness
                     == AggregateMapperReadiness.SpecializedMapperCompleted)
-                .Select(item => item.AdapterName)
-                .ToList();
-            var deferred = all
-                .Where(item => item.Readiness
+                .Select(item => item.AdapterName).ToList();
+            var deferred = all.Where(item => item.Readiness
                     == AggregateMapperReadiness.DeferredWithExplicitReason)
                 .ToList();
 
             Assert.AreEqual(18, all.Count);
             Assert.AreEqual(18, completed.Count);
             Assert.AreEqual(0, deferred.Count);
-            CollectionAssert.Contains(
-                completed,
+            CollectionAssert.Contains(completed,
                 "CounselingCaseRepositoryAdapter");
-            CollectionAssert.Contains(
-                completed,
+            CollectionAssert.Contains(completed,
                 "DisciplineCaseRepositoryAdapter");
         }
 
@@ -217,29 +167,19 @@ namespace IUIS.Tests
             {
                 var first = new IuisCompositionRoot(root);
                 var counseling = ClosedCounselingCase(
-                    "CNS-2026-000101",
-                    StudentId,
-                    "CSN-2026-000101",
-                    "CSR-2026-000101");
+                    "CNS-2026-000101", StudentId,
+                    "CSN-2026-000101", "CSR-2026-000101");
                 var discipline = ClosedDisciplineCase(
-                    "DIN-2026-000101",
-                    StudentId);
-                first.CounselingCases.Write(
-                    new[] { counseling },
-                    0,
+                    "DIN-2026-000101", StudentId);
+                first.CounselingCases.Write(new[] { counseling }, 0,
                     bootstrap.AdministratorUserId);
-                first.DisciplineCases.Write(
-                    new[] { discipline },
-                    0,
+                first.DisciplineCases.Write(new[] { discipline }, 0,
                     bootstrap.AdministratorUserId);
 
                 var restarted = new IuisCompositionRoot(root);
-
-                Assert.AreEqual(
-                    CounselingCaseStatus.Closed,
+                Assert.AreEqual(CounselingCaseStatus.Closed,
                     restarted.CounselingCases.FindById(counseling.Id).Status);
-                Assert.AreEqual(
-                    DisciplineCaseStatus.Closed,
+                Assert.AreEqual(DisciplineCaseStatus.Closed,
                     restarted.DisciplineCases.FindById(discipline.Id).Status);
                 Assert.IsNotNull(restarted.StudentCounselingDiscipline);
                 Assert.IsNotNull(restarted.RestrictedCounselingCases);
@@ -254,35 +194,24 @@ namespace IUIS.Tests
         public void StudentProjectionUsesSessionOwnershipAndReleasedAllowlist()
         {
             var ownCounseling = ClosedCounselingCase(
-                "CNS-2026-000201",
-                StudentId,
-                "CSN-2026-000201",
-                "CSR-2026-000201");
+                "CNS-2026-000201", StudentId,
+                "CSN-2026-000201", "CSR-2026-000201");
             var otherCounseling = ClosedCounselingCase(
-                "CNS-2026-000202",
-                "STU-2026-000002",
-                "CSN-2026-000202",
-                "CSR-2026-000202");
+                "CNS-2026-000202", "STU-2026-000002",
+                "CSN-2026-000202", "CSR-2026-000202");
             var prepared = DecisionPreparedDisciplineCase(
-                "DIN-2026-000201",
-                StudentId);
+                "DIN-2026-000201", StudentId);
             var other = ClosedDisciplineCase(
-                "DIN-2026-000202",
-                "STU-2026-000002");
+                "DIN-2026-000202", "STU-2026-000002");
             var service = new StudentCounselingDisciplineQueryService(
                 Executor(StudentPrincipal(StudentId)),
-                new CounselingRepository(
-                    3,
+                new CounselingRepository(3,
                     new[] { ownCounseling, otherCounseling }),
-                new DisciplineRepository(
-                    4,
-                    new[] { prepared, other }),
+                new DisciplineRepository(4, new[] { prepared, other }),
                 new RestrictedProjectionService());
 
             var result = service.GetOwnOverview(
-                "SES-2026-000201",
-                "token",
-                StartUtc.AddHours(10));
+                "SES-2026-000201", "token", StartUtc.AddHours(10));
 
             Assert.AreEqual(StudentId, result.StudentId);
             Assert.AreEqual(1, result.CounselingCases.Count);
@@ -305,13 +234,10 @@ namespace IUIS.Tests
         public void RestrictedQueriesRequireExplicitConfidentialityPermission()
         {
             var counseling = ClosedCounselingCase(
-                "CNS-2026-000301",
-                StudentId,
-                "CSN-2026-000301",
-                "CSR-2026-000301");
+                "CNS-2026-000301", StudentId,
+                "CSN-2026-000301", "CSR-2026-000301");
             var discipline = ClosedDisciplineCase(
-                "DIN-2026-000301",
-                StudentId);
+                "DIN-2026-000301", StudentId);
             var projections = new RestrictedProjectionService();
 
             var deniedCounseling = new RestrictedCounselingCaseQueryService(
@@ -319,11 +245,8 @@ namespace IUIS.Tests
                 new CounselingRepository(1, new[] { counseling }),
                 projections);
             Assert.ThrowsException<AuthorizationDeniedException>(() =>
-                deniedCounseling.Get(
-                    "SES-2026-000301",
-                    "token",
-                    counseling.Id,
-                    StartUtc.AddHours(10)));
+                deniedCounseling.Get("SES-2026-000301", "token",
+                    counseling.Id, StartUtc.AddHours(10)));
 
             var allowedCounseling = new RestrictedCounselingCaseQueryService(
                 Executor(AdminPrincipal(
@@ -331,13 +254,9 @@ namespace IUIS.Tests
                     "confidentiality.restricted")),
                 new CounselingRepository(1, new[] { counseling }),
                 projections);
-            Assert.AreEqual(
-                "Restricted counseling notes",
-                allowedCounseling.Get(
-                    "SES-2026-000302",
-                    "token",
-                    counseling.Id,
-                    StartUtc.AddHours(10))
+            Assert.AreEqual("Restricted counseling notes",
+                allowedCounseling.Get("SES-2026-000302", "token",
+                    counseling.Id, StartUtc.AddHours(10))
                     .Case.ConfidentialSessions[0].InternalNotes);
 
             var deniedDiscipline = new RestrictedDisciplineCaseQueryService(
@@ -345,57 +264,44 @@ namespace IUIS.Tests
                 new DisciplineRepository(1, new[] { discipline }),
                 projections);
             Assert.ThrowsException<AuthorizationDeniedException>(() =>
-                deniedDiscipline.Get(
-                    "SES-2026-000303",
-                    "token",
-                    discipline.Id,
-                    StartUtc.AddHours(10)));
+                deniedDiscipline.Get("SES-2026-000303", "token",
+                    discipline.Id, StartUtc.AddHours(10)));
         }
 
         [TestMethod]
         public void StaleRepositoryAndEntityTokensFailBeforeMutation()
         {
             var value = DecisionPreparedDisciplineCase(
-                "DIN-2026-000401",
-                StudentId);
+                "DIN-2026-000401", StudentId);
             var repository = new DisciplineRepository(7, new[] { value });
             var coordinator = new ImmediateCoordinator();
             var service = new DisciplineCaseCommandService(
                 Executor(EmployeePrincipal(
                     "discipline.decision.release",
                     "confidentiality.restricted")),
-                repository,
-                coordinator,
-                new FakeAllocator());
+                repository, coordinator, new FakeAllocator());
 
             Assert.ThrowsException<InvalidOperationException>(() =>
-                service.ReleaseDecision(
-                    "SES-2026-000401",
-                    "token",
+                service.ReleaseDecision("SES-2026-000401", "token",
                     new DisciplineCaseMutationRequest
                     {
                         ExpectedRepositoryRevision = 6,
                         ExpectedEntityVersion = value.Version,
                         CaseId = value.Id,
                         ReleasedDecisionSummary = "Released decision"
-                    },
-                    StartUtc.AddHours(10)));
+                    }, StartUtc.AddHours(10)));
             Assert.ThrowsException<InvalidOperationException>(() =>
-                service.ReleaseDecision(
-                    "SES-2026-000401",
-                    "token",
+                service.ReleaseDecision("SES-2026-000401", "token",
                     new DisciplineCaseMutationRequest
                     {
                         ExpectedRepositoryRevision = 7,
                         ExpectedEntityVersion = value.Version + 1L,
                         CaseId = value.Id,
                         ReleasedDecisionSummary = "Released decision"
-                    },
-                    StartUtc.AddHours(10)));
+                    }, StartUtc.AddHours(10)));
 
             Assert.AreEqual(0, coordinator.ExecutionCount);
-            Assert.AreEqual(
-                DisciplineCaseStatus.DecisionPrepared,
+            Assert.AreEqual(DisciplineCaseStatus.DecisionPrepared,
                 repository.FindById(value.Id).Status);
         }
 
@@ -403,60 +309,49 @@ namespace IUIS.Tests
         public void StudentCannotSubmitResponseForAnotherStudentsCase()
         {
             var value = NoticeReleasedDisciplineCase(
-                "DIN-2026-000501",
-                "STU-2026-000002");
+                "DIN-2026-000501", "STU-2026-000002");
             var repository = new DisciplineRepository(2, new[] { value });
             var coordinator = new ImmediateCoordinator();
             var service = new DisciplineCaseCommandService(
                 Executor(StudentPrincipal(StudentId,
                     "student.discipline.response.submit")),
-                repository,
-                coordinator,
-                new FakeAllocator());
+                repository, coordinator, new FakeAllocator());
 
             var exception = Assert.ThrowsException<AuthorizationDeniedException>(() =>
-                service.RecordStudentResponse(
-                    "SES-2026-000501",
-                    "token",
+                service.RecordStudentResponse("SES-2026-000501", "token",
                     new DisciplineCaseMutationRequest
                     {
                         ExpectedRepositoryRevision = 2,
                         ExpectedEntityVersion = value.Version,
                         CaseId = value.Id,
                         ResponseText = "Cross-record response"
-                    },
-                    StartUtc.AddHours(10)));
+                    }, StartUtc.AddHours(10)));
 
             Assert.AreEqual("record-ownership-mismatch", exception.ReasonCode);
             Assert.AreEqual(0, coordinator.ExecutionCount);
-            Assert.AreEqual(0, repository.FindById(value.Id).StudentResponses.Count);
+            Assert.AreEqual(0,
+                repository.FindById(value.Id).StudentResponses.Count);
         }
 
         [TestMethod]
         public void DecisionReleaseAndCounselingReferralCommitTogether()
         {
             var discipline = DecisionPreparedDisciplineCase(
-                "DIN-2026-000601",
-                StudentId);
+                "DIN-2026-000601", StudentId);
             var disciplineRepository = new DisciplineRepository(
-                5,
-                new[] { discipline });
+                5, new[] { discipline });
             var counselingRepository = new CounselingRepository(
-                8,
-                new CounselingCase[0]);
+                8, new CounselingCase[0]);
             var coordinator = new ImmediateCoordinator();
             var service = new DisciplineCounselingCoordinationService(
                 Executor(EmployeePrincipal(
                     "discipline.decision.counseling-referral",
                     "confidentiality.restricted")),
-                disciplineRepository,
-                counselingRepository,
-                coordinator,
-                new FakeAllocator());
+                disciplineRepository, counselingRepository,
+                coordinator, new FakeAllocator());
 
             var result = service.ReleaseDecisionWithCounselingReferral(
-                "SES-2026-000601",
-                "token",
+                "SES-2026-000601", "token",
                 new DisciplineCounselingCoordinationRequest
                 {
                     ExpectedDisciplineRepositoryRevision = 5,
@@ -464,17 +359,17 @@ namespace IUIS.Tests
                     ExpectedDisciplineEntityVersion = discipline.Version,
                     DisciplineCaseId = discipline.Id,
                     ReleasedDecisionSummary = "Released corrective decision",
-                    RequestedCounselingAppointmentAtUtc = StartUtc.AddHours(11),
-                    CounselingRequestReason = "Decision-linked counseling referral"
-                },
-                StartUtc.AddHours(10));
+                    RequestedCounselingAppointmentAtUtc =
+                        StartUtc.AddHours(11),
+                    CounselingRequestReason =
+                        "Decision-linked counseling referral"
+                }, StartUtc.AddHours(10));
 
             Assert.AreEqual(1, coordinator.ExecutionCount);
             Assert.AreEqual(2, coordinator.LastStageCount);
             Assert.AreEqual(6L, disciplineRepository.Read().Revision);
             Assert.AreEqual(9L, counselingRepository.Read().Revision);
-            Assert.AreEqual(
-                DisciplineCaseStatus.DecisionReleased,
+            Assert.AreEqual(DisciplineCaseStatus.DecisionReleased,
                 disciplineRepository.FindById(discipline.Id).Status);
             Assert.AreEqual(1, counselingRepository.Read().Records.Count);
             Assert.AreEqual(StudentId,
@@ -496,36 +391,28 @@ namespace IUIS.Tests
                 var counselingRepository =
                     new CounselingCaseRepositoryAdapter(store);
                 var discipline = DecisionPreparedDisciplineCase(
-                    "DIN-2026-000701",
-                    StudentId);
-                disciplineRepository.Write(
-                    new[] { discipline },
-                    0,
+                    "DIN-2026-000701", StudentId);
+                disciplineRepository.Write(new[] { discipline }, 0,
                     bootstrap.AdministratorUserId);
-                var disciplinePath = Path.Combine(
-                    root,
+                var disciplinePath = Path.Combine(root,
                     "discipline_incidents.json");
                 var counselingPath = Path.Combine(root, "counseling.json");
                 var beforeDiscipline = File.ReadAllBytes(disciplinePath);
                 var beforeCounseling = File.ReadAllBytes(counselingPath);
                 var transactions = new JournaledApplicationTransactionCoordinator(
-                    new JournaledTransactionCoordinator(
-                        catalog,
-                        options,
+                    new JournaledTransactionCoordinator(catalog, options,
                         new FailAfterFirstMutation()));
                 var service = new DisciplineCounselingCoordinationService(
                     Executor(EmployeePrincipal(
                         "discipline.decision.counseling-referral",
                         "confidentiality.restricted")),
-                    disciplineRepository,
-                    counselingRepository,
+                    disciplineRepository, counselingRepository,
                     transactions,
                     new ApplicationIdentifierAllocator(catalog, options));
 
                 Assert.ThrowsException<InvalidOperationException>(() =>
                     service.ReleaseDecisionWithCounselingReferral(
-                        "SES-2026-000701",
-                        "token",
+                        "SES-2026-000701", "token",
                         new DisciplineCounselingCoordinationRequest
                         {
                             ExpectedDisciplineRepositoryRevision = 1,
@@ -536,18 +423,14 @@ namespace IUIS.Tests
                             RequestedCounselingAppointmentAtUtc =
                                 StartUtc.AddHours(11),
                             CounselingRequestReason = "Required referral"
-                        },
-                        StartUtc.AddHours(10)));
+                        }, StartUtc.AddHours(10)));
 
-                CollectionAssert.AreEqual(
-                    beforeDiscipline,
+                CollectionAssert.AreEqual(beforeDiscipline,
                     File.ReadAllBytes(disciplinePath));
-                CollectionAssert.AreEqual(
-                    beforeCounseling,
+                CollectionAssert.AreEqual(beforeCounseling,
                     File.ReadAllBytes(counselingPath));
                 var restarted = new IuisCompositionRoot(root);
-                Assert.AreEqual(
-                    DisciplineCaseStatus.DecisionPrepared,
+                Assert.AreEqual(DisciplineCaseStatus.DecisionPrepared,
                     restarted.DisciplineCases.FindById(discipline.Id).Status);
                 Assert.AreEqual(0,
                     restarted.CounselingCases.Read().Records.Count);
@@ -555,119 +438,75 @@ namespace IUIS.Tests
         }
 
         private static CounselingCase ClosedCounselingCase(
-            string id,
-            string studentId,
-            string sessionId,
-            string summaryId)
+            string id, string studentId, string sessionId, string summaryId)
         {
-            var value = new CounselingCase(
-                id,
-                studentId,
+            var value = new CounselingCase(id, studentId,
                 StartUtc.AddMinutes(1),
                 "Student requested counseling support",
-                StartUtc,
-                ActorUserId);
-            value.ConfirmAppointment(
-                StartUtc.AddMinutes(1),
-                StartUtc.AddMinutes(1),
-                ActorUserId);
-            value.AssignCounselor(
-                CounselorEmployeeId,
-                StartUtc.AddMinutes(2),
-                ActorUserId);
-            value.RecordSession(
-                sessionId,
-                StartUtc.AddMinutes(3),
+                StartUtc, ActorUserId);
+            value.ConfirmAppointment(StartUtc.AddMinutes(1),
+                StartUtc.AddMinutes(1), ActorUserId);
+            value.AssignCounselor(CounselorEmployeeId,
+                StartUtc.AddMinutes(2), ActorUserId);
+            value.RecordSession(sessionId, StartUtc.AddMinutes(3),
                 CounselingRiskLevel.Elevated,
                 "Restricted counseling notes",
-                StartUtc.AddMinutes(3),
-                ActorUserId);
-            value.ReleaseSessionSummary(
-                summaryId,
-                sessionId,
-                "CRL-2026-000001",
-                "Released counseling summary",
-                StartUtc.AddMinutes(4),
-                ActorUserId);
-            value.Close(
-                "Counseling objectives completed",
-                StartUtc.AddMinutes(5),
-                ActorUserId);
+                StartUtc.AddMinutes(3), ActorUserId);
+            value.ReleaseSessionSummary(summaryId, sessionId,
+                "CRL-2026-000001", "Released counseling summary",
+                StartUtc.AddMinutes(4), ActorUserId);
+            value.Close("Counseling objectives completed",
+                StartUtc.AddMinutes(5), ActorUserId);
             return value;
         }
 
         private static DisciplineCase NoticeReleasedDisciplineCase(
-            string id,
-            string studentId)
+            string id, string studentId)
         {
-            var value = new DisciplineCase(
-                id,
-                studentId,
-                StartUtc.AddMinutes(-1),
-                "Main Campus",
-                "Restricted incident narrative",
-                ActorUserId,
-                StartUtc,
-                ActorUserId);
+            var value = new DisciplineCase(id, studentId,
+                StartUtc.AddMinutes(-1), "Main Campus",
+                "Restricted incident narrative", ActorUserId,
+                StartUtc, ActorUserId);
             value.BeginReview(StartUtc.AddMinutes(1), ActorUserId);
-            value.AddEvidenceReference(
-                "DEV-2026-000001",
+            value.AddEvidenceReference("DEV-2026-000001",
                 "restricted-evidence-reference",
                 "Restricted evidence description",
-                StartUtc.AddMinutes(2),
-                ActorUserId);
-            value.ConvertToViolation(
-                "VIO-2026-000001",
-                "CODE-1",
+                StartUtc.AddMinutes(2), ActorUserId);
+            value.ConvertToViolation("VIO-2026-000001", "CODE-1",
                 "Released violation description",
                 DisciplineSeverity.Moderate,
-                StartUtc.AddMinutes(3),
-                ActorUserId);
-            value.ReleaseNotice(
-                "DNT-2026-000001",
+                StartUtc.AddMinutes(3), ActorUserId);
+            value.ReleaseNotice("DNT-2026-000001",
                 "Released notice summary",
                 new InstitutionLocalDate(2026, 8, 1),
-                StartUtc.AddMinutes(4),
-                ActorUserId);
+                StartUtc.AddMinutes(4), ActorUserId);
             return value;
         }
 
         private static DisciplineCase DecisionPreparedDisciplineCase(
-            string id,
-            string studentId)
+            string id, string studentId)
         {
             var value = NoticeReleasedDisciplineCase(id, studentId);
-            value.RecordStudentResponse(
-                "DSR-2026-000001",
-                "Student response",
-                "student-evidence-reference",
-                StartUtc.AddMinutes(5),
-                ActorUserId);
-            value.RecordFinding(
-                "DFN-2026-000001",
-                true,
+            value.RecordStudentResponse("DSR-2026-000001",
+                "Student response", "student-evidence-reference",
+                StartUtc.AddMinutes(5), ActorUserId);
+            value.RecordFinding("DFN-2026-000001", true,
                 "Restricted finding",
-                StartUtc.AddMinutes(6),
-                ActorUserId);
-            value.PrepareDecision(
-                "DDC-2026-000001",
+                StartUtc.AddMinutes(6), ActorUserId);
+            value.PrepareDecision("DDC-2026-000001",
                 DisciplineDecisionOutcome.CorrectiveAction,
                 "Restricted decision rationale",
                 "Complete corrective counseling",
-                StartUtc.AddMinutes(7),
-                ActorUserId);
+                StartUtc.AddMinutes(7), ActorUserId);
             return value;
         }
 
         private static DisciplineCase ClosedDisciplineCase(
-            string id,
-            string studentId)
+            string id, string studentId)
         {
             var value = DecisionPreparedDisciplineCase(id, studentId);
-            value.ReleaseDecision(
-                "Released decision summary",
-                StartUtc.AddMinutes(8),
-                ActorUserId);
+            value.ReleaseDecision("Released decision summary",
+                StartUtc.AddMinutes(8), ActorUserId);
             value.Close(StartUtc.AddMinutes(9), ActorUserId);
             return value;
         }
@@ -690,12 +529,9 @@ namespace IUIS.Tests
         }
 
         private static AuthorizationPrincipal StudentPrincipal(
-            string studentId,
-            params string[] permissions)
+            string studentId, params string[] permissions)
         {
-            return Principal(
-                "USR-2026-000002",
-                studentId,
+            return Principal("USR-2026-000002", studentId,
                 PrimaryRole.Student,
                 SessionApplicationKind.UserApplication,
                 permissions.Length == 0
@@ -706,55 +542,39 @@ namespace IUIS.Tests
         private static AuthorizationPrincipal EmployeePrincipal(
             params string[] permissions)
         {
-            return Principal(
-                ActorUserId,
-                CounselorEmployeeId,
+            return Principal(ActorUserId, CounselorEmployeeId,
                 PrimaryRole.EmployeeFaculty,
-                SessionApplicationKind.UserApplication,
-                permissions);
+                SessionApplicationKind.UserApplication, permissions);
         }
 
         private static AuthorizationPrincipal AdminPrincipal(
             params string[] permissions)
         {
-            return Principal(
-                ActorUserId,
-                CounselorEmployeeId,
+            return Principal(ActorUserId, CounselorEmployeeId,
                 PrimaryRole.Administrator,
                 SessionApplicationKind.AdministratorApplication,
                 permissions);
         }
 
         private static AuthorizationPrincipal Principal(
-            string userId,
-            string personId,
-            PrimaryRole role,
+            string userId, string personId, PrimaryRole role,
             SessionApplicationKind applicationKind,
             string[] permissions)
         {
-            return new AuthorizationPrincipal(
-                userId,
-                personId,
-                role,
-                applicationKind,
-                SessionPurpose.FullAccess,
+            return new AuthorizationPrincipal(userId, personId, role,
+                applicationKind, SessionPurpose.FullAccess,
                 "security-stamp",
                 new[]
                 {
                     new PermissionProfileAssignment(
-                        "PPR-2026-000001",
-                        true,
-                        permissions)
-                },
-                null,
-                null);
+                        "PPR-2026-000001", true, permissions)
+                }, null, null);
         }
 
         private static void WithBootstrap(
             Action<string, ProductionBootstrapResult> action)
         {
-            var root = Path.Combine(
-                Path.GetTempPath(),
+            var root = Path.Combine(Path.GetTempPath(),
                 "IUIS-Pass12-Unit4-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
             try
@@ -795,16 +615,12 @@ namespace IUIS.Tests
             IAuthorizationPrincipalProvider
         {
             private readonly AuthorizationPrincipal _principal;
-
             public FixedPrincipalProvider(AuthorizationPrincipal principal)
             {
                 _principal = principal;
             }
-
             public AuthorizationPrincipal Load(
-                string sessionId,
-                string sessionToken,
-                DateTime utcNow)
+                string sessionId, string sessionToken, DateTime utcNow)
             {
                 return _principal;
             }
@@ -813,11 +629,7 @@ namespace IUIS.Tests
         private sealed class FakeAllocator : IApplicationIdentifierAllocator
         {
             private int _next;
-
-            public string Allocate(
-                string prefix,
-                int year,
-                string actorUserId)
+            public string Allocate(string prefix, int year, string actorUserId)
             {
                 _next++;
                 return prefix + "-" + year + "-"
@@ -825,40 +637,29 @@ namespace IUIS.Tests
             }
         }
 
-        private abstract class RepositoryBase<T>
-            where T : class, IEntity
+        private abstract class RepositoryBase<T> where T : class, IEntity
         {
-            private System.Collections.Generic.List<T> _records;
+            private List<T> _records;
             private long _revision;
-
-            protected RepositoryBase(
-                string repositoryName,
-                long revision,
-                System.Collections.Generic.IEnumerable<T> records)
+            protected RepositoryBase(string name, long revision,
+                IEnumerable<T> records)
             {
-                RepositoryName = repositoryName;
+                RepositoryName = name;
                 _revision = revision;
                 _records = records.ToList();
             }
-
             public string RepositoryName { get; private set; }
-
             protected RepositorySnapshot<T> ReadCore()
             {
-                return new RepositorySnapshot<T>(
-                    RepositoryName,
-                    _revision,
-                    _records.ToList());
+                return new RepositorySnapshot<T>(RepositoryName,
+                    _revision, _records.ToList());
             }
-
             protected T FindCore(string id)
             {
                 return _records.SingleOrDefault(item =>
                     StringComparer.Ordinal.Equals(item.Id, id));
             }
-
-            protected void WriteCore(
-                System.Collections.Generic.IReadOnlyCollection<T> records,
+            protected void WriteCore(IReadOnlyCollection<T> records,
                 long expectedRevision)
             {
                 if (_revision != expectedRevision)
@@ -871,59 +672,33 @@ namespace IUIS.Tests
         }
 
         private sealed class CounselingRepository :
-            RepositoryBase<CounselingCase>,
-            IUIS.Application.Repositories.ICounselingCaseRepository
+            RepositoryBase<CounselingCase>, ICounselingCaseRepository
         {
-            public CounselingRepository(
-                long revision,
-                System.Collections.Generic.IEnumerable<CounselingCase> records)
+            public CounselingRepository(long revision,
+                IEnumerable<CounselingCase> records)
                 : base("counseling", revision, records) { }
-
             public RepositorySnapshot<CounselingCase> Read()
-            {
-                return ReadCore();
-            }
-
+            { return ReadCore(); }
             public CounselingCase FindById(string id)
-            {
-                return FindCore(id);
-            }
-
-            public void Write(
-                System.Collections.Generic.IReadOnlyCollection<CounselingCase> records,
-                long expectedRevision,
-                string updatedByUserId)
-            {
-                WriteCore(records, expectedRevision);
-            }
+            { return FindCore(id); }
+            public void Write(IReadOnlyCollection<CounselingCase> records,
+                long expectedRevision, string updatedByUserId)
+            { WriteCore(records, expectedRevision); }
         }
 
         private sealed class DisciplineRepository :
-            RepositoryBase<DisciplineCase>,
-            IUIS.Application.Repositories.IDisciplineCaseRepository
+            RepositoryBase<DisciplineCase>, IDisciplineCaseRepository
         {
-            public DisciplineRepository(
-                long revision,
-                System.Collections.Generic.IEnumerable<DisciplineCase> records)
+            public DisciplineRepository(long revision,
+                IEnumerable<DisciplineCase> records)
                 : base("discipline_incidents", revision, records) { }
-
             public RepositorySnapshot<DisciplineCase> Read()
-            {
-                return ReadCore();
-            }
-
+            { return ReadCore(); }
             public DisciplineCase FindById(string id)
-            {
-                return FindCore(id);
-            }
-
-            public void Write(
-                System.Collections.Generic.IReadOnlyCollection<DisciplineCase> records,
-                long expectedRevision,
-                string updatedByUserId)
-            {
-                WriteCore(records, expectedRevision);
-            }
+            { return FindCore(id); }
+            public void Write(IReadOnlyCollection<DisciplineCase> records,
+                long expectedRevision, string updatedByUserId)
+            { WriteCore(records, expectedRevision); }
         }
 
         private sealed class ImmediateCoordinator :
@@ -931,9 +706,7 @@ namespace IUIS.Tests
         {
             public int ExecutionCount { get; private set; }
             public int LastStageCount { get; private set; }
-
-            public string Execute(
-                Action<IRepositoryTransactionScope> stageMutations)
+            public string Execute(Action<IRepositoryTransactionScope> stageMutations)
             {
                 var scope = new ImmediateScope();
                 stageMutations(scope);
@@ -945,20 +718,13 @@ namespace IUIS.Tests
 
             private sealed class ImmediateScope : IRepositoryTransactionScope
             {
-                public readonly System.Collections.Generic.List<Action> Actions =
-                    new System.Collections.Generic.List<Action>();
-
-                public void Stage<T>(
-                    IVersionedRepository<T> repository,
-                    System.Collections.Generic.IReadOnlyCollection<T> records,
-                    long expectedRevision,
-                    string updatedByUserId)
-                    where T : class, IEntity
+                public readonly List<Action> Actions = new List<Action>();
+                public void Stage<T>(IVersionedRepository<T> repository,
+                    IReadOnlyCollection<T> records, long expectedRevision,
+                    string updatedByUserId) where T : class, IEntity
                 {
-                    Actions.Add(() => repository.Write(
-                        records,
-                        expectedRevision,
-                        updatedByUserId));
+                    Actions.Add(() => repository.Write(records,
+                        expectedRevision, updatedByUserId));
                 }
             }
         }
@@ -968,8 +734,7 @@ namespace IUIS.Tests
         {
             public void OnStage(TransactionExecutionContext context)
             {
-                if (context.Stage
-                        == TransactionExecutionStage.MutationApplied
+                if (context.Stage == TransactionExecutionStage.MutationApplied
                     && context.AppliedMutationCount == 1)
                 {
                     throw new InvalidOperationException(
