@@ -79,13 +79,41 @@ if (Test-Path -LiteralPath $infrastructureProjectPath -PathType Leaf) {
     }
 }
 
-$formFiles = Get-ChildItem -LiteralPath (Join-Path $repositoryRoot 'src') -Recurse -Filter '*Form.cs' -File
-foreach ($formFile in $formFiles) {
-    $formContent = Get-Content -LiteralPath $formFile.FullName -Raw
-    if ($formContent.Contains('System.IO') -or $formContent.Contains('System.Text.Json')) {
-        $errors += "Form contains prohibited file or JSON dependency: $($formFile.FullName)"
+$uiSourceRoots = @(
+    'src\IUIS.SharedUI',
+    'src\IUIS.UserApp',
+    'src\IUIS.AdminApp'
+)
+$uiSourceFiles = @()
+$prohibitedUiDependencyFindings = @()
+$prohibitedUiPatterns = @(
+    [ordered]@{ name = 'System.IO'; pattern = '(?m)^\s*using\s+System\.IO\s*;|System\.IO\.' },
+    [ordered]@{ name = 'System.Text.Json'; pattern = '(?m)^\s*using\s+System\.Text\.Json\s*;|System\.Text\.Json\.' }
+)
+foreach ($relativeRoot in $uiSourceRoots) {
+    $fullRoot = Join-Path $repositoryRoot $relativeRoot
+    if (-not (Test-Path -LiteralPath $fullRoot -PathType Container)) {
+        $errors += "UI source root is missing: $relativeRoot"
+        continue
+    }
+
+    foreach ($sourceFile in Get-ChildItem -LiteralPath $fullRoot -Recurse -Filter '*.cs' -File) {
+        $relativeSourcePath = $sourceFile.FullName.Substring($repositoryRoot.Length + 1)
+        $uiSourceFiles += $relativeSourcePath
+        $sourceContent = Get-Content -LiteralPath $sourceFile.FullName -Raw
+        foreach ($prohibited in $prohibitedUiPatterns) {
+            if ([regex]::IsMatch($sourceContent, $prohibited.pattern)) {
+                $finding = [ordered]@{
+                    file = $relativeSourcePath
+                    dependency = $prohibited.name
+                }
+                $prohibitedUiDependencyFindings += $finding
+                $errors += "UI source contains prohibited $($prohibited.name) dependency: $relativeSourcePath"
+            }
+        }
     }
 }
+$uiSourceFiles = @($uiSourceFiles | Sort-Object -Unique)
 
 $expectedRepositoryNames = @(
     'students','courses','subjects','enrollments','payments','books','borrowings','counseling',
@@ -163,6 +191,10 @@ $report = [ordered]@{
     expectedProductionRepositoryCount = 49
     validatedProductionTemplateCount = $templateResults.Count
     canonicalEnvelopeFields = $canonicalEnvelopeFields
+    uiSourceRoots = $uiSourceRoots
+    uiSourceFileCount = $uiSourceFiles.Count
+    uiSourceFiles = $uiSourceFiles
+    prohibitedUiDependencyFindings = $prohibitedUiDependencyFindings
     projects = $projectResults
     productionTemplates = $templateResults
     errors = $errors
@@ -177,4 +209,4 @@ if ($errors.Count -gt 0) {
     throw "Source-tree validation failed with $($errors.Count) error(s)."
 }
 
-Write-Host 'Source-tree, project-reference, canonical-envelope, and 49-template validation succeeded.'
+Write-Host 'Source-tree, project-reference, all-UI dependency, canonical-envelope, and 49-template validation succeeded.'
