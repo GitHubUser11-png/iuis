@@ -52,7 +52,11 @@ namespace IUIS.UserApp.Forms.Shell
             var filtered = NavigationFilter.Filter(_navigationItems, _runtime.CurrentUser.Access);
             var groups = NavigationGroupBuilder.BuildGroups(filtered);
             var dashboard = ShellPageFactory.CreateDashboard(greeting, cards);
-            ShellPageFactory.RegisterModulePages(_shell, filtered, _dashboardPageKey, dashboard, UserPageFactory.CreatePage);
+            
+            // Instantiate page factory with composition root and session token for service injection
+            var sessionToken = _runtime.CurrentUser.Session?.SessionToken ?? string.Empty;
+            var pageFactory = new UserPageFactory(_runtime.Composition, sessionToken);
+            ShellPageFactory.RegisterModulePages(_shell, filtered, _dashboardPageKey, dashboard, pageFactory.CreatePage);
 
             _shell.InitializeShell(
                 portalLabel,

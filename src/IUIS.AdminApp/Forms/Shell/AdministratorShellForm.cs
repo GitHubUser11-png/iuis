@@ -49,7 +49,10 @@ namespace IUIS.AdminApp.Forms.Shell
                 new DashboardCardModel { Title = "Repository", Value = "49", Caption = "Authoritative JSON files" },
                 new DashboardCardModel { Title = "Audit", Value = "—", Caption = "Recent administrative actions" });
 
-            ShellPageFactory.RegisterModulePages(_shell, filtered, "ADM-DASH-01", dashboard, AdminPageFactory.CreatePage);
+            // Instantiate page factory with session token for secure page instantiation
+            var sessionToken = session?.SessionToken ?? string.Empty;
+            var pageFactory = new AdminPageFactory(sessionToken);
+            ShellPageFactory.RegisterModulePages(_shell, filtered, "ADM-DASH-01", dashboard, pageFactory.CreatePage);
 
             _shell.InitializeShell(
                 "Administrator Portal",
