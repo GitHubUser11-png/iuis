@@ -7,47 +7,14 @@
     <OutputType>Library</OutputType>
     <RootNamespace>IUIS.Application</RootNamespace>
     <AssemblyName>IUIS.Application</AssemblyName>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>7.3</LangVersion>
     <OutputPath>..\..\artifacts\bin\$(Configuration)\IUIS.Application\</OutputPath>
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.Application\</IntermediateOutputPath>
   </PropertyGroup>
-  <ItemGroup><Reference Include="System" /><Reference Include="System.Core" /></ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstractions\Security\PresentationSecurityContracts.cs" />
-    <Compile Include="Authorization\AuthorizationModels.cs" />
-    <Compile Include="Authorization\PermissionResolver.cs" />
-    <Compile Include="Authorization\SessionAwareRequestExecutor.cs" />
-    <Compile Include="Dtos\CounselingDisciplineDtos.cs" />
-    <Compile Include="Dtos\EnrollmentFinanceDtos.cs" />
-    <Compile Include="Dtos\LibraryDtos.cs" />
-    <Compile Include="Dtos\MedicalDtos.cs" />
-    <Compile Include="Dtos\RestrictedDtos.cs" />
-    <Compile Include="Dtos\RestrictedProjectionService.cs" />
-    <Compile Include="Orchestration\ContactUpdateServices.cs" />
-    <Compile Include="Orchestration\CounselingServices.cs" />
-    <Compile Include="Orchestration\DisciplineServices.cs" />
-    <Compile Include="Orchestration\DisciplineCounselingCoordinationService.cs" />
-    <Compile Include="Orchestration\EnrollmentFinanceCommandServices.cs" />
-    <Compile Include="Orchestration\IdentityQueryServices.cs" />
-    <Compile Include="Orchestration\LibraryCirculationServices.cs" />
-    <Compile Include="Orchestration\MedicalServices.cs" />
-    <Compile Include="Orchestration\StudentFinanceQueryService.cs" />
-    <Compile Include="Navigation\AdministratorNavigationCatalog.cs" />
-    <Compile Include="Navigation\EmployeeNavigationCatalog.cs" />
-    <Compile Include="Navigation\NavigationFilter.cs" />
-    <Compile Include="Navigation\NavigationItemDefinition.cs" />
-    <Compile Include="Navigation\StudentNavigationCatalog.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\AuthenticationPresentationModels.cs" />
-    <Compile Include="Security\CurrentUserContext.cs" />
-    <Compile Include="Security\EffectiveAccessSnapshot.cs" />
-    <Compile Include="Security\PermissionCatalog.cs" />
-    <Compile Include="Security\SessionCredential.cs" />
-    <Compile Include="Security\UserSession.cs" />
-    <Compile Include="Repositories\AggregateRepositoryContracts.cs" />
-    <Compile Include="Repositories\IdentifierAllocationContract.cs" />
-    <Compile Include="Repositories\RepositoryContracts.cs" />
-    <Compile Include="SolutionFoundation.cs" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IUIS.Domain\IUIS.Domain.csproj">

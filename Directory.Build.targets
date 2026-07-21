@@ -1,6 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="ValidateIuisBuildContract" BeforeTargets="PrepareForBuild">
-    <Error Condition=" '$(TargetFrameworkVersion)' != 'v4.8' " Text="IUIS projects must target .NET Framework 4.8." />
-    <Error Condition=" '$(LangVersion)' != '7.3' " Text="IUIS projects must compile with C# language version 7.3." />
+    <Error Condition=" '$(TargetFrameworkVersion)' != 'v4.8' AND '$(TargetFramework)' != 'net6.0' AND '$(TargetFramework)' != 'net6.0-windows' " Text="IUIS projects must target .NET Framework 4.8 or .NET 6.0." />
   </Target>
 </Project>

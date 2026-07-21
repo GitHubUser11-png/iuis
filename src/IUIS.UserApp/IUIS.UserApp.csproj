@@ -8,7 +8,9 @@
     <RootNamespace>IUIS.UserApp</RootNamespace>
     <AssemblyName>IUIS.UserApp</AssemblyName>
     <StartupObject>IUIS.UserApp.Program</StartupObject>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>7.3</LangVersion>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <OutputPath>..\..\artifacts\bin\$(Configuration)\IUIS.UserApp\</OutputPath>
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.UserApp\</IntermediateOutputPath>
   </PropertyGroup>
@@ -20,23 +22,27 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\**\*.cs" />
-    <Compile Include="Configuration\**\*.cs" />
-    <Compile Include="Forms\Shell\**\*.cs" />
-    <Compile Include="Forms\GeneralLoginForm.cs" />
-    <Compile Include="Forms\StartupCheckForm.cs" />
-    <Compile Include="Forms\StartupFailureForm.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\**\*.cs" />
-    <Compile Include="UserPageFactory.cs" />
-    <Compile Include="UserStartupForm.cs" />
-    <None Include="App.config" />
+    <PackageReference Include="jprog" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IUIS.Domain\IUIS.Domain.csproj"><Project>{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}</Project><Name>IUIS.Domain</Name></ProjectReference>
-    <ProjectReference Include="..\IUIS.Application\IUIS.Application.csproj"><Project>{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}</Project><Name>IUIS.Application</Name></ProjectReference>
-    <ProjectReference Include="..\IUIS.Infrastructure\IUIS.Infrastructure.csproj"><Project>{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}</Project><Name>IUIS.Infrastructure</Name></ProjectReference>
-    <ProjectReference Include="..\IUIS.SharedUI\IUIS.SharedUI.csproj"><Project>{40D9067F-C8E7-4EEA-D5BE-91A6C9DC5004}</Project><Name>IUIS.SharedUI</Name></ProjectReference>
+    <Compile Include="**\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IUIS.Domain\IUIS.Domain.csproj">
+      <Project>{10A6D34C-95F4-4BB7-A28B-6E7396A92D01}</Project><Name>IUIS.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IUIS.Application\IUIS.Application.csproj">
+      <Project>{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}</Project><Name>IUIS.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IUIS.Infrastructure\IUIS.Infrastructure.csproj">
+      <Project>{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}</Project><Name>IUIS.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IUIS.SharedUI\IUIS.SharedUI.csproj">
+      <Project>{40D9067F-C8E7-4EEA-D5BE-91A6C9DC5004}</Project><Name>IUIS.SharedUI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
