@@ -207,8 +207,7 @@ namespace IUIS.Tests
                 Executor(StudentPrincipal(StudentId)),
                 new CounselingRepository(3,
                     new[] { ownCounseling, otherCounseling }),
-                new DisciplineRepository(4, new[] { prepared, other }),
-                new RestrictedProjectionService());
+                new DisciplineRepository(4, new[] { prepared, other }));
 
             var result = service.GetOwnOverview(
                 "SES-2026-000201", "token", StartUtc.AddHours(10));
@@ -238,12 +237,10 @@ namespace IUIS.Tests
                 "CSN-2026-000301", "CSR-2026-000301");
             var discipline = ClosedDisciplineCase(
                 "DIN-2026-000301", StudentId);
-            var projections = new RestrictedProjectionService();
 
             var deniedCounseling = new RestrictedCounselingCaseQueryService(
                 Executor(AdminPrincipal("counseling.case.restricted.read")),
-                new CounselingRepository(1, new[] { counseling }),
-                projections);
+                new CounselingRepository(1, new[] { counseling }));
             Assert.ThrowsException<AuthorizationDeniedException>(() =>
                 deniedCounseling.Get("SES-2026-000301", "token",
                     counseling.Id, StartUtc.AddHours(10)));
@@ -252,8 +249,7 @@ namespace IUIS.Tests
                 Executor(AdminPrincipal(
                     "counseling.case.restricted.read",
                     "confidentiality.restricted")),
-                new CounselingRepository(1, new[] { counseling }),
-                projections);
+                new CounselingRepository(1, new[] { counseling }));
             Assert.AreEqual("Restricted counseling notes",
                 allowedCounseling.Get("SES-2026-000302", "token",
                     counseling.Id, StartUtc.AddHours(10))
@@ -261,8 +257,7 @@ namespace IUIS.Tests
 
             var deniedDiscipline = new RestrictedDisciplineCaseQueryService(
                 Executor(AdminPrincipal("discipline.case.restricted.read")),
-                new DisciplineRepository(1, new[] { discipline }),
-                projections);
+                new DisciplineRepository(1, new[] { discipline }));
             Assert.ThrowsException<AuthorizationDeniedException>(() =>
                 deniedDiscipline.Get("SES-2026-000303", "token",
                     discipline.Id, StartUtc.AddHours(10)));
@@ -277,13 +272,12 @@ namespace IUIS.Tests
             var coordinator = new ImmediateCoordinator();
             var service = new DisciplineCaseCommandService(
                 Executor(EmployeePrincipal(
-                    "discipline.decision.release",
-                    "confidentiality.restricted")),
+                    "discipline.decision.release")),
                 repository, coordinator, new FakeAllocator());
 
             Assert.ThrowsException<InvalidOperationException>(() =>
                 service.ReleaseDecision("SES-2026-000401", "token",
-                    new DisciplineCaseMutationRequest
+                    new DisciplineReleaseDecisionRequest
                     {
                         ExpectedRepositoryRevision = 6,
                         ExpectedEntityVersion = value.Version,
@@ -292,7 +286,7 @@ namespace IUIS.Tests
                     }, StartUtc.AddHours(10)));
             Assert.ThrowsException<InvalidOperationException>(() =>
                 service.ReleaseDecision("SES-2026-000401", "token",
-                    new DisciplineCaseMutationRequest
+                    new DisciplineReleaseDecisionRequest
                     {
                         ExpectedRepositoryRevision = 7,
                         ExpectedEntityVersion = value.Version + 1L,
@@ -318,8 +312,8 @@ namespace IUIS.Tests
                 repository, coordinator, new FakeAllocator());
 
             var exception = Assert.ThrowsException<AuthorizationDeniedException>(() =>
-                service.RecordStudentResponse("SES-2026-000501", "token",
-                    new DisciplineCaseMutationRequest
+                service.SubmitOwnResponse("SES-2026-000501", "token",
+                    new DisciplineStudentResponseRequest
                     {
                         ExpectedRepositoryRevision = 2,
                         ExpectedEntityVersion = value.Version,
@@ -327,7 +321,9 @@ namespace IUIS.Tests
                         ResponseText = "Cross-record response"
                     }, StartUtc.AddHours(10)));
 
-            Assert.AreEqual("record-ownership-mismatch", exception.ReasonCode);
+            Assert.AreEqual(
+                "Students may respond only to their own Discipline Case.",
+                exception.ReasonCode);
             Assert.AreEqual(0, coordinator.ExecutionCount);
             Assert.AreEqual(0,
                 repository.FindById(value.Id).StudentResponses.Count);
