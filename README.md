@@ -10,7 +10,7 @@ Pass 9 closes Application authorization, session-aware command/query execution, 
 
 Pass 10 completes the first typed-persistence activation for StudentRecord, EmployeeRecord, Course, Subject, AcademicPeriod, and AssessmentChargeRule. It includes six specialized mappers, real Student and Employee JSON-backed vertical slices, controlled contact updates, independent closure hardening, exact-mainline validation, and 148 tests.
 
-Pass 11 implements the next persistence and security boundary:
+Pass 11 implements and correctively closes the next persistence and security boundary:
 
 - the authoritative six-field repository envelope: `repositoryName`, `schemaVersion`, `revision`, `updatedAtUtc`, `updatedByUserId`, and `records`;
 - compatibility reads for legacy `repository` and `createdAtUtc` input with canonical-only writes;
@@ -27,17 +27,27 @@ Pass 11 implements the next persistence and security boundary:
 
 Pass 11 implementation was completed through PR #52 and promoted to `main` through PR #53 at commit `925696ca6dd75fc8be513e818835cde0ad85c812` before independent closure evidence existed. Corrective closure preserves that historical fact rather than describing PR #53 as closure-gated.
 
-Corrective Unit 1 was independently validated and merged through PR #55 at `849396b3a00158b154cd9086cf0229cafd0868de`. It enforces exact persisted schema version `1`, validates Payment allocation Assessment entity versions before identifier consumption, applies released-state projection allowlists, and adds financial exception-atomicity regression tests.
+Corrective Unit 1 was independently validated and merged through PR #55 at `849396b3a00158b154cd9086cf0229cafd0868de`.
 
-Corrective Unit 2 is carried by PR #56. Exact validated head `eac074c23da378e1cdae9a1abdf76090851b89a9` passed Windows run `29793780496` with zero warnings, zero errors, and 172 of 172 tests. Artifact `iuis-windows-build-evidence-203`, ID `8481293446`, has SHA-256 `26a2b77fad29ceef6e695f30f7aeef7077b65b01652d152667142e89c63acc8b`.
+Corrective Unit 2 and pre-promotion documentation reconciliation were validated at head `ac7adb00c106c4752b12bfaa3e6df5070b39e5c0` and merged through PR #56 to `main` commit `60536382383d9300000c9d042ad01ab6083a21e1`.
 
-The combined corrective delta from prematurely promoted commit `925696ca6dd75fc8be513e818835cde0ad85c812` is exactly ten files. PR #56 remains the final corrective-closure promotion gate until its documentation-inclusive head is validated, merged into `main`, the exact merged tree is independently Windows-validated, and `develop` is restored to zero divergence.
+Validation-only PR #57 independently validated that exact merged-main commit without adding a trigger commit:
+
+- Windows run `29795300068`;
+- artifact `iuis-windows-build-evidence-209`;
+- artifact ID `8481826369`;
+- SHA-256 `288c4cb168b36701533cf9a219dd8622836ed3bd1bc5d21dd70fe8e738984800`;
+- zero compiler warnings and zero compiler errors;
+- 172 of 172 tests passed;
+- TRX verification and artifact publication passed.
+
+The final evidence-registration record is intentionally separated from the corrective code merge. It is validated as documentation-only, merged with an exact-head guard, and followed by an exact-final-main validation before `develop` is restored to zero divergence.
 
 Progress and evidence are recorded in [`docs/IMPLEMENTATION_STATE.md`](docs/IMPLEMENTATION_STATE.md). The Pass 11 implementation record is [`docs/passes/PASS_11_ENVELOPE_TOKEN_FINANCE.md`](docs/passes/PASS_11_ENVELOPE_TOKEN_FINANCE.md). Corrective-closure evidence is recorded in [`docs/passes/PASS_11_CORRECTIVE_CLOSURE.md`](docs/passes/PASS_11_CORRECTIVE_CLOSURE.md).
 
 ## Locked Pass 12 boundary
 
-Pass 12 is defined, but construction is not authorized until Pass 11 reaches exact-main validation and `main`/`develop` zero divergence.
+Pass 12 is defined, but construction is not authorized until Pass 11 reaches exact-final-main validation and `main`/`develop` zero divergence.
 
 **Pass 12: Remaining Student-Service Specialized Persistence, Confidential Record Segregation, Controlled Lifecycle Orchestration, and Released Service Projections.**
 
