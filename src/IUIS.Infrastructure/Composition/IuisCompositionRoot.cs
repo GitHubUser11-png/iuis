@@ -40,6 +40,9 @@ namespace IUIS.Infrastructure.Composition
             ScholarshipAwards = new ScholarshipAwardRepositoryAdapter(Store);
             LibraryBooks = new LibraryBookRepositoryAdapter(Store);
             LibraryBorrowings = new LibraryBorrowingRepositoryAdapter(Store);
+            ClinicAppointments = new ClinicAppointmentRepositoryAdapter(Store);
+            MedicalRecords = new MedicalRecordRepositoryAdapter(Store);
+            MedicalClearances = new MedicalClearanceRepositoryAdapter(Store);
 
             Transactions = new JournaledApplicationTransactionCoordinator(
                 new JournaledTransactionCoordinator(Catalog, Options));
@@ -119,6 +122,31 @@ namespace IUIS.Infrastructure.Composition
                 LibraryBorrowings,
                 Transactions,
                 IdentifierAllocator);
+            StudentMedicalServices = new StudentMedicalServicesQueryService(
+                RequestExecutor,
+                ClinicAppointments,
+                MedicalRecords,
+                MedicalClearances);
+            RestrictedMedicalRecords = new RestrictedMedicalRecordQueryService(
+                RequestExecutor,
+                MedicalRecords);
+            ClinicAppointmentCommands = new ClinicAppointmentCommandService(
+                RequestExecutor,
+                ClinicAppointments,
+                MedicalRecords,
+                Transactions,
+                IdentifierAllocator);
+            MedicalRecordCommands = new MedicalRecordCommandService(
+                RequestExecutor,
+                MedicalRecords,
+                Transactions,
+                IdentifierAllocator);
+            MedicalClearanceCommands = new MedicalClearanceCommandService(
+                RequestExecutor,
+                MedicalRecords,
+                MedicalClearances,
+                Transactions,
+                IdentifierAllocator);
         }
 
         public ProductionRepositoryCatalog Catalog { get; private set; }
@@ -138,6 +166,9 @@ namespace IUIS.Infrastructure.Composition
         public IScholarshipAwardRepository ScholarshipAwards { get; private set; }
         public ILibraryBookRepository LibraryBooks { get; private set; }
         public ILibraryBorrowingRepository LibraryBorrowings { get; private set; }
+        public IClinicAppointmentRepository ClinicAppointments { get; private set; }
+        public IMedicalRecordRepository MedicalRecords { get; private set; }
+        public IMedicalClearanceRepository MedicalClearances { get; private set; }
 
         public IApplicationTransactionCoordinator Transactions { get; private set; }
         public IApplicationIdentifierAllocator IdentifierAllocator { get; private set; }
@@ -159,5 +190,10 @@ namespace IUIS.Infrastructure.Composition
         public ScholarshipAwardApplicationService ScholarshipApplications { get; private set; }
         public StudentLibraryCirculationQueryService StudentLibraryCirculation { get; private set; }
         public LibraryCirculationCommandService LibraryCirculation { get; private set; }
+        public StudentMedicalServicesQueryService StudentMedicalServices { get; private set; }
+        public RestrictedMedicalRecordQueryService RestrictedMedicalRecords { get; private set; }
+        public ClinicAppointmentCommandService ClinicAppointmentCommands { get; private set; }
+        public MedicalRecordCommandService MedicalRecordCommands { get; private set; }
+        public MedicalClearanceCommandService MedicalClearanceCommands { get; private set; }
     }
 }
