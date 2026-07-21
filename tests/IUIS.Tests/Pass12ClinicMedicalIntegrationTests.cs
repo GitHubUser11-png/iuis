@@ -146,7 +146,7 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        public void MapperReadinessMovesToSixteenCompletedAndTwoDeferred()
+        public void MapperReadinessMovesToEighteenCompletedAndZeroDeferred()
         {
             var completed = AggregateMapperReadinessCatalog.All
                 .Where(item => item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted)
@@ -154,21 +154,15 @@ namespace IUIS.Tests
                 .ToList();
             var deferred = AggregateMapperReadinessCatalog.All
                 .Where(item => item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason)
-                .Select(item => item.AdapterName)
                 .ToList();
 
-            Assert.AreEqual(16, completed.Count);
+            Assert.AreEqual(18, completed.Count);
             CollectionAssert.Contains(completed, "ClinicAppointmentRepositoryAdapter");
             CollectionAssert.Contains(completed, "MedicalRecordRepositoryAdapter");
             CollectionAssert.Contains(completed, "MedicalClearanceRepositoryAdapter");
-            Assert.AreEqual(2, deferred.Count);
-            CollectionAssert.AreEquivalent(
-                new[]
-                {
-                    "CounselingCaseRepositoryAdapter",
-                    "DisciplineCaseRepositoryAdapter"
-                },
-                deferred);
+            CollectionAssert.Contains(completed, "CounselingCaseRepositoryAdapter");
+            CollectionAssert.Contains(completed, "DisciplineCaseRepositoryAdapter");
+            Assert.AreEqual(0, deferred.Count);
         }
 
         [TestMethod]
