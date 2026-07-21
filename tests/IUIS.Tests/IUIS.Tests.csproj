@@ -29,6 +29,7 @@
     <Compile Include="Pass11CorrectiveClosureTests.cs" />
     <Compile Include="Pass11CorrectiveAuditUnit2Tests.cs" />
     <Compile Include="Pass12StudentServiceSchemaTests.cs" />
+    <Compile Include="Pass12LibraryPersistenceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" /><Compile Include="SolutionFoundationTests.cs" />
     <Compile Include="StudentServiceDomainTests.cs" />
   </ItemGroup>
