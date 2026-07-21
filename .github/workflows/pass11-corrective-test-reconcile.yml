@@ -1,4 +1,4 @@
-name: Reconcile Pass 11 Corrective Test Baseline
+name: Reconcile Pass 11 Strict Schema Contract
 
 on:
   push:
@@ -16,85 +16,63 @@ jobs:
       - name: Check out corrective branch
         uses: actions/checkout@v4
         with:
+          ref: build/pass-11-corrective-closure
           fetch-depth: 0
 
-      - name: Replace obsolete unversioned-record migration expectation
+      - name: Replace obsolete unversioned-record expectation
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
-          from textwrap import dedent
 
           path = Path('tests/IUIS.Tests/Pass10CanonicalPersistenceTests.cs')
           text = path.read_text(encoding='utf-8')
-          old = dedent('''\
-                  [TestMethod]
-                  public void MapperMigratesUnversionedCanonicalRecordToVersionOne()
-                  {
-                      var options = JsonOptions();
-                      var source = JsonSerializer.SerializeToElement(
-                          new PersistedCourseRecord
-                          {
-                              RecordSchemaVersion = 0,
-                              Id = "CRS-2026-000011",
-                              Version = 1,
-                              CreatedAtUtc = Now,
-                              CreatedByUserId = "USR-2026-000001",
-                              UpdatedAtUtc = Now,
-                              UpdatedByUserId = "USR-2026-000001",
-                              Code = "BSCS",
-                              Name = "Bachelor of Science in Computer Science",
-                              DepartmentId = "DEPT-CS",
-                              DurationYears = 4,
-                              Status = CourseStatus.Draft.ToString()
-                          },
-                          options);
-                      var mapper = new CourseJsonMapper();
-                      var aggregate = mapper.FromJson(source, options);
-                      var migrated = mapper.ToJson(aggregate, options);
-                      Assert.AreEqual(
-                          1,
-                          migrated.GetProperty("recordSchemaVersion").GetInt32());
-                  }
-          ''')
-          new = dedent('''\
-                  [TestMethod]
-                  public void MapperRejectsUnversionedCanonicalRecord()
-                  {
-                      var options = JsonOptions();
-                      var source = JsonSerializer.SerializeToElement(
-                          new PersistedCourseRecord
-                          {
-                              RecordSchemaVersion = 0,
-                              Id = "CRS-2026-000011",
-                              Version = 1,
-                              CreatedAtUtc = Now,
-                              CreatedByUserId = "USR-2026-000001",
-                              UpdatedAtUtc = Now,
-                              UpdatedByUserId = "USR-2026-000001",
-                              Code = "BSCS",
-                              Name = "Bachelor of Science in Computer Science",
-                              DepartmentId = "DEPT-CS",
-                              DurationYears = 4,
-                              Status = CourseStatus.Draft.ToString()
-                          },
-                          options);
+          start_marker = '''        [TestMethod]
+        public void MapperMigratesUnversionedCanonicalRecordToVersionOne()
+        {'''
+          end_marker = '''
 
-                      Assert.ThrowsException<InvalidOperationException>(() =>
-                          new CourseJsonMapper().FromJson(source, options));
-                  }
-          ''')
-          if text.count(old) != 1:
-              raise RuntimeError('Expected exactly one obsolete Pass 10 unversioned-record migration test.')
-          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+        [TestMethod]
+        public void MapperRejectsUnsupportedRecordSchemaVersion()'''
+          start = text.find(start_marker)
+          end = text.find(end_marker, start)
+          if start < 0 or end < 0:
+              raise RuntimeError('The obsolete Pass 10 schema regression block was not found.')
+          replacement = '''        [TestMethod]
+        public void MapperRejectsUnversionedCanonicalRecord()
+        {
+            var options = JsonOptions();
+            var source = JsonSerializer.SerializeToElement(
+                new PersistedCourseRecord
+                {
+                    RecordSchemaVersion = 0,
+                    Id = "CRS-2026-000011",
+                    Version = 1,
+                    CreatedAtUtc = Now,
+                    CreatedByUserId = "USR-2026-000001",
+                    UpdatedAtUtc = Now,
+                    UpdatedByUserId = "USR-2026-000001",
+                    Code = "BSCS",
+                    Name = "Bachelor of Science in Computer Science",
+                    DepartmentId = "DEPT-CS",
+                    DurationYears = 4,
+                    Status = CourseStatus.Draft.ToString()
+                },
+                options);
+
+            Assert.ThrowsException<InvalidOperationException>(() =>
+                new CourseJsonMapper().FromJson(source, options));
+        }'''
+          path.write_text(text[:start] + replacement + text[end:], encoding='utf-8')
           PY
+          rm -f .github/workflows/pass11-corrective-test-contract-fix.yml
+          rm -f .github/workflows/pass11-corrective-test-reconcile.yml
 
-      - name: Commit reconciled test and remove temporary workflow
+      - name: Commit reconciled test and remove temporary helpers
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm .github/workflows/pass11-corrective-test-reconcile.yml
-          git add tests/IUIS.Tests/Pass10CanonicalPersistenceTests.cs
-          git commit -m "test(pass11): reject unversioned canonical records"
+          git add -A
+          git commit -m "test(pass11): reject unversioned persisted records"
           git push origin HEAD:build/pass-11-corrective-closure
