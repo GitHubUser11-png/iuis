@@ -9,6 +9,7 @@ using IUIS.Infrastructure.Presentation;
 using IUIS.SharedUI;
 using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.Theme;
+using AppIdentity = IUIS.SharedUI.ApplicationIdentity;
 
 namespace IUIS.UserApp.Forms
 {
@@ -26,7 +27,7 @@ namespace IUIS.UserApp.Forms
         {
             _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
 
-            Text = ApplicationIdentity.ProductName;
+            Text = AppIdentity.ProductName;
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterScreen;
             MaximizeBox = false;
@@ -53,7 +54,7 @@ namespace IUIS.UserApp.Forms
             _progressBar.Size = new Size(400, 18);
 
             _versionLabel = new Label();
-            _versionLabel.Text = ApplicationIdentity.VersionLabel;
+            _versionLabel.Text = AppIdentity.VersionLabel;
             _versionLabel.Font = UiTheme.CaptionFont;
             _versionLabel.ForeColor = UiTheme.TextSecondary;
             _versionLabel.AutoSize = true;

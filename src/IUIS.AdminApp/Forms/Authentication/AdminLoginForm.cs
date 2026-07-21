@@ -9,6 +9,7 @@ using IUIS.Infrastructure.Presentation;
 using IUIS.SharedUI;
 using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.Theme;
+using AppIdentity = IUIS.SharedUI.ApplicationIdentity;
 
 namespace IUIS.AdminApp.Forms.Authentication
 {
@@ -25,7 +26,7 @@ namespace IUIS.AdminApp.Forms.Authentication
         {
             _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
 
-            Text = ApplicationIdentity.ProductName + " — Administrator Sign In";
+            Text = AppIdentity.ProductName + " — Administrator Sign In";
             StartPosition = FormStartPosition.CenterScreen;
             MinimumSize = new Size(UiMetrics.MinimumWindowWidth, UiMetrics.MinimumWindowHeight);
             ClientSize = new Size(UiMetrics.DefaultWindowWidth, UiMetrics.DefaultWindowHeight);

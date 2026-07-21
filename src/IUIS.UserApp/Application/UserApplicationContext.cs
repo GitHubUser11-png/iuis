@@ -54,7 +54,7 @@ namespace IUIS.UserApp.Application
             }
         }
 
-        private bool TryAuthenticate(out UserSession session, out EffectiveAccessSnapshot access)
+        private bool TryAuthenticate(out IUIS.Application.Security.UserSession session, out EffectiveAccessSnapshot access)
         {
             session = null;
             access = null;
@@ -95,8 +95,8 @@ namespace IUIS.UserApp.Application
         }
 
         private bool TryChangePassword(
-            UserSession session,
-            out UserSession updatedSession,
+            IUIS.Application.Security.UserSession session,
+            out IUIS.Application.Security.UserSession updatedSession,
             out EffectiveAccessSnapshot updatedAccess)
         {
             updatedSession = session;
@@ -141,7 +141,7 @@ namespace IUIS.UserApp.Application
             Begin(shell);
         }
 
-        private UserShellForm CreateShellForRole(UserSession session)
+        private Forms.Shell.UserShellForm CreateShellForRole(IUIS.Application.Security.UserSession session)
         {
             if (session.PrimaryRole == PrimaryRole.Student)
             {

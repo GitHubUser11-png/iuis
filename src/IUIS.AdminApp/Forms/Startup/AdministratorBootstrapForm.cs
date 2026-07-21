@@ -7,6 +7,7 @@ using IUIS.Infrastructure.Presentation;
 using IUIS.SharedUI;
 using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.Theme;
+using AppIdentity = IUIS.SharedUI.ApplicationIdentity;
 
 namespace IUIS.AdminApp.Forms.Startup
 {
@@ -28,7 +29,7 @@ namespace IUIS.AdminApp.Forms.Startup
         {
             _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
 
-            Text = ApplicationIdentity.ProductName + " — Administrator Bootstrap";
+            Text = AppIdentity.ProductName + " — Administrator Bootstrap";
             StartPosition = FormStartPosition.CenterScreen;
             ClientSize = new Size(720, 640);
             MinimumSize = new Size(720, 640);

@@ -13,6 +13,7 @@ using IUIS.SharedUI.Navigation;
 using IUIS.SharedUI.Shell;
 using IUIS.SharedUI.Theme;
 using IUIS.AdminApp.Forms;
+using AppIdentity = IUIS.SharedUI.ApplicationIdentity;
 
 namespace IUIS.AdminApp.Forms.Shell
 {
@@ -26,7 +27,7 @@ namespace IUIS.AdminApp.Forms.Shell
         {
             _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
 
-            Text = ApplicationIdentity.ProductName + " — Administrator Workspace";
+            Text = AppIdentity.ProductName + " — Administrator Workspace";
             StartPosition = FormStartPosition.CenterScreen;
             MinimumSize = new Size(UiMetrics.MinimumWindowWidth, UiMetrics.MinimumWindowHeight);
             ClientSize = new Size(UiMetrics.DefaultWindowWidth, UiMetrics.DefaultWindowHeight);
@@ -54,7 +55,7 @@ namespace IUIS.AdminApp.Forms.Shell
                 "Administrator Portal",
                 groups,
                 BuildUserDisplay(),
-                "Restricted session — " + ApplicationIdentity.CampusSubtitle);
+                "Restricted session — " + AppIdentity.CampusSubtitle);
 
             Controls.Add(_shell);
 
@@ -93,7 +94,7 @@ namespace IUIS.AdminApp.Forms.Shell
                 MessageBox.Show(
                     this,
                     reason ?? "Your session has ended.",
-                    ApplicationIdentity.ProductName,
+                    AppIdentity.ProductName,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 PerformSignOut(false);
@@ -109,7 +110,7 @@ namespace IUIS.AdminApp.Forms.Shell
             var confirm = MessageBox.Show(
                 this,
                 "Sign out of the Administrator application?",
-                ApplicationIdentity.ProductName,
+                AppIdentity.ProductName,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (confirm == DialogResult.Yes)

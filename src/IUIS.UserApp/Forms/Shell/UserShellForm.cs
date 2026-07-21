@@ -14,6 +14,8 @@ using IUIS.SharedUI.Navigation;
 using IUIS.SharedUI.Shell;
 using IUIS.SharedUI.Theme;
 using IUIS.UserApp.Forms;
+using AppIdentity = IUIS.SharedUI.ApplicationIdentity;
+using AppUserSession = IUIS.Application.Security.UserSession;
 
 namespace IUIS.UserApp.Forms.Shell
 {
@@ -37,7 +39,7 @@ namespace IUIS.UserApp.Forms.Shell
             _navigationItems = navigationItems ?? throw new ArgumentNullException(nameof(navigationItems));
             _dashboardPageKey = dashboardPageKey ?? "STU-DASH-01";
 
-            Text = ApplicationIdentity.ProductName + " — " + portalLabel;
+            Text = AppIdentity.ProductName + " — " + portalLabel;
             StartPosition = FormStartPosition.CenterScreen;
             MinimumSize = new Size(UiMetrics.MinimumWindowWidth, UiMetrics.MinimumWindowHeight);
             ClientSize = new Size(UiMetrics.DefaultWindowWidth, UiMetrics.DefaultWindowHeight);
@@ -56,7 +58,7 @@ namespace IUIS.UserApp.Forms.Shell
                 portalLabel,
                 groups,
                 BuildUserDisplay(),
-                "Session active — " + ApplicationIdentity.CampusSubtitle);
+                "Session active — " + AppIdentity.CampusSubtitle);
 
             Controls.Add(_shell);
 
@@ -91,7 +93,7 @@ namespace IUIS.UserApp.Forms.Shell
 
         private void SessionTimerTick(object sender, EventArgs e)
         {
-            UserSession session;
+            AppUserSession session;
             EffectiveAccessSnapshot access;
             string reason;
             var credential = _runtime.CurrentUser.GetCredential();
@@ -100,7 +102,7 @@ namespace IUIS.UserApp.Forms.Shell
                 MessageBox.Show(
                     this,
                     reason ?? "Your session has ended.",
-                    ApplicationIdentity.ProductName,
+                    AppIdentity.ProductName,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 PerformSignOut(false);
@@ -116,7 +118,7 @@ namespace IUIS.UserApp.Forms.Shell
             var confirm = MessageBox.Show(
                 this,
                 "Sign out of the Integrated University Information System?",
-                ApplicationIdentity.ProductName,
+                AppIdentity.ProductName,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
             if (confirm == DialogResult.Yes)
