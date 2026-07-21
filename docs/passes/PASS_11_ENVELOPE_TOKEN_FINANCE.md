@@ -2,21 +2,24 @@
 
 ## Objective
 
-Correct the inherited repository-envelope and session-token contracts before activating additional production repositories, then add validated specialized persistence, Student financial read models, and controlled Enrollment and Finance orchestration without weakening the seven-project dependency boundary or exposing JSON and filesystem access to Forms.
+Correct the inherited repository-envelope and session-token contracts before activating additional production repositories, then add validated specialized persistence, Student financial read models, and controlled Enrollment and Finance orchestration without weakening the seven-project dependency boundary or exposing JSON and filesystem access to UI-layer source.
 
-## Starting point
+## Construction and promotion history
 
 - synchronized Pass 10 baseline: `686aa29a3c9827975d711c6713838f5cc2d22918`;
-- implementation branch: `build/pass-11-envelope-token-finance`;
-- prerequisite checkpoint integration: PR #51; `develop` commit `5d17748a550c79ac11b341b73acc1256d3b6d144`;
-- continuation integration pull request: PR #52;
-- validated continuation head: `df6e5997b83b999cab459f3baa4cf11245ebffc9`.
+- prerequisite checkpoint: PR #51; `develop` commit `5d17748a550c79ac11b341b73acc1256d3b6d144`;
+- complete implementation continuation: PR #52; exact head `fded5a9ac1f00176a9aeaae4c70a3f972c26ec84`;
+- implementation integration commit: `69e69bb621cea80f135f073b79739f4833054eb0`;
+- premature mainline promotion: PR #53; `main` commit `925696ca6dd75fc8be513e818835cde0ad85c812`;
+- abandoned corrective draft: PR #54; not merged;
+- Corrective Unit 1: PR #55; exact validated head `517af90bd2218dea471747b2da5c92e49526e3ac`; merge commit `849396b3a00158b154cd9086cf0229cafd0868de`;
+- Corrective Unit 2: PR #56; exact validated code head `eac074c23da378e1cdae9a1abdf76090851b89a9`.
 
-PR #51 integrated the prerequisite checkpoint before the full Pass 11 boundary was complete. PR #52 is the controlled continuation containing the remaining specialized persistence, Application vertical slices, tests, documentation, and final integration evidence.
+PR #53 promoted Pass 11 before independent closure evidence existed. Corrective closure preserves this history and validates the actual promoted tree rather than rewriting PR #53 as closure-gated.
 
 ## Canonical repository-envelope contract
 
-The runtime, all 49 production templates, and source-tree validation now use exactly:
+The runtime, all 49 production templates, and source-tree validation use exactly:
 
 1. `repositoryName`;
 2. `schemaVersion`;
@@ -25,43 +28,49 @@ The runtime, all 49 production templates, and source-tree validation now use exa
 5. `updatedByUserId`;
 6. `records`.
 
-Canonical writes do not emit legacy `repository` or `createdAtUtc` fields.
+Canonical writes do not emit legacy `repository` or `createdAtUtc` fields. Compatibility reads accept those fields only as migration input and fail closed on conflicting names, invalid schema versions, revisions, timestamps, actors, or record collections.
 
-A compatibility converter accepts the legacy fields only as migration input. It rejects conflicting canonical and legacy repository names, validates catalog name, schema version, revision, UTC update timestamp, update actor, and records collection, then emits only the canonical six-field envelope.
-
-## One-way journaled migration
+## One-way journaled migration and corrective recovery
 
 `RepositoryEnvelopeMigrationService`:
 
 - scans the authoritative 49-repository catalog;
-- identifies legacy envelopes without changing canonical repositories;
+- identifies legacy envelopes without modifying canonical repositories;
 - preserves repository revisions and record payloads;
-- stages canonical replacements through the transaction coordinator;
+- stages canonical replacements through the journaled transaction coordinator;
 - revalidates expected revisions while canonical locks are held;
 - uses revision-preserving transaction mutations;
-- records migrated repository names, transaction ID, actor, timestamp, and committed result;
-- canonicalizes the transaction journal through the same journal path;
-- is idempotent and reports a no-op after successful migration.
+- canonicalizes the transaction journal through the journal path;
+- is idempotent after successful migration.
 
-Rollback remains available through the retained transaction journal and pre-replacement backups if application fails before commit.
+Corrective Unit 2 adds explicit migration audit states:
+
+- `NotRequired`;
+- `Registered`;
+- `RecoveryRequired`.
+
+If repository migration commits but operational audit registration fails, `RepositoryEnvelopeMigrationAuditRegistrationException` retains the committed migration result. `RecoverAuditRegistration` registers the missing audit record idempotently by audit ID or transaction ID.
+
+The transaction coordinator now exposes an optional no-op-by-default deterministic failure-injection seam. Journal evidence records applied mutation count, last applied repository, failure type, and failure message. Successful rollback records `RolledBack`; unsuccessful rollback retains the incomplete journal and backups for `RecoverIncompleteTransaction`.
+
+Independent tests convert all 49 repositories to legacy input, inject failure after mutation 17, prove byte-for-byte restoration of all 48 non-journal repositories, verify rollback journal evidence and backup cleanup, retry migration, and prove all 49 repositories are canonical.
 
 ## Cryptographic session-token verifier
 
-Authentication now:
+Authentication:
 
 - generates a 32-byte cryptographically random raw bearer token;
 - returns the raw token only in the authentication response;
 - persists only a versioned SHA-256 digest;
-- verifies the presented raw token by recomputing the digest;
+- verifies the presented token by recomputing the digest;
 - compares digests through a fixed-time byte loop;
-- rejects sessions with missing or unsupported digest versions;
-- rejects sessions that still contain legacy bearer material.
+- rejects missing, unsupported, or legacy digest records.
 
-`SessionSecurityMigrationService` identifies legacy sessions, revokes any active legacy session, clears persisted legacy bearer values and digest placeholders, records the update actor, and advances the sessions repository revision. Active bearer material is not migrated into a new valid session because the original raw token cannot be recovered securely.
+`SessionSecurityMigrationService` revokes active legacy sessions, clears legacy bearer material and digest placeholders, records the actor, and advances the sessions repository revision. Legacy bearer values are not converted into valid new sessions because the original raw token cannot be recovered securely.
 
 ## Canonical persisted schemas and specialized mappers
 
-Pass 11 defines explicit record schema v1 and validated rehydration for:
+Pass 11 defines explicit persisted record schema version `1` and validated rehydration for:
 
 1. `Enrollment`;
 2. `TuitionAssessment`;
@@ -69,45 +78,53 @@ Pass 11 defines explicit record schema v1 and validated rehydration for:
 4. `FinancialAdjustment`;
 5. `ScholarshipAward`.
 
-The records preserve stable identifiers, entity versions, archive metadata, timestamps, actors, lifecycle state, immutable snapshots, Money values and currencies, Subject or charge collections, receipt and allocation data, posting and void metadata, approval and application metadata, source links, and decision history.
+Corrective Unit 1 removes the obsolete version-`0` compatibility path. Version `0`, negative versions, and future versions fail closed. Specialized mappers always write version `1`.
 
-The Domain factories reconstruct invariant-valid state without reflection-based private mutation and without replaying business transitions merely to hydrate stored records. Unsupported record-schema versions fail closed.
+The records preserve identifiers, entity versions, archive metadata, timestamps, actors, lifecycle state, immutable snapshots, Money values and currencies, Subject or charge collections, receipt and allocation data, posting and void metadata, approval and application metadata, source links, and decision history.
+
+Corrective Unit 2 verifies the complete persisted property set and byte-identical serialize–rehydrate–serialize output for all five aggregates, including nested Enrollment subject lines, Tuition Assessment charge lines, and Payment allocations.
 
 ## Typed repository activation
 
-The following adapters are newly classified `SpecializedMapperCompleted` and activated through the Infrastructure composition root:
+The following adapters are `SpecializedMapperCompleted` and active through the Infrastructure composition root:
 
-- `EnrollmentRepositoryAdapter`;
-- `TuitionAssessmentRepositoryAdapter`;
-- `PaymentRepositoryAdapter`;
-- `FinancialAdjustmentRepositoryAdapter`;
-- `ScholarshipAwardRepositoryAdapter`.
+- StudentRecordRepositoryAdapter;
+- EmployeeRecordRepositoryAdapter;
+- CourseRepositoryAdapter;
+- SubjectRepositoryAdapter;
+- AcademicPeriodRepositoryAdapter;
+- AssessmentChargeRuleRepositoryAdapter;
+- EnrollmentRepositoryAdapter;
+- TuitionAssessmentRepositoryAdapter;
+- PaymentRepositoryAdapter;
+- FinancialAdjustmentRepositoryAdapter;
+- ScholarshipAwardRepositoryAdapter.
 
-Together with the six Pass 10 adapters, the readiness catalog now contains:
+Seven adapters remain fail-closed with explicit reasons:
 
-- `11` specialized-complete adapters;
-- `7` adapters deferred with explicit reasons;
-- `0` production adapters classified as generic-mapper compatible;
-- `0` production adapters left in an ambiguous requires-mapper state.
-
-Library, Borrowing, Counseling, Discipline, Clinic Appointment, Medical Record, and Medical Clearance adapters remain fail-closed.
+- LibraryBookRepositoryAdapter;
+- LibraryBorrowingRepositoryAdapter;
+- CounselingCaseRepositoryAdapter;
+- DisciplineCaseRepositoryAdapter;
+- ClinicAppointmentRepositoryAdapter;
+- MedicalRecordRepositoryAdapter;
+- MedicalClearanceRepositoryAdapter.
 
 ## Student financial read model
 
-`StudentFinanceQueryService` derives Student ownership from the authenticated session and returns released projections for:
+`StudentFinanceQueryService` derives Student ownership from the authenticated session. Corrective Unit 1 applies explicit released-state allowlists:
 
-- Enrollment and selected Subject lines;
-- Tuition Assessments;
-- Posted Payments and receipt numbers;
-- Scholarship Award effects;
-- posted assessment, debit-adjustment, credit-adjustment, payment, and balance totals;
-- repository revisions and entity versions for concurrency-aware clients.
+- Enrollment excludes Draft and Unspecified;
+- Tuition Assessment exposes Posted and Cancelled;
+- Payment exposes Posted and Voided;
+- Financial Adjustment exposes Posted only;
+- Scholarship Award exposes Approved, Applied, and Cancelled.
 
-The projection excludes internal approval rationale, adjustment reasons and source records, administrative actor identifiers, credential material, and unreleased notes.
+The projection excludes internal approval rationale, adjustment reasons and source records, administrative actor identifiers, credential material, and unreleased records. It returns repository revisions and entity versions for concurrency-aware clients.
 
 ## Controlled Application commands
 
-Pass 11 adds session-aware services for:
+Pass 11 supplies session-aware services for:
 
 1. Student Enrollment submission;
 2. Tuition Assessment creation and posting;
@@ -115,61 +132,68 @@ Pass 11 adds session-aware services for:
 4. Financial Adjustment creation and posting;
 5. Scholarship Award application with a posted credit adjustment.
 
-Commands validate role, application kind, session purpose, permission, confidentiality marker, Student ownership where applicable, repository revisions, entity versions, lifecycle status, currency consistency, allocation totals, immutable IDs, and audit actors. Writes are routed through the journaled transaction coordinator. Scholarship application stages the updated Award and created Financial Adjustment in one multi-repository transaction.
+Commands validate role, application kind, session purpose, permission, confidentiality, Student ownership where applicable, repository revisions, entity versions, lifecycle state, currency consistency, allocation totals, identifiers, and audit actors.
 
-## Regression and security tests
+Corrective Unit 1 requires each Payment allocation to carry the expected Tuition Assessment entity version. All allocation inputs, amounts, Assessment identities, statuses, ownership, period, currency, uniqueness, and versions are validated before Payment, allocation, or receipt identifiers are consumed.
 
-Twelve Pass 11 tests increased the complete suite from `148` to `160`. They cover:
+Corrective Unit 2 injects failure after the first Scholarship transaction mutation and proves `scholarship_awards.json` and `financial_adjustments.json` both return to their exact pre-command bytes. The Award remains Approved, no Adjustment remains, rollback evidence is recorded, and the same request succeeds on retry.
 
-- 49 canonical six-field production envelopes;
-- legacy compatibility reads and canonical-only writes;
-- all-49 journaled migration and idempotence;
-- revision and record preservation;
-- raw-token-once issuance and digest-only persistence;
-- fixed-time-compatible digest verification and tamper rejection;
-- legacy-session rejection, revocation, and bearer-material removal;
-- five specialized mapper round trips;
-- unsupported finance record-schema rejection;
-- readiness classification at 11 completed and 7 deferred;
-- session-derived Student financial ownership;
-- stale-revision denial before Payment writes;
-- journaled Scholarship Award and Financial Adjustment coordination.
+## UI dependency boundary
 
-## Successful Windows implementation evidence
+The source validator scans every `*.cs` file under:
 
-GitHub Actions run `29753253012` validated continuation head `df6e5997b83b999cab459f3baa4cf11245ebffc9`.
+- `src/IUIS.SharedUI`;
+- `src/IUIS.UserApp`;
+- `src/IUIS.AdminApp`.
 
-- source-tree and architecture validation: passed;
-- production templates: exactly `49`;
-- canonical envelope fields: exactly `6`;
-- project boundaries: exactly `7`;
-- NuGet restoration: passed;
-- .NET Framework 4.8 Release MSBuild: passed;
-- compiler warnings: `0`;
-- compiler errors: `0`;
-- MSTest: `160` executed, `160` passed, `0` failed;
-- TRX verification: passed;
-- artifact publication: passed.
+It rejects direct or fully qualified references to `System.IO` and `System.Text.Json`. Audit Unit 2 validated eight UI C# files with zero prohibited findings.
 
-Evidence artifact:
+## Test progression
 
-- name: `iuis-windows-build-evidence-158`;
-- artifact ID: `8465588173`;
-- SHA-256: `9fd73b4619feb125daeb3ee0ced0d9e3dd11a052f44a1c3754c985400eb189c5`;
-- expiration: 2026-08-03.
+- Pass 10 baseline: 148 tests;
+- original Pass 11 implementation: 160 tests;
+- Corrective Unit 1: 167 tests;
+- Corrective Unit 2: 172 tests.
+
+Corrective evidence covers:
+
+- exact schema version `1` enforcement;
+- Payment allocation entity-concurrency before identifier consumption;
+- released-state projection allowlists;
+- posted Payment and Financial Adjustment exception atomicity;
+- all-49 deterministic migration rollback and retry;
+- transaction-journal failure evidence;
+- migration audit-registration recovery classification and idempotence;
+- exhaustive five-mapper field preservation;
+- Scholarship multi-repository rollback and retry;
+- all-UI dependency scanning.
+
+## Windows evidence
+
+| Stage | Commit | Run | Artifact | ID | SHA-256 |
+|---|---|---:|---|---:|---|
+| Exact implementation head | `fded5a9ac1f00176a9aeaae4c70a3f972c26ec84` | `29754011862` | `iuis-windows-build-evidence-161` | `8465908242` | `5e44960a8654022cdbc559d1c4b74e7af2566e7bbcb2dfda13c0921df9f05dbd` |
+| Corrective Unit 1 | `517af90bd2218dea471747b2da5c92e49526e3ac` | `29792336074` | `iuis-windows-build-evidence-201` | `8480770463` | `77d60d81918f2df2adbc2f642fe92c5d8b0c9bcc4eb93e82646e20f235db8b2c` |
+| Corrective Unit 2 code | `eac074c23da378e1cdae9a1abdf76090851b89a9` | `29793780496` | `iuis-windows-build-evidence-203` | `8481293446` | `26a2b77fad29ceef6e695f30f7aeef7077b65b01652d152667142e89c63acc8b` |
+
+Run `29793780496` passed exactly seven project boundaries, 49 canonical templates, six envelope fields, eight UI C# files with zero prohibited findings, NuGet restoration, .NET Framework 4.8 Release MSBuild, zero warnings, zero errors, 172 of 172 MSTest cases, TRX verification, and artifact publication.
 
 ## Figma model
 
-The editable FigJam board contains `IUIS Pass 11 Envelope-to-Finance Wiring`:
+The editable FigJam board contains the implementation and corrective-closure flows:
 
 - `https://www.figma.com/board/VGyuqaZDhIBfGqBfGjQJUH`
 
-The model connects legacy-envelope migration, canonical repositories, raw-token issuance, digest verification, session-aware Application execution, Student financial projections, five specialized adapters, and journaled controlled writes.
+## Locked Pass 12 boundary
 
-## Evidence boundary
+Pass 12 is defined as:
 
-Pass 11 does not constitute independent integrated-tree closure or final release certification. It does not activate the remaining seven specialized adapters and does not complete production Forms, notification dispatch, trusted-device/network enforcement, operational backup scheduling, deployment packaging, or final recovery certification.
+**Remaining Student-Service Specialized Persistence, Confidential Record Segregation, Controlled Lifecycle Orchestration, and Released Service Projections.**
 
-## Exact next gate
+It will address the seven deferred adapters, restricted persisted state and released projections, session-aware permission and ownership enforcement, concurrency-aware lifecycle orchestration, journaled related mutations, exhaustive security and rollback tests, Windows validation, and Figma evidence.
 
-Validate the evidence-updated final PR #52 head, merge it into `develop`, independently validate the actual merged Pass 11 tree during Pass 11 Closure, register closure evidence, promote only after successful closure, synchronize branches, and define the Pass 12 construction boundary.
+Pass 12 excludes production-form completion, notification dispatch, backup scheduling, deployment packaging, and release certification.
+
+## Evidence boundary and exact final gate
+
+Pass 11 corrective code is independently validated but is not final until the documentation-inclusive PR #56 head is validated and merged, the exact resulting `main` commit is independently Windows-validated, final evidence is registered, `develop` is restored to that final validated commit, and branch comparison reports ahead `0` and behind `0`.
