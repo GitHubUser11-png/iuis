@@ -98,19 +98,15 @@ namespace IUIS.Infrastructure.Persistence
     public sealed class LibraryBookRepositoryAdapter
         : MappedJsonRepository<LibraryBook>, ILibraryBookRepository
     {
-        public LibraryBookRepositoryAdapter(
-            JsonRepositoryStore store,
-            IJsonRecordMapper<LibraryBook> mapper)
-            : base("books", store, mapper) { }
+        public LibraryBookRepositoryAdapter(JsonRepositoryStore store)
+            : base("books", store, new LibraryBookJsonMapper()) { }
     }
 
     public sealed class LibraryBorrowingRepositoryAdapter
         : MappedJsonRepository<LibraryBorrowing>, ILibraryBorrowingRepository
     {
-        public LibraryBorrowingRepositoryAdapter(
-            JsonRepositoryStore store,
-            IJsonRecordMapper<LibraryBorrowing> mapper)
-            : base("borrowings", store, mapper) { }
+        public LibraryBorrowingRepositoryAdapter(JsonRepositoryStore store)
+            : base("borrowings", store, new LibraryBorrowingJsonMapper()) { }
     }
 
     public sealed class CounselingCaseRepositoryAdapter
