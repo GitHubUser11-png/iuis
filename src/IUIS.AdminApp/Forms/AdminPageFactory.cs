@@ -1,15 +1,35 @@
+using System;
 using System.Windows.Forms;
 
+using IUIS.Infrastructure.Composition;
 using IUIS.SharedUI.Shell;
 
 namespace IUIS.AdminApp.Forms
 {
-    public static class AdminPageFactory
+    public sealed class AdminPageFactory
     {
-        public static UserControl CreatePage(string pageKey, string displayText, string sessionToken)
+        private readonly IuisCompositionRoot _composition;
+        private readonly string _sessionToken;
+
+        public AdminPageFactory(IuisCompositionRoot composition, string sessionToken)
         {
-            // TODO: Implement actual page creation when forms are available
-            // For now, return placeholder for all pages
+            _composition = composition ?? throw new ArgumentNullException(nameof(composition));
+            _sessionToken = sessionToken ?? throw new ArgumentNullException(nameof(sessionToken));
+        }
+
+        public UserControl CreatePage(string pageKey, string displayText)
+        {
+            // Admin Dashboard and Core Pages
+            if (pageKey == "ADM-DASH-01" || pageKey == "ADM-APP-01" || pageKey == "ADM-USR-01")
+                return new UserManagementPage(_sessionToken);
+            
+            if (pageKey == "ADM-PERM-01" || pageKey == "ADM-LOG-01" || pageKey == "ADM-SEC-01")
+                return new SystemAdministrationPage(_sessionToken);
+            
+            if (pageKey == "ADM-REP-01" || pageKey == "ADM-AUD-01" || pageKey == "ADM-SET-01" || pageKey == "ADM-RPT-01")
+                return new ReportsPage(_sessionToken);
+
+            // All unimplemented pages return placeholder for graceful degradation
             return ShellPageFactory.CreatePlaceholderPage(pageKey, displayText);
         }
     }
