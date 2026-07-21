@@ -6,6 +6,7 @@ using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Dashboard;
 using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.DataGridViews;
+using IUIS.SharedUI.Theme;
 
 namespace IUIS.UserApp.Forms.Student.Pages
 {
@@ -37,7 +38,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
         private void InitializeComponent()
         {
             this.Size = new Size(1000, 700);
-            this.BackColor = Color.FromArgb(249, 250, 251);
+            this.BackColor = UiTheme.Surface;
         }
 
         private void SetupLayout()
@@ -45,15 +46,15 @@ namespace IUIS.UserApp.Forms.Student.Pages
             var mainPanel = new Panel
             {
                 Dock = DockStyle.Fill,
-                Padding = new Padding(20),
-                BackColor = Color.FromArgb(249, 250, 251)
+                Padding = new Padding(UiMetrics.OuterPadding),
+                BackColor = UiTheme.Surface
             };
 
             var headerLabel = new Label
             {
                 Text = "Student Dashboard",
-                Font = new Font("Segoe UI", 18F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(17, 24, 39),
+                Font = UiTheme.PageTitleFont,
+                ForeColor = UiTheme.TextPrimary,
                 Location = new Point(0, 0),
                 AutoSize = true
             };
@@ -69,28 +70,32 @@ namespace IUIS.UserApp.Forms.Student.Pages
                 Location = new Point(0, 180),
                 Size = new Size(960, 120),
                 FlowDirection = FlowDirection.LeftToRight,
-                BackColor = Color.FromArgb(249, 250, 251)
+                BackColor = UiTheme.Surface,
+                WrapContents = false
             };
 
             _balanceCard = new DashboardMetricCardControl
             {
                 Title = "Outstanding Balance",
                 Value = "₱0.00",
-                Subtitle = "Current Term"
+                Subtitle = "Current Term",
+                Margin = new Padding(0, 0, 16, 0)
             };
 
             _borrowingsCard = new DashboardMetricCardControl
             {
                 Title = "Library Borrowings",
                 Value = "0",
-                Subtitle = "Active Books"
+                Subtitle = "Active Books",
+                Margin = new Padding(0, 0, 16, 0)
             };
 
             _scholarshipsCard = new DashboardMetricCardControl
             {
                 Title = "Scholarships",
                 Value = "0",
-                Subtitle = "Active Awards"
+                Subtitle = "Active Awards",
+                Margin = new Padding(0, 0, 16, 0)
             };
 
             _notificationsCard = new DashboardMetricCardControl
@@ -105,14 +110,8 @@ namespace IUIS.UserApp.Forms.Student.Pages
             metricsPanel.Controls.Add(_scholarshipsCard);
             metricsPanel.Controls.Add(_notificationsCard);
 
-            var appointmentsLabel = new Label
-            {
-                Text = "Upcoming Appointments",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(17, 24, 39),
-                Location = new Point(0, 320),
-                AutoSize = true
-            };
+            var appointmentsLabel = DialogLayoutHelper.CreateSectionHeader("Upcoming Appointments");
+            appointmentsLabel.Location = new Point(0, 320);
 
             _appointmentsGrid = AppDataGridViewFactory.CreateStyledDataGridView();
             _appointmentsGrid.Location = new Point(0, 350);
@@ -121,14 +120,8 @@ namespace IUIS.UserApp.Forms.Student.Pages
             AppDataGridViewFactory.AddDateColumn(_appointmentsGrid, "ScheduledDateUtc", "Date", "MM/dd/yyyy", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_appointmentsGrid, "Location", "Location", 200);
 
-            var notificationsLabel = new Label
-            {
-                Text = "Recent Notifications",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(17, 24, 39),
-                Location = new Point(490, 320),
-                AutoSize = true
-            };
+            var notificationsLabel = DialogLayoutHelper.CreateSectionHeader("Recent Notifications");
+            notificationsLabel.Location = new Point(490, 320);
 
             _notificationsGrid = AppDataGridViewFactory.CreateStyledDataGridView();
             _notificationsGrid.Location = new Point(490, 350);

@@ -11,8 +11,6 @@ namespace IUIS.UserApp.Forms.Employee.Library
         private readonly string _sessionId;
         
         private TabControl _tabControl;
-        private FilterBarControl _filterBar;
-        private DataGridView _borrowingsGrid;
         private Button _issueBookButton;
         private Button _refreshButton;
 

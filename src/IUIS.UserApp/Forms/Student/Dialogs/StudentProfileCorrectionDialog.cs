@@ -3,7 +3,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Profile;
+using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.Forms;
+using IUIS.SharedUI.Theme;
 
 namespace IUIS.UserApp.Forms.Student.Dialogs
 {
@@ -33,37 +35,22 @@ namespace IUIS.UserApp.Forms.Student.Dialogs
         private void InitializeComponent()
         {
             this.Text = "Request Profile Correction";
-            this.Size = new Size(500, 400);
+            this.Size = new Size(520, 500);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            UiTheme.ApplyBaseFormStyle(this);
         }
 
         private void SetupLayout()
         {
-            var mainPanel = new Panel
-            {
-                Dock = DockStyle.Fill,
-                Padding = new Padding(20)
-            };
+            var mainPanel = DialogLayoutHelper.CreateMainPanel();
+            var contentPanel = new Panel { Dock = DockStyle.Fill };
 
-            var fieldLabel = new Label
-            {
-                Text = "Field to Correct:",
-                Location = new Point(0, 0),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9F)
-            };
-
-            _fieldComboBox = new ComboBox
-            {
-                Location = new Point(0, 25),
-                Width = 450,
-                Height = 28,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                Font = new Font("Segoe UI", 9F)
-            };
+            var fieldLabel = DialogLayoutHelper.CreateFieldLabel("Field to Correct", true);
+            _fieldComboBox = DialogLayoutHelper.CreateStandardComboBox();
+            _fieldComboBox.Width = contentPanel.Width;
 
             var fields = StudentProfileCorrectionCatalog.GetCorrectableFields();
             foreach (var field in fields)
@@ -72,103 +59,38 @@ namespace IUIS.UserApp.Forms.Student.Dialogs
                 _fieldComboBox.Tag = field.Key;
             }
 
-            var currentValueLabel = new Label
-            {
-                Text = "Current Value:",
-                Location = new Point(0, 65),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9F)
-            };
+            var currentValueLabel = DialogLayoutHelper.CreateFieldLabel("Current Value");
+            _currentValueTextBox = DialogLayoutHelper.CreateReadOnlyTextBox();
+            _currentValueTextBox.Width = contentPanel.Width;
 
-            _currentValueTextBox = new TextBox
-            {
-                Location = new Point(0, 90),
-                Width = 450,
-                Height = 28,
-                ReadOnly = true,
-                BackColor = Color.FromArgb(243, 244, 246),
-                Font = new Font("Segoe UI", 9F)
-            };
+            var requestedValueLabel = DialogLayoutHelper.CreateFieldLabel("Requested Value", true);
+            _requestedValueTextBox = DialogLayoutHelper.CreateStandardTextBox();
+            _requestedValueTextBox.Width = contentPanel.Width;
 
-            var requestedValueLabel = new Label
-            {
-                Text = "Requested Value:",
-                Location = new Point(0, 130),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9F)
-            };
+            var reasonLabel = DialogLayoutHelper.CreateFieldLabel("Reason for Correction", true);
+            _reasonTextBox = DialogLayoutHelper.CreateMultilineTextBox(100);
+            _reasonTextBox.Width = contentPanel.Width;
 
-            _requestedValueTextBox = new TextBox
-            {
-                Location = new Point(0, 155),
-                Width = 450,
-                Height = 28,
-                Font = new Font("Segoe UI", 9F)
-            };
-
-            var reasonLabel = new Label
-            {
-                Text = "Reason for Correction:",
-                Location = new Point(0, 195),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9F)
-            };
-
-            _reasonTextBox = new TextBox
-            {
-                Location = new Point(0, 220),
-                Width = 450,
-                Height = 80,
-                Multiline = true,
-                ScrollBars = ScrollBars.Vertical,
-                Font = new Font("Segoe UI", 9F)
-            };
-
-            var buttonPanel = new Panel
-            {
-                Location = new Point(0, 320),
-                Size = new Size(450, 40)
-            };
-
-            _submitButton = new Button
-            {
-                Text = "Submit Request",
-                Location = new Point(250, 0),
-                Size = new Size(90, 35),
-                BackColor = Color.FromArgb(79, 70, 229),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F)
-            };
-            _submitButton.FlatAppearance.BorderSize = 0;
+            _submitButton = UiTheme.CreatePrimaryButton("Submit Request", 140, UiMetrics.StandardButtonHeight);
             _submitButton.Click += OnSubmitClick;
 
-            _cancelButton = new Button
-            {
-                Text = "Cancel",
-                Location = new Point(350, 0),
-                Size = new Size(90, 35),
-                BackColor = Color.FromArgb(229, 231, 235),
-                ForeColor = Color.FromArgb(55, 65, 81),
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F)
-            };
-            _cancelButton.FlatAppearance.BorderSize = 0;
+            _cancelButton = UiTheme.CreateSecondaryButton("Cancel", 120, UiMetrics.StandardButtonHeight);
             _cancelButton.Click += (s, e) => this.DialogResult = DialogResult.Cancel;
 
-            buttonPanel.Controls.Add(_submitButton);
-            buttonPanel.Controls.Add(_cancelButton);
+            var buttonPanel = DialogLayoutHelper.CreateButtonPanel(_submitButton, _cancelButton);
 
-            mainPanel.Controls.Add(fieldLabel);
-            mainPanel.Controls.Add(_fieldComboBox);
-            mainPanel.Controls.Add(currentValueLabel);
-            mainPanel.Controls.Add(_currentValueTextBox);
-            mainPanel.Controls.Add(requestedValueLabel);
-            mainPanel.Controls.Add(_requestedValueTextBox);
-            mainPanel.Controls.Add(reasonLabel);
-            mainPanel.Controls.Add(_reasonTextBox);
+            int y = 0;
+            fieldLabel.Location = new Point(0, y); contentPanel.Controls.Add(fieldLabel); y += 22;
+            _fieldComboBox.Location = new Point(0, y); contentPanel.Controls.Add(_fieldComboBox); y += 50;
+            currentValueLabel.Location = new Point(0, y); contentPanel.Controls.Add(currentValueLabel); y += 22;
+            _currentValueTextBox.Location = new Point(0, y); contentPanel.Controls.Add(_currentValueTextBox); y += 50;
+            requestedValueLabel.Location = new Point(0, y); contentPanel.Controls.Add(requestedValueLabel); y += 22;
+            _requestedValueTextBox.Location = new Point(0, y); contentPanel.Controls.Add(_requestedValueTextBox); y += 50;
+            reasonLabel.Location = new Point(0, y); contentPanel.Controls.Add(reasonLabel); y += 22;
+            _reasonTextBox.Location = new Point(0, y); contentPanel.Controls.Add(_reasonTextBox);
+
+            mainPanel.Controls.Add(contentPanel);
             mainPanel.Controls.Add(buttonPanel);
-
             this.Controls.Add(mainPanel);
         }
 

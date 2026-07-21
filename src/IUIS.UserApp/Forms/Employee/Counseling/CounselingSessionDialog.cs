@@ -1,8 +1,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using IUIS.SharedUI.Forms;
+using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.DataGridViews;
+using IUIS.SharedUI.Forms;
+using IUIS.SharedUI.Theme;
 
 namespace IUIS.UserApp.Forms.Employee.Counseling
 {
@@ -44,231 +46,119 @@ namespace IUIS.UserApp.Forms.Employee.Counseling
 
         private void InitializeComponent()
         {
-            this.Size = new Size(700, 600);
+            this.Size = new Size(720, 620);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            UiTheme.ApplyBaseFormStyle(this);
         }
 
         private void SetupLayout()
         {
-            var mainPanel = new Panel
-            {
-                Dock = DockStyle.Fill,
-                Padding = new Padding(20),
-                AutoScroll = true
-            };
+            var mainPanel = DialogLayoutHelper.CreateMainPanel();
+            var contentPanel = new Panel { Dock = DockStyle.Fill };
 
-            var studentLabel = new Label
-            {
-                Text = "Student",
-                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(17, 24, 39),
-                Location = new Point(0, 0),
-                AutoSize = true
-            };
+            int y = 0;
 
-            _studentSearchTextBox = new TextBox
-            {
-                Location = new Point(0, 25),
-                Width = 400,
-                Height = 28,
-                Text = "Search by Student ID or Name...",
-                Font = new Font("Segoe UI", 9F)
-            };
+            // Student Section
+            var studentLabel = DialogLayoutHelper.CreateSectionHeader("Student");
+            studentLabel.Location = new Point(0, y); contentPanel.Controls.Add(studentLabel); y += 30;
+
+            _studentSearchTextBox = DialogLayoutHelper.CreateStandardTextBox();
+            _studentSearchTextBox.Width = 640;
+            _studentSearchTextBox.Text = "Search by Student ID or Name...";
+            _studentSearchTextBox.Location = new Point(0, y);
             _studentSearchTextBox.GotFocus += (s, e) => { if (_studentSearchTextBox.Text == "Search by Student ID or Name...") _studentSearchTextBox.Text = ""; };
             _studentSearchTextBox.LostFocus += (s, e) => { if (string.IsNullOrWhiteSpace(_studentSearchTextBox.Text)) _studentSearchTextBox.Text = "Search by Student ID or Name..."; };
+            contentPanel.Controls.Add(_studentSearchTextBox); y += 45;
 
             _studentResultsGrid = AppDataGridViewFactory.CreateStyledDataGridView();
-            _studentResultsGrid.Location = new Point(0, 60);
+            _studentResultsGrid.Location = new Point(0, y);
             _studentResultsGrid.Size = new Size(640, 100);
             AppDataGridViewFactory.AddTextBoxColumn(_studentResultsGrid, "StudentId", "ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(_studentResultsGrid, "Name", "Name", 250);
+            contentPanel.Controls.Add(_studentResultsGrid); y += 110;
 
-            int y = 175;
-            
-            AddComboBoxField(mainPanel, "Session Type:", ref _sessionTypeComboBox, new[] { "Individual", "Group", "Crisis Intervention", "Follow-up" }, ref y);
-            AddComboBoxField(mainPanel, "Priority:", ref _priorityComboBox, new[] { "Low", "Medium", "High", "Urgent" }, ref y);
-            
-            var scheduledDateLabel = new Label
-            {
-                Text = "Scheduled Date:",
-                Location = new Point(0, y),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9F)
-            };
-            
-            _scheduledDatePicker = new DateTimePicker
-            {
-                Location = new Point(120, y - 3),
-                Width = 150,
-                Format = DateTimePickerFormat.Short,
-                Value = DateTime.Today
-            };
-            
-            mainPanel.Controls.Add(scheduledDateLabel);
-            mainPanel.Controls.Add(_scheduledDatePicker);
-            y += 35;
-            
-            var scheduledTimeLabel = new Label
-            {
-                Text = "Scheduled Time:",
-                Location = new Point(0, y),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9F)
-            };
-            
+            // Session Details
+            var sessionTypeLabel = DialogLayoutHelper.CreateFieldLabel("Session Type", true);
+            sessionTypeLabel.Location = new Point(0, y); contentPanel.Controls.Add(sessionTypeLabel);
+
+            _sessionTypeComboBox = DialogLayoutHelper.CreateStandardComboBox();
+            _sessionTypeComboBox.Location = new Point(120, y - 22);
+            _sessionTypeComboBox.Items.AddRange(new[] { "Individual", "Group", "Crisis Intervention", "Follow-up" });
+            _sessionTypeComboBox.SelectedIndex = 0;
+            contentPanel.Controls.Add(_sessionTypeComboBox); y += 50;
+
+            var priorityLabel = DialogLayoutHelper.CreateFieldLabel("Priority", true);
+            priorityLabel.Location = new Point(0, y); contentPanel.Controls.Add(priorityLabel);
+
+            _priorityComboBox = DialogLayoutHelper.CreateStandardComboBox();
+            _priorityComboBox.Location = new Point(120, y - 22);
+            _priorityComboBox.Items.AddRange(new[] { "Low", "Medium", "High", "Urgent" });
+            _priorityComboBox.SelectedIndex = 1;
+            contentPanel.Controls.Add(_priorityComboBox); y += 50;
+
+            var scheduledDateLabel = DialogLayoutHelper.CreateFieldLabel("Scheduled Date", true);
+            scheduledDateLabel.Location = new Point(0, y); contentPanel.Controls.Add(scheduledDateLabel);
+
+            _scheduledDatePicker = DialogLayoutHelper.CreateStandardDatePicker();
+            _scheduledDatePicker.Location = new Point(120, y - 22);
+            _scheduledDatePicker.Value = DateTime.Today;
+            contentPanel.Controls.Add(_scheduledDatePicker); y += 50;
+
+            var scheduledTimeLabel = DialogLayoutHelper.CreateFieldLabel("Scheduled Time", true);
+            scheduledTimeLabel.Location = new Point(0, y); contentPanel.Controls.Add(scheduledTimeLabel);
+
             _scheduledTimePicker = new DateTimePicker
             {
-                Location = new Point(120, y - 3),
+                Location = new Point(120, y - 22),
                 Width = 150,
                 Format = DateTimePickerFormat.Time,
                 ShowUpDown = true,
-                Value = DateTime.Now
+                Value = DateTime.Now,
+                Height = UiMetrics.StandardFieldHeight,
+                Font = UiTheme.BodyFont
             };
-            
-            mainPanel.Controls.Add(scheduledTimeLabel);
-            mainPanel.Controls.Add(_scheduledTimePicker);
-            y += 35;
-            
-            AddField(mainPanel, "Location:", ref _locationTextBox, ref y);
-            
-            var notesLabel = new Label
-            {
-                Text = "Session Notes:",
-                Location = new Point(0, y),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9F)
-            };
-            
-            _notesTextBox = new TextBox
-            {
-                Location = new Point(0, y + 25),
-                Width = 640,
-                Height = 60,
-                Multiline = true,
-                ScrollBars = ScrollBars.Vertical,
-                Font = new Font("Segoe UI", 9F)
-            };
-            
-            mainPanel.Controls.Add(notesLabel);
-            mainPanel.Controls.Add(_notesTextBox);
-            y += 95;
-            
-            var internalRemarksLabel = new Label
-            {
-                Text = "Internal Remarks:",
-                Location = new Point(0, y),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9F)
-            };
-            
-            _internalRemarksTextBox = new TextBox
-            {
-                Location = new Point(0, y + 25),
-                Width = 640,
-                Height = 60,
-                Multiline = true,
-                ScrollBars = ScrollBars.Vertical,
-                Font = new Font("Segoe UI", 9F)
-            };
-            
-            mainPanel.Controls.Add(internalRemarksLabel);
-            mainPanel.Controls.Add(_internalRemarksTextBox);
-            y += 95;
-            
-            var buttonPanel = new Panel
-            {
-                Location = new Point(0, y),
-                Size = new Size(640, 40)
-            };
-            
-            _saveButton = new Button
-            {
-                Text = "Save",
-                Location = new Point(440, 0),
-                Size = new Size(90, 35),
-                BackColor = Color.FromArgb(79, 70, 229),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F)
-            };
-            _saveButton.FlatAppearance.BorderSize = 0;
+            contentPanel.Controls.Add(_scheduledTimePicker); y += 50;
+
+            var locationLabel = DialogLayoutHelper.CreateFieldLabel("Location", true);
+            locationLabel.Location = new Point(0, y); contentPanel.Controls.Add(locationLabel);
+
+            _locationTextBox = DialogLayoutHelper.CreateStandardTextBox();
+            _locationTextBox.Width = 520;
+            _locationTextBox.Location = new Point(120, y - 22);
+            contentPanel.Controls.Add(_locationTextBox); y += 50;
+
+            var notesLabel = DialogLayoutHelper.CreateFieldLabel("Session Notes");
+            notesLabel.Location = new Point(0, y); contentPanel.Controls.Add(notesLabel);
+
+            _notesTextBox = DialogLayoutHelper.CreateMultilineTextBox(60);
+            _notesTextBox.Width = 640;
+            _notesTextBox.Location = new Point(0, y + 22);
+            contentPanel.Controls.Add(_notesTextBox); y += 95;
+
+            var internalRemarksLabel = DialogLayoutHelper.CreateFieldLabel("Internal Remarks");
+            internalRemarksLabel.Location = new Point(0, y); contentPanel.Controls.Add(internalRemarksLabel);
+
+            _internalRemarksTextBox = DialogLayoutHelper.CreateMultilineTextBox(60);
+            _internalRemarksTextBox.Width = 640;
+            _internalRemarksTextBox.Location = new Point(0, y + 22);
+            contentPanel.Controls.Add(_internalRemarksTextBox);
+
+            _saveButton = UiTheme.CreatePrimaryButton("Save", 120, UiMetrics.StandardButtonHeight);
             _saveButton.Click += OnSaveClick;
-            
-            _cancelButton = new Button
-            {
-                Text = "Cancel",
-                Location = new Point(540, 0),
-                Size = new Size(90, 35),
-                BackColor = Color.FromArgb(229, 231, 235),
-                ForeColor = Color.FromArgb(55, 65, 81),
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F)
-            };
-            _cancelButton.FlatAppearance.BorderSize = 0;
+
+            _cancelButton = UiTheme.CreateSecondaryButton("Cancel", 120, UiMetrics.StandardButtonHeight);
             _cancelButton.Click += (s, e) => this.DialogResult = DialogResult.Cancel;
-            
-            buttonPanel.Controls.Add(_saveButton);
-            buttonPanel.Controls.Add(_cancelButton);
-            
-            mainPanel.Controls.Add(studentLabel);
-            mainPanel.Controls.Add(_studentSearchTextBox);
-            mainPanel.Controls.Add(_studentResultsGrid);
+
+            var buttonPanel = DialogLayoutHelper.CreateButtonPanel(_saveButton, _cancelButton);
+
+            mainPanel.Controls.Add(contentPanel);
             mainPanel.Controls.Add(buttonPanel);
-            
             this.Controls.Add(mainPanel);
         }
 
-        private void AddField(Panel panel, string labelText, ref TextBox textBox, ref int y)
-        {
-            var label = new Label
-            {
-                Text = labelText,
-                Location = new Point(0, y),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9F)
-            };
-            
-            textBox = new TextBox
-            {
-                Location = new Point(120, y - 3),
-                Width = 520,
-                Height = 28,
-                Font = new Font("Segoe UI", 9F)
-            };
-            
-            panel.Controls.Add(label);
-            panel.Controls.Add(textBox);
-            y += 35;
-        }
-
-        private void AddComboBoxField(Panel panel, string labelText, ref ComboBox comboBox, string[] items, ref int y)
-        {
-            var label = new Label
-            {
-                Text = labelText,
-                Location = new Point(0, y),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9F)
-            };
-            
-            comboBox = new ComboBox
-            {
-                Location = new Point(120, y - 3),
-                Width = 200,
-                Height = 28,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                Font = new Font("Segoe UI", 9F)
-            };
-            comboBox.Items.AddRange(items);
-            comboBox.SelectedIndex = 0;
-            
-            panel.Controls.Add(label);
-            panel.Controls.Add(comboBox);
-            y += 35;
-        }
 
         private void LoadSessionData()
         {

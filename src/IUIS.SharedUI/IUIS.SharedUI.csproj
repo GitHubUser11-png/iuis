@@ -52,6 +52,7 @@
     <Compile Include="Controls\LabeledFieldPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\DialogLayoutHelper.cs" />
     <Compile Include="Controls\LoadingOverlayPanel.cs">
       <SubType>Component</SubType>
     </Compile>

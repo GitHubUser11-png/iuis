@@ -10,7 +10,6 @@ namespace IUIS.AdminApp.Forms
         private readonly string _sessionId;
         
         private TabControl _tabControl;
-        private DataGridView _reportsGrid;
         private Button _generateReportButton;
         private Button _refreshButton;
 

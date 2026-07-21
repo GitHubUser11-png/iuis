@@ -11,8 +11,6 @@ namespace IUIS.UserApp.Forms.Employee.Counseling
         private readonly string _sessionId;
         
         private TabControl _tabControl;
-        private FilterBarControl _filterBar;
-        private DataGridView _sessionsGrid;
         private Button _createSessionButton;
         private Button _refreshButton;
 

@@ -11,8 +11,6 @@ namespace IUIS.AdminApp.Forms
         private readonly string _sessionId;
         
         private TabControl _tabControl;
-        private FilterBarControl _filterBar;
-        private DataGridView _usersGrid;
         private Button _createUserButton;
         private Button _refreshButton;
 
