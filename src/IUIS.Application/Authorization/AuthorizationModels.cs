@@ -159,7 +159,7 @@ namespace IUIS.Application.Authorization
         AuthorizationPrincipal Load(string sessionId, string sessionToken, DateTime utcNow);
     }
 
-    internal static class PermissionText
+    public static class PermissionText
     {
         public static string Normalize(string value)
         {
