@@ -33,27 +33,45 @@
     <Compile Include="Forms\Employee\Counseling\CounselingDashboardPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Employee\Counseling\CounselingSessionDetailsDialog.cs" />
-    <Compile Include="Forms\Employee\Counseling\CounselingSessionDialog.cs" />
+    <Compile Include="Forms\Employee\Counseling\CounselingSessionDetailsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Employee\Counseling\CounselingSessionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Employee\Counseling\CounselingSessionsPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\Employee\Discipline\DisciplineDashboardPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Employee\Library\BookCreateEditDialog.cs" />
-    <Compile Include="Forms\Employee\Library\BookDetailsDialog.cs" />
-    <Compile Include="Forms\Employee\Library\BookInventoryAdjustDialog.cs" />
+    <Compile Include="Forms\Employee\Library\BookCreateEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Employee\Library\BookDetailsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Employee\Library\BookInventoryAdjustDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Employee\Library\BookInventoryPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Employee\Library\BookIssueDialog.cs" />
-    <Compile Include="Forms\Employee\Library\BookReturnDialog.cs" />
-    <Compile Include="Forms\Employee\Library\BorrowingDetailsDialog.cs" />
+    <Compile Include="Forms\Employee\Library\BookIssueDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Employee\Library\BookReturnDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Employee\Library\BorrowingDetailsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Employee\Library\BorrowingOperationsPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Employee\Library\BorrowingRenewDialog.cs" />
+    <Compile Include="Forms\Employee\Library\BorrowingRenewDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Employee\Library\LibraryDashboardPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -69,13 +87,27 @@
     <Compile Include="Forms\StartupFailureForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Student\Dialogs\AssessmentDetailsDialog.cs" />
-    <Compile Include="Forms\Student\Dialogs\EnrollmentDetailsDialog.cs" />
-    <Compile Include="Forms\Student\Dialogs\PaymentReceiptDialog.cs" />
-    <Compile Include="Forms\Student\Dialogs\ScholarshipApplicationDialog.cs" />
-    <Compile Include="Forms\Student\Dialogs\ScholarshipProgramDetailsDialog.cs" />
-    <Compile Include="Forms\Student\Dialogs\StudentProfileCorrectionDialog.cs" />
-    <Compile Include="Forms\Student\Dialogs\SubjectDetailsDialog.cs" />
+    <Compile Include="Forms\Student\Dialogs\AssessmentDetailsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\Dialogs\EnrollmentDetailsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\Dialogs\PaymentReceiptDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\Dialogs\ScholarshipApplicationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\Dialogs\ScholarshipProgramDetailsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\Dialogs\StudentProfileCorrectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\Dialogs\SubjectDetailsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Student\Pages\StudentAssessmentPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
