@@ -48,23 +48,15 @@ namespace IUIS.Domain.Counseling
             string internalNotes)
         {
             SessionId = ServiceDomainGuard.RequireIdentifier(
-                sessionId,
-                "CSN",
-                nameof(sessionId));
+                sessionId, "CSN", nameof(sessionId));
             OccurredAtUtc = ServiceDomainGuard.RequireUtc(
-                occurredAtUtc,
-                nameof(occurredAtUtc));
+                occurredAtUtc, nameof(occurredAtUtc));
             CounselorEmployeeId = ServiceDomainGuard.RequireIdentifier(
-                counselorEmployeeId,
-                "EMP",
-                nameof(counselorEmployeeId));
+                counselorEmployeeId, "EMP", nameof(counselorEmployeeId));
             RiskLevel = ServiceDomainGuard.RequireDefined(
-                riskLevel,
-                nameof(riskLevel));
+                riskLevel, nameof(riskLevel));
             InternalNotes = ServiceDomainGuard.RequiredText(
-                internalNotes,
-                nameof(internalNotes),
-                8000);
+                internalNotes, nameof(internalNotes), 8000);
         }
 
         public string SessionId { get; private set; }
@@ -100,28 +92,17 @@ namespace IUIS.Domain.Counseling
             string releasedByUserId)
         {
             SummaryId = ServiceDomainGuard.RequireIdentifier(
-                summaryId,
-                "CSR",
-                nameof(summaryId));
+                summaryId, "CSR", nameof(summaryId));
             SessionId = ServiceDomainGuard.RequireIdentifier(
-                sessionId,
-                "CSN",
-                nameof(sessionId));
+                sessionId, "CSN", nameof(sessionId));
             ReleaseAuthorizationId = ServiceDomainGuard.RequireIdentifier(
-                releaseAuthorizationId,
-                "CRL",
-                nameof(releaseAuthorizationId));
+                releaseAuthorizationId, "CRL", nameof(releaseAuthorizationId));
             Summary = ServiceDomainGuard.RequiredText(
-                summary,
-                nameof(summary),
-                2000);
+                summary, nameof(summary), 2000);
             ReleasedAtUtc = ServiceDomainGuard.RequireUtc(
-                releasedAtUtc,
-                nameof(releasedAtUtc));
+                releasedAtUtc, nameof(releasedAtUtc));
             ReleasedByUserId = ServiceDomainGuard.RequireIdentifier(
-                releasedByUserId,
-                "USR",
-                nameof(releasedByUserId));
+                releasedByUserId, "USR", nameof(releasedByUserId));
         }
 
         public string SummaryId { get; private set; }
@@ -167,21 +148,14 @@ namespace IUIS.Domain.Counseling
                 ServiceDomainGuard.RequireIdentifier(id, "CNS", nameof(id)),
                 createdAtUtc,
                 ServiceDomainGuard.RequireIdentifier(
-                    createdByUserId,
-                    "USR",
-                    nameof(createdByUserId)))
+                    createdByUserId, "USR", nameof(createdByUserId)))
         {
             StudentId = ServiceDomainGuard.RequireIdentifier(
-                studentId,
-                "STU",
-                nameof(studentId));
+                studentId, "STU", nameof(studentId));
             RequestedAppointmentAtUtc = ServiceDomainGuard.RequireUtc(
-                requestedAppointmentAtUtc,
-                nameof(requestedAppointmentAtUtc));
+                requestedAppointmentAtUtc, nameof(requestedAppointmentAtUtc));
             RequestReason = ServiceDomainGuard.RequiredText(
-                requestReason,
-                nameof(requestReason),
-                500);
+                requestReason, nameof(requestReason), 500);
             Status = CounselingCaseStatus.Requested;
         }
 
@@ -233,8 +207,7 @@ namespace IUIS.Domain.Counseling
                 createdAtUtc,
                 createdByUserId);
             value.Status = ServiceDomainGuard.RequireDefined(
-                status,
-                nameof(status));
+                status, nameof(status));
             value.ConfirmedAppointmentAtUtc = confirmedAppointmentAtUtc.HasValue
                 ? ServiceDomainGuard.RequireUtc(
                     confirmedAppointmentAtUtc.Value,
@@ -253,9 +226,7 @@ namespace IUIS.Domain.Counseling
                     nameof(closedAtUtc))
                 : (DateTime?)null;
             value.ClosureSummary = ServiceDomainGuard.OptionalText(
-                closureSummary,
-                nameof(closureSummary),
-                2000);
+                closureSummary, nameof(closureSummary), 2000);
 
             var sessions = (confidentialSessions
                 ?? Enumerable.Empty<CounselingSessionRecord>()).ToList();
@@ -279,6 +250,7 @@ namespace IUIS.Domain.Counseling
                 throw new DomainValidationException(
                     "Persisted Counseling summaries require unique identifiers.");
             }
+
             value._sessions.AddRange(sessions);
             value._releasedSummaries.AddRange(summaries);
             value.ValidatePersistedState(createdAtUtc, updatedAtUtc);
@@ -303,8 +275,7 @@ namespace IUIS.Domain.Counseling
                 throw new DomainValidationException(
                     "Only a requested Counseling Case can be confirmed.");
             ConfirmedAppointmentAtUtc = ServiceDomainGuard.RequireUtc(
-                confirmedAppointmentAtUtc,
-                nameof(confirmedAppointmentAtUtc));
+                confirmedAppointmentAtUtc, nameof(confirmedAppointmentAtUtc));
             Status = CounselingCaseStatus.Confirmed;
             RecordServiceChange(changedAtUtc, changedByUserId);
         }
@@ -318,9 +289,7 @@ namespace IUIS.Domain.Counseling
                 throw new DomainValidationException(
                     "A Counseling Case must be confirmed before counselor assignment.");
             AssignedCounselorEmployeeId = ServiceDomainGuard.RequireIdentifier(
-                counselorEmployeeId,
-                "EMP",
-                nameof(counselorEmployeeId));
+                counselorEmployeeId, "EMP", nameof(counselorEmployeeId));
             Status = CounselingCaseStatus.Assigned;
             RecordServiceChange(changedAtUtc, changedByUserId);
         }
@@ -346,8 +315,7 @@ namespace IUIS.Domain.Counseling
                 riskLevel,
                 internalNotes);
             if (_sessions.Any(item => StringComparer.Ordinal.Equals(
-                item.SessionId,
-                session.SessionId)))
+                item.SessionId, session.SessionId)))
             {
                 throw new DomainValidationException(
                     "The Counseling Case already contains the Session ID.");
@@ -372,12 +340,9 @@ namespace IUIS.Domain.Counseling
                     "Only an active or closed Counseling Case can release a summary.");
             }
             var normalizedSessionId = ServiceDomainGuard.RequireIdentifier(
-                sessionId,
-                "CSN",
-                nameof(sessionId));
+                sessionId, "CSN", nameof(sessionId));
             if (!_sessions.Any(item => StringComparer.Ordinal.Equals(
-                item.SessionId,
-                normalizedSessionId)))
+                item.SessionId, normalizedSessionId)))
             {
                 throw new DomainValidationException(
                     "A released Counseling summary must reference an existing session.");
@@ -390,8 +355,7 @@ namespace IUIS.Domain.Counseling
                 releasedAtUtc,
                 releasedByUserId);
             if (_releasedSummaries.Any(item => StringComparer.Ordinal.Equals(
-                item.SummaryId,
-                summary.SummaryId)))
+                item.SummaryId, summary.SummaryId)))
             {
                 throw new DomainValidationException(
                     "The Counseling Case already contains the Released Summary ID.");
@@ -412,12 +376,9 @@ namespace IUIS.Domain.Counseling
                 throw new DomainValidationException(
                     "A Counseling Case requires a recorded session before closure.");
             ClosureSummary = ServiceDomainGuard.RequiredText(
-                closureSummary,
-                nameof(closureSummary),
-                2000);
+                closureSummary, nameof(closureSummary), 2000);
             ClosedAtUtc = ServiceDomainGuard.RequireUtc(
-                closedAtUtc,
-                nameof(closedAtUtc));
+                closedAtUtc, nameof(closedAtUtc));
             Status = CounselingCaseStatus.Closed;
             RecordServiceChange(ClosedAtUtc.Value, changedByUserId);
         }
@@ -444,33 +405,41 @@ namespace IUIS.Domain.Counseling
             DateTime updatedAtUtc)
         {
             var created = ServiceDomainGuard.RequireUtc(
-                createdAtUtc,
-                nameof(createdAtUtc));
+                createdAtUtc, nameof(createdAtUtc));
             var updated = ServiceDomainGuard.RequireUtc(
-                updatedAtUtc,
-                nameof(updatedAtUtc));
+                updatedAtUtc, nameof(updatedAtUtc));
             if (updated < created)
                 throw new DomainValidationException(
                     "Persisted Counseling update time cannot precede creation.");
 
-            var confirmedRequired =
-                Status == CounselingCaseStatus.Confirmed
-                || Status == CounselingCaseStatus.Assigned
-                || Status == CounselingCaseStatus.Active
-                || Status == CounselingCaseStatus.Closed;
-            var assignedRequired =
-                Status == CounselingCaseStatus.Assigned
-                || Status == CounselingCaseStatus.Active
-                || Status == CounselingCaseStatus.Closed;
-            if (confirmedRequired != ConfirmedAppointmentAtUtc.HasValue)
+            var hasConfirmation = ConfirmedAppointmentAtUtc.HasValue;
+            var hasAssignment = !string.IsNullOrWhiteSpace(
+                AssignedCounselorEmployeeId);
+            if (hasAssignment && !hasConfirmation)
                 throw new DomainValidationException(
-                    "Persisted Counseling confirmation metadata contradicts status.");
-            if (assignedRequired != !string.IsNullOrWhiteSpace(
-                AssignedCounselorEmployeeId))
+                    "Persisted Counseling assignment requires confirmation metadata.");
+
+            if (Status == CounselingCaseStatus.Requested
+                && (hasConfirmation || hasAssignment))
             {
                 throw new DomainValidationException(
-                    "Persisted Counseling assignment metadata contradicts status.");
+                    "Requested Counseling Cases cannot retain confirmation or assignment metadata.");
             }
+            if (Status == CounselingCaseStatus.Confirmed
+                && (!hasConfirmation || hasAssignment))
+            {
+                throw new DomainValidationException(
+                    "Confirmed Counseling metadata contradicts status.");
+            }
+            if ((Status == CounselingCaseStatus.Assigned
+                    || Status == CounselingCaseStatus.Active
+                    || Status == CounselingCaseStatus.Closed)
+                && (!hasConfirmation || !hasAssignment))
+            {
+                throw new DomainValidationException(
+                    "Assigned, active, or closed Counseling Cases require confirmation and assignment metadata.");
+            }
+
             if ((Status == CounselingCaseStatus.Active
                     || Status == CounselingCaseStatus.Closed)
                 && _sessions.Count == 0)
@@ -485,6 +454,7 @@ namespace IUIS.Domain.Counseling
                 throw new DomainValidationException(
                     "Persisted Counseling Sessions contradict the case status.");
             }
+
             if (Status == CounselingCaseStatus.Closed)
             {
                 if (!ClosedAtUtc.HasValue
@@ -500,6 +470,7 @@ namespace IUIS.Domain.Counseling
                 throw new DomainValidationException(
                     "Non-closed Counseling Cases cannot retain closure metadata.");
             }
+
             if (Status == CounselingCaseStatus.Requested
                 || Status == CounselingCaseStatus.Confirmed
                 || Status == CounselingCaseStatus.Assigned
@@ -509,6 +480,7 @@ namespace IUIS.Domain.Counseling
                     throw new DomainValidationException(
                         "Unstarted or cancelled Counseling Cases cannot retain released summaries.");
             }
+
             foreach (var session in _sessions)
             {
                 if (!StringComparer.Ordinal.Equals(
@@ -525,12 +497,12 @@ namespace IUIS.Domain.Counseling
                         "Persisted Counseling Session chronology is invalid.");
                 }
             }
+
             foreach (var summary in _releasedSummaries)
             {
                 var session = _sessions.SingleOrDefault(item =>
                     StringComparer.Ordinal.Equals(
-                        item.SessionId,
-                        summary.SessionId));
+                        item.SessionId, summary.SessionId));
                 if (session == null)
                     throw new DomainValidationException(
                         "Persisted Counseling summary references an unavailable session.");
@@ -540,6 +512,13 @@ namespace IUIS.Domain.Counseling
                     throw new DomainValidationException(
                         "Persisted Counseling summary chronology is invalid.");
                 }
+            }
+
+            if (ConfirmedAppointmentAtUtc.HasValue
+                && ConfirmedAppointmentAtUtc.Value > updated)
+            {
+                throw new DomainValidationException(
+                    "Persisted Counseling confirmation cannot follow the latest update.");
             }
             if (ClosedAtUtc.HasValue
                 && ClosedAtUtc.Value > updated)
@@ -556,9 +535,7 @@ namespace IUIS.Domain.Counseling
             RecordChange(
                 changedAtUtc,
                 ServiceDomainGuard.RequireIdentifier(
-                    changedByUserId,
-                    "USR",
-                    nameof(changedByUserId)));
+                    changedByUserId, "USR", nameof(changedByUserId)));
         }
     }
 
@@ -579,33 +556,21 @@ namespace IUIS.Domain.Counseling
                 ServiceDomainGuard.RequireIdentifier(id, "CRL", nameof(id)),
                 createdAtUtc,
                 ServiceDomainGuard.RequireIdentifier(
-                    createdByUserId,
-                    "USR",
-                    nameof(createdByUserId)))
+                    createdByUserId, "USR", nameof(createdByUserId)))
         {
             CounselingCaseId = ServiceDomainGuard.RequireIdentifier(
-                counselingCaseId,
-                "CNS",
-                nameof(counselingCaseId));
+                counselingCaseId, "CNS", nameof(counselingCaseId));
             StudentId = ServiceDomainGuard.RequireIdentifier(
-                studentId,
-                "STU",
-                nameof(studentId));
+                studentId, "STU", nameof(studentId));
             Recipient = ServiceDomainGuard.RequiredText(
-                recipient,
-                nameof(recipient),
-                200);
+                recipient, nameof(recipient), 200);
             Purpose = ServiceDomainGuard.RequiredText(
-                purpose,
-                nameof(purpose),
-                500);
+                purpose, nameof(purpose), 500);
             Scope = ServiceDomainGuard.RequireDefined(scope, nameof(scope));
             ValidFromUtc = ServiceDomainGuard.RequireUtc(
-                validFromUtc,
-                nameof(validFromUtc));
+                validFromUtc, nameof(validFromUtc));
             ValidUntilUtc = ServiceDomainGuard.RequireUtc(
-                validUntilUtc,
-                nameof(validUntilUtc));
+                validUntilUtc, nameof(validUntilUtc));
             if (ValidUntilUtc <= ValidFromUtc)
                 throw new DomainValidationException(
                     "Counseling release authorization must have a positive validity window.");
@@ -628,8 +593,7 @@ namespace IUIS.Domain.Counseling
             DateTime atUtc)
         {
             requestedScope = ServiceDomainGuard.RequireDefined(
-                requestedScope,
-                nameof(requestedScope));
+                requestedScope, nameof(requestedScope));
             atUtc = ServiceDomainGuard.RequireUtc(atUtc, nameof(atUtc));
             return Status == CounselingReleaseStatus.Active
                 && Scope == requestedScope
@@ -646,19 +610,14 @@ namespace IUIS.Domain.Counseling
                 throw new DomainValidationException(
                     "Only an active Counseling Release Authorization can be revoked.");
             RevocationReason = ServiceDomainGuard.RequiredText(
-                reason,
-                nameof(reason),
-                500);
+                reason, nameof(reason), 500);
             RevokedAtUtc = ServiceDomainGuard.RequireUtc(
-                revokedAtUtc,
-                nameof(revokedAtUtc));
+                revokedAtUtc, nameof(revokedAtUtc));
             Status = CounselingReleaseStatus.Revoked;
             RecordChange(
                 RevokedAtUtc.Value,
                 ServiceDomainGuard.RequireIdentifier(
-                    revokedByUserId,
-                    "USR",
-                    nameof(revokedByUserId)));
+                    revokedByUserId, "USR", nameof(revokedByUserId)));
         }
     }
 }
