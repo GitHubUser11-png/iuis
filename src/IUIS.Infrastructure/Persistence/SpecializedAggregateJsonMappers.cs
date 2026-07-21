@@ -38,8 +38,7 @@ namespace IUIS.Infrastructure.Persistence
                     aggregateName + " persisted record is missing.");
             }
 
-            if (record.RecordSchemaVersion != 0
-                && record.RecordSchemaVersion != CurrentRecordSchemaVersion)
+            if (record.RecordSchemaVersion != CurrentRecordSchemaVersion)
             {
                 throw new InvalidOperationException(
                     aggregateName + " persisted record schema version is unsupported.");

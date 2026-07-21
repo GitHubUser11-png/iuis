@@ -58,6 +58,7 @@ namespace IUIS.Application.Orchestration
     public sealed class PaymentAllocationInput
     {
         public string AssessmentId { get; set; }
+        public long ExpectedAssessmentEntityVersion { get; set; }
         public decimal Amount { get; set; }
     }
 
@@ -474,31 +475,35 @@ namespace IUIS.Application.Orchestration
                         throw new ArgumentException(
                             "At least one Payment allocation is required.",
                             nameof(request));
+                    var allocationInputs = request.Allocations.ToList();
+                    if (allocationInputs.Any(item => item == null))
+                        throw new ArgumentException(
+                            "Payment allocation input is required.",
+                            nameof(request));
+
                     var amount = new Money(request.Amount, request.CurrencyCode);
-                    if (request.Allocations.Sum(item => item.Amount) != amount.Amount)
+                    if (allocationInputs.Sum(item => item.Amount) != amount.Amount)
                         throw new InvalidOperationException(
                             "Payment allocations must equal the Payment amount.");
 
-                    var payment = new Payment(
-                        _ids.Allocate("PAY", utcNow.Year, principal.UserId),
-                        request.StudentId,
-                        request.AcademicPeriodId,
-                        amount,
-                        request.Method,
-                        request.ReceivedAtUtc,
-                        request.ExternalReference,
-                        utcNow,
-                        principal.UserId);
-                    foreach (var allocationInput in request.Allocations)
+                    var assessmentIds = new HashSet<string>(StringComparer.Ordinal);
+                    foreach (var allocationInput in allocationInputs)
                     {
-                        if (allocationInput == null)
-                            throw new ArgumentException(
-                                "Payment allocation input is required.",
-                                nameof(request));
                         var assessment = EnrollmentFinanceCommandGuard.Find(
                             assessmentSnapshot.Records,
                             allocationInput.AssessmentId,
                             "Tuition Assessment");
+                        EnrollmentFinanceCommandGuard.RequireVersion(
+                            allocationInput.ExpectedAssessmentEntityVersion,
+                            assessment.Version,
+                            "Tuition Assessment");
+                        if (!assessmentIds.Add(assessment.Id))
+                            throw new InvalidOperationException(
+                                "A Payment can contain only one allocation for each Assessment.");
+                        if (allocationInput.Amount <= 0m)
+                            throw new InvalidOperationException(
+                                "Payment allocation amounts must be greater than zero.");
+                        new Money(allocationInput.Amount, request.CurrencyCode);
                         if (assessment.Status != TuitionAssessmentStatus.Posted
                             || !StringComparer.Ordinal.Equals(
                                 assessment.StudentId,
@@ -510,10 +515,24 @@ namespace IUIS.Application.Orchestration
                             throw new InvalidOperationException(
                                 "Each Payment allocation must target a Posted Assessment for the same Student and Academic Period.");
                         }
+                    }
+
+                    var payment = new Payment(
+                        _ids.Allocate("PAY", utcNow.Year, principal.UserId),
+                        request.StudentId,
+                        request.AcademicPeriodId,
+                        amount,
+                        request.Method,
+                        request.ReceivedAtUtc,
+                        request.ExternalReference,
+                        utcNow,
+                        principal.UserId);
+                    foreach (var allocationInput in allocationInputs)
+                    {
                         payment.AddAllocation(
                             new PaymentAllocation(
                                 _ids.Allocate("PAL", utcNow.Year, principal.UserId),
-                                assessment.Id,
+                                allocationInput.AssessmentId,
                                 new Money(
                                     allocationInput.Amount,
                                     request.CurrencyCode)),

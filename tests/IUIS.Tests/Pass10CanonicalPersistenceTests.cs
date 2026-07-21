@@ -234,7 +234,7 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        public void MapperMigratesUnversionedCanonicalRecordToVersionOne()
+        public void MapperRejectsUnversionedCanonicalRecord()
         {
             var options = JsonOptions();
             var source = JsonSerializer.SerializeToElement(
@@ -254,12 +254,9 @@ namespace IUIS.Tests
                     Status = CourseStatus.Draft.ToString()
                 },
                 options);
-            var mapper = new CourseJsonMapper();
-            var aggregate = mapper.FromJson(source, options);
-            var migrated = mapper.ToJson(aggregate, options);
-            Assert.AreEqual(
-                1,
-                migrated.GetProperty("recordSchemaVersion").GetInt32());
+
+            Assert.ThrowsException<InvalidOperationException>(() =>
+                new CourseJsonMapper().FromJson(source, options));
         }
 
         [TestMethod]
