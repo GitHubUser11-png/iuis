@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
+using IUIS.SharedUI.Theme;
+
 namespace IUIS.SharedUI.DataGridViews
 {
     public static class AppDataGridViewFactory
@@ -18,24 +20,31 @@ namespace IUIS.SharedUI.DataGridViews
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = false,
                 RowHeadersVisible = false,
-                BackgroundColor = Color.White,
-                BorderStyle = BorderStyle.Fixed3D,
+                BackgroundColor = UiTheme.ElevatedSurface,
+                BorderStyle = BorderStyle.FixedSingle,
                 EnableHeadersVisualStyles = false,
-                GridColor = Color.FromArgb(229, 231, 235),
-                Font = new Font("Segoe UI", 9F),
-                ForeColor = Color.FromArgb(55, 65, 81),
-                BackColor = Color.White,
+                GridColor = UiTheme.BorderNeutral,
+                Font = UiTheme.BodyFont,
+                ForeColor = UiTheme.TextPrimary,
+                BackColor = UiTheme.ElevatedSurface,
+                RowTemplate = { Height = UiMetrics.StandardRowHeight },
+                ColumnHeadersHeight = UiMetrics.StandardRowHeight,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing,
+                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None,
+                ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText,
                 AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle
                 {
-                    BackColor = Color.FromArgb(249, 250, 251)
+                    BackColor = UiTheme.Surface
                 }
             };
 
             dataGridView.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
-                BackColor = Color.FromArgb(243, 244, 246),
-                ForeColor = Color.FromArgb(55, 65, 81),
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                BackColor = UiTheme.SubtleSurface,
+                ForeColor = UiTheme.TextPrimary,
+                SelectionBackColor = UiTheme.SubtleSurface,
+                SelectionForeColor = UiTheme.TextPrimary,
+                Font = UiTheme.SectionHeadingFont,
                 Alignment = DataGridViewContentAlignment.MiddleLeft,
                 Padding = new Padding(8, 4, 8, 4)
             };
@@ -43,8 +52,9 @@ namespace IUIS.SharedUI.DataGridViews
             dataGridView.DefaultCellStyle = new DataGridViewCellStyle
             {
                 Padding = new Padding(8, 4, 8, 4),
-                SelectionBackColor = Color.FromArgb(79, 70, 229),
-                SelectionForeColor = Color.White
+                SelectionBackColor = UiTheme.Selection,
+                SelectionForeColor = UiTheme.TextPrimary,
+                NullValue = "—"
             };
 
             return dataGridView;

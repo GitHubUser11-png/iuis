@@ -24,6 +24,7 @@ namespace IUIS.SharedUI.Controls
 
             _sidebar = new NavigationSidebarPanel();
             _sidebar.NavigationRequested += SidebarNavigationRequested;
+            _sidebar.SignOutRequested += SidebarSignOutRequested;
 
             _header = new ApplicationHeaderBarPanel();
 
@@ -66,12 +67,6 @@ namespace IUIS.SharedUI.Controls
             string statusText)
         {
             _sidebar.LoadNavigation(portalLabel, groups);
-            _sidebar.SignOutRequested += delegate
-            {
-                var handler = SignOutRequested;
-                if (handler != null)
-                    handler(this, EventArgs.Empty);
-            };
             _header.SetUserDisplay(userDisplay);
             _statusBar.Text = statusText ?? string.Empty;
         }
@@ -125,5 +120,13 @@ namespace IUIS.SharedUI.Controls
         {
             ShowPage(entry);
         }
+
+        private void SidebarSignOutRequested(object sender, EventArgs e)
+        {
+            var handler = SignOutRequested;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+        }
+
     }
 }

@@ -22,7 +22,9 @@ namespace IUIS.SharedUI.Controls
             Width = UiMetrics.SidebarExpandedWidth;
             Dock = DockStyle.Left;
             BackColor = UiTheme.InstitutionalPrimary;
-            Padding = new Padding(0, 16, 0, 16);
+            Padding = new Padding(0, UiMetrics.ContentPadding, 0, UiMetrics.ContentPadding);
+            AccessibleName = "Primary navigation";
+            AccessibleRole = AccessibleRole.Grouping;
 
             _portalLabel = new Label();
             _portalLabel.Text = "IUIS Portal";
@@ -69,8 +71,9 @@ namespace IUIS.SharedUI.Controls
                 var heading = new Label();
                 heading.Text = group.GroupKey.ToUpperInvariant();
                 heading.Font = UiTheme.CaptionFont;
-                heading.ForeColor = Color.FromArgb(190, 210, 230);
+                heading.ForeColor = Color.FromArgb(184, 202, 213);
                 heading.AutoSize = true;
+                heading.AccessibleRole = AccessibleRole.StaticText;
                 heading.Margin = new Padding(12, 16, 12, 4);
                 heading.Width = UiMetrics.SidebarExpandedWidth - 32;
                 _groupsPanel.Controls.Add(heading);
@@ -93,11 +96,14 @@ namespace IUIS.SharedUI.Controls
             {
                 var selected = string.Equals(pair.Key, key, StringComparison.OrdinalIgnoreCase);
                 pair.Value.BackColor = selected
-                    ? UiTheme.InstitutionalDark
-                    : Color.Transparent;
+                    ? UiTheme.Accent
+                    : UiTheme.InstitutionalPrimary;
                 pair.Value.Font = selected
-                    ? new Font(UiTheme.BodyFont, FontStyle.Bold)
+                    ? UiTheme.NavigationSelectedFont
                     : UiTheme.BodyFont;
+                pair.Value.AccessibleDescription = selected
+                    ? "Current page"
+                    : "Open " + pair.Value.Text;
             }
         }
 
@@ -127,16 +133,19 @@ namespace IUIS.SharedUI.Controls
             button.Text = text;
             button.Name = key;
             button.Width = UiMetrics.SidebarExpandedWidth - 32;
-            button.Height = 36;
+            button.Height = UiMetrics.StandardButtonHeight;
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
             button.TextAlign = ContentAlignment.MiddleLeft;
             button.Padding = new Padding(12, 0, 0, 0);
             button.ForeColor = Color.White;
-            button.BackColor = Color.Transparent;
+            button.BackColor = UiTheme.InstitutionalPrimary;
             button.Font = UiTheme.BodyFont;
             button.Cursor = Cursors.Hand;
             button.Margin = new Padding(4, 2, 4, 2);
+            button.AccessibleName = text;
+            button.AccessibleRole = AccessibleRole.PushButton;
+            UiTheme.ApplyButtonInteractionStyle(button, UiTheme.InstitutionalDark, UiTheme.Accent);
             return button;
         }
     }
