@@ -13,7 +13,11 @@ namespace IUIS.Infrastructure.Projections.Student
 
         public void SetRevision(string repositoryName, long revision)
         {
-            var mutable = new Dictionary<string, long>(Revisions);
+            var mutable = new Dictionary<string, long>();
+            foreach (var kvp in Revisions)
+            {
+                mutable[kvp.Key] = kvp.Value;
+            }
             mutable[repositoryName] = revision;
             Revisions = mutable;
         }

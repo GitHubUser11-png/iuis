@@ -5,6 +5,7 @@ using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Finance;
 using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.DataGridViews;
+using IUIS.UserApp.Forms.Student.Dialogs;
 
 namespace IUIS.UserApp.Forms.Student.Pages
 {

@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using IUIS.SharedUI.Base;
+using IUIS.SharedUI.Forms;
 
 namespace IUIS.UserApp.Forms.Employee.Library
 {

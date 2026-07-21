@@ -129,9 +129,9 @@ namespace IUIS.AdminApp.Forms
             AppDataGridViewFactory.AddTextBoxColumn(grid, "FileName", "File Name", 200);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "RecordCount", "Records", 100);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "Revision", "Revision", 80);
-            AppDataGridViewFactory.AddDateColumn(grid, "LastUpdatedUtc", "Last Updated", 150);
+            AppDataGridViewFactory.AddDateColumn(grid, "LastUpdatedUtc", "Last Updated", "MM/dd/yyyy", 150);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "Status", "Status", 100);
-            AppDataGridViewFactory.AddButtonColumn(grid, "View", "View", 60);
+            AppDataGridViewFactory.AddButtonColumn(grid, "View", "View", "View", 60);
             
             return grid;
         }
@@ -139,7 +139,7 @@ namespace IUIS.AdminApp.Forms
         private DataGridView CreateAuditLogsGrid()
         {
             var grid = AppDataGridViewFactory.CreateStyledDataGridView();
-            AppDataGridViewFactory.AddDateColumn(grid, "TimestampUtc", "Timestamp", 150);
+            AppDataGridViewFactory.AddDateColumn(grid, "TimestampUtc", "Timestamp", "MM/dd/yyyy", 150);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "UserId", "User ID", 120);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "UserName", "User", 150);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "Action", "Action", 200);
@@ -154,13 +154,13 @@ namespace IUIS.AdminApp.Forms
         {
             var grid = AppDataGridViewFactory.CreateStyledDataGridView();
             AppDataGridViewFactory.AddTextBoxColumn(grid, "BackupId", "ID", 120);
-            AppDataGridViewFactory.AddDateColumn(grid, "CreatedAtUtc", "Created", 150);
+            AppDataGridViewFactory.AddDateColumn(grid, "CreatedAtUtc", "Created", "MM/dd/yyyy", 150);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "CreatedBy", "Created By", 150);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "Type", "Type", 100);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "Size", "Size", 100);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "Status", "Status", 100);
-            AppDataGridViewFactory.AddButtonColumn(grid, "Restore", "Restore", 80);
-            AppDataGridViewFactory.AddButtonColumn(grid, "Download", "Download", 80);
+            AppDataGridViewFactory.AddButtonColumn(grid, "Restore", "Restore", "Restore", 80);
+            AppDataGridViewFactory.AddButtonColumn(grid, "Download", "Download", "Download", 80);
             
             grid.CellClick += OnBackupGridCellClick;
             return grid;

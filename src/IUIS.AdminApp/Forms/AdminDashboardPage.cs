@@ -147,7 +147,7 @@ namespace IUIS.AdminApp.Forms
             AppDataGridViewFactory.AddTextBoxColumn(_alertsGrid, "Severity", "Severity", 100);
             AppDataGridViewFactory.AddTextBoxColumn(_alertsGrid, "AlertType", "Type", 150);
             AppDataGridViewFactory.AddTextBoxColumn(_alertsGrid, "Message", "Message", 300);
-            AppDataGridViewFactory.AddDateColumn(_alertsGrid, "CreatedAtUtc", "Date", 120);
+            AppDataGridViewFactory.AddDateColumn(_alertsGrid, "CreatedAtUtc", "Date", "MM/dd/yyyy", 120);
 
             mainPanel.Controls.Add(headerLabel);
             mainPanel.Controls.Add(metricsPanel);

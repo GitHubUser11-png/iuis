@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using IUIS.Application.Abstractions.EmployeeServices;
+using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.DataGridViews;
 
 namespace IUIS.UserApp.Forms.Employee.Library

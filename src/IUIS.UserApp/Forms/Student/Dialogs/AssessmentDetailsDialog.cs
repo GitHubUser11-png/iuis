@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using IUIS.Application.Abstractions.StudentSelfService;
 using IUIS.Application.StudentSelfService.Finance;
-using IUIS.SharedUI.Base;
+using IUIS.SharedUI.Forms;
 using IUIS.SharedUI.DataGridViews;
 
 namespace IUIS.UserApp.Forms.Student.Dialogs

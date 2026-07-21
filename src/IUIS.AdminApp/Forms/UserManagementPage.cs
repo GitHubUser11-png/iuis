@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.DataGridViews;
 
 namespace IUIS.AdminApp.Forms
@@ -118,11 +119,11 @@ namespace IUIS.AdminApp.Forms
             AppDataGridViewFactory.AddTextBoxColumn(grid, "PersonName", "Name", 200);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "PrimaryRole", "Role", 120);
             AppDataGridViewFactory.AddTextBoxColumn(grid, "Status", "Status", 100);
-            AppDataGridViewFactory.AddDateColumn(grid, "CreatedAtUtc", "Created", 120);
-            AppDataGridViewFactory.AddDateColumn(grid, "LastLoginAtUtc", "Last Login", 120);
-            AppDataGridViewFactory.AddButtonColumn(grid, "View", "View", 60);
-            AppDataGridViewFactory.AddButtonColumn(grid, "Edit", "Edit", 60);
-            AppDataGridViewFactory.AddButtonColumn(grid, "Permissions", "Permissions", 100);
+            AppDataGridViewFactory.AddDateColumn(grid, "CreatedAtUtc", "Created", "MM/dd/yyyy", 120);
+            AppDataGridViewFactory.AddDateColumn(grid, "LastLoginAtUtc", "Last Login", "MM/dd/yyyy", 120);
+            AppDataGridViewFactory.AddButtonColumn(grid, "View", "View", "View", 60);
+            AppDataGridViewFactory.AddButtonColumn(grid, "Edit", "Edit", "Edit", 60);
+            AppDataGridViewFactory.AddButtonColumn(grid, "Permissions", "Permissions", "Permissions", 100);
             
             grid.CellClick += OnUsersGridCellClick;
             return grid;
@@ -151,11 +152,8 @@ namespace IUIS.AdminApp.Forms
 
         private void OnCreateUserClick(object sender, EventArgs e)
         {
-            var dialog = new UserCreateEditDialog(_sessionId);
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                LoadUsers();
-            }
+            // TODO: Implement UserCreateEditDialog
+            MessageBox.Show("User creation dialog not yet implemented.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void OnUsersGridCellClick(object sender, DataGridViewCellEventArgs e)
@@ -168,24 +166,18 @@ namespace IUIS.AdminApp.Forms
 
             if (grid.Columns[e.ColumnIndex].Name == "View")
             {
-                var dialog = new UserDetailsDialog(userId);
-                dialog.ShowDialog();
+                // TODO: Implement UserDetailsDialog
+                MessageBox.Show("User details dialog not yet implemented.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else if (grid.Columns[e.ColumnIndex].Name == "Edit")
             {
-                var dialog = new UserCreateEditDialog(_sessionId, userId);
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    LoadUsers();
-                }
+                // TODO: Implement UserCreateEditDialog
+                MessageBox.Show("User edit dialog not yet implemented.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else if (grid.Columns[e.ColumnIndex].Name == "Permissions")
             {
-                var dialog = new UserPermissionsDialog(userId);
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    LoadUsers();
-                }
+                // TODO: Implement UserPermissionsDialog
+                MessageBox.Show("User permissions dialog not yet implemented.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

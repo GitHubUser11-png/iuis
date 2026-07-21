@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using IUIS.SharedUI.Base;
+using IUIS.SharedUI.Forms;
 
 namespace IUIS.UserApp.Forms.Employee.Counseling
 {
@@ -113,7 +113,6 @@ namespace IUIS.UserApp.Forms.Employee.Counseling
                     _detailsPanel.Controls.Add(valueControl);
 
                     x += 270;
-                    if (x > 250)
                     if (x > 250)
                     {
                         x = 20;

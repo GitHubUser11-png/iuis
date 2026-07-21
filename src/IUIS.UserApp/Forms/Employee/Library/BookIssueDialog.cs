@@ -1,7 +1,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using IUIS.SharedUI.Base;
+using IUIS.SharedUI.Forms;
+using IUIS.SharedUI.DataGridViews;
 
 namespace IUIS.UserApp.Forms.Employee.Library
 {
@@ -64,9 +65,11 @@ namespace IUIS.UserApp.Forms.Employee.Library
                 Location = new Point(0, 25),
                 Width = 400,
                 Height = 28,
-                PlaceholderText = "Search by Student ID or Name...",
+                Text = "Search by Student ID or Name...",
                 Font = new Font("Segoe UI", 9F)
             };
+            _studentSearchTextBox.GotFocus += (s, e) => { if (_studentSearchTextBox.Text == "Search by Student ID or Name...") _studentSearchTextBox.Text = ""; };
+            _studentSearchTextBox.LostFocus += (s, e) => { if (string.IsNullOrWhiteSpace(_studentSearchTextBox.Text)) _studentSearchTextBox.Text = "Search by Student ID or Name..."; };
 
             _studentResultsGrid = AppDataGridViewFactory.CreateStyledDataGridView();
             _studentResultsGrid.Location = new Point(0, 60);
@@ -96,9 +99,11 @@ namespace IUIS.UserApp.Forms.Employee.Library
                 Location = new Point(0, 250),
                 Width = 400,
                 Height = 28,
-                PlaceholderText = "Search by ISBN, Title, or Author...",
+                Text = "Search by ISBN, Title, or Author...",
                 Font = new Font("Segoe UI", 9F)
             };
+            _bookSearchTextBox.GotFocus += (s, e) => { if (_bookSearchTextBox.Text == "Search by ISBN, Title, or Author...") _bookSearchTextBox.Text = ""; };
+            _bookSearchTextBox.LostFocus += (s, e) => { if (string.IsNullOrWhiteSpace(_bookSearchTextBox.Text)) _bookSearchTextBox.Text = "Search by ISBN, Title, or Author..."; };
 
             _bookResultsGrid = AppDataGridViewFactory.CreateStyledDataGridView();
             _bookResultsGrid.Location = new Point(0, 285);

@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using IUIS.Application.StudentSelfService.Finance;
-using IUIS.SharedUI.Base;
+using IUIS.SharedUI.Forms;
 
 namespace IUIS.UserApp.Forms.Student.Dialogs
 {

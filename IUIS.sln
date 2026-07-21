@@ -15,10 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.UserApp", "src\IUIS.Us
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.AdminApp", "src\IUIS.AdminApp\IUIS.AdminApp.csproj", "{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.Tests", "src\IUIS.Tests\IUIS.Tests.csproj", "{70C8F56E-B7D6-4DD9-C4AD-8095B8CB4F04}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iuis", "iuis\iuis.csproj", "{46134FFC-219E-4515-99D9-387C29074839}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,14 +45,6 @@ Global
 		{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}.Release|Any CPU.Build.0 = Release|Any CPU
-		{70C8F56E-B7D6-4DD9-C4AD-8095B8CB4F04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{70C8F56E-B7D6-4DD9-C4AD-8095B8CB4F04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{70C8F56E-B7D6-4DD9-C4AD-8095B8CB4F04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{70C8F56E-B7D6-4DD9-C4AD-8095B8CB4F04}.Release|Any CPU.Build.0 = Release|Any CPU
-		{46134FFC-219E-4515-99D9-387C29074839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46134FFC-219E-4515-99D9-387C29074839}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46134FFC-219E-4515-99D9-387C29074839}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46134FFC-219E-4515-99D9-387C29074839}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

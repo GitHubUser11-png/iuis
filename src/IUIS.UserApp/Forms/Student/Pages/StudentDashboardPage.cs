@@ -155,7 +155,6 @@ namespace IUIS.UserApp.Forms.Student.Pages
                 _statusCard.StudentName = dashboard.StudentName;
                 _statusCard.Program = dashboard.ProgramName;
                 _statusCard.YearLevel = $"Year Level: {dashboard.YearLevel}";
-                _statusCard.Section = dashboard.Section;
                 _statusCard.SetActive();
 
                 _balanceCard.Value = $"₱{dashboard.OutstandingBalance:N2}";
@@ -181,7 +180,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
                 _scholarshipsCard.Subtitle = $"{dashboard.PendingApplications} Pending";
 
                 _notificationsCard.Value = dashboard.RecentNotifications.Count.ToString();
-                _notificationsCard.Subtitle = $"{dashboard.RecentNotifications.Count(n => !n.IsRead)} Unread";
+                _notificationsCard.Subtitle = $"{dashboard.RecentNotifications.Where(n => !n.IsRead).Count()} Unread";
 
                 _appointmentsGrid.DataSource = dashboard.UpcomingAppointments;
                 _notificationsGrid.DataSource = dashboard.RecentNotifications;
