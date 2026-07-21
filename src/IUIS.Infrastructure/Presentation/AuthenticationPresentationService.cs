@@ -10,6 +10,8 @@ using IUIS.Application.Security;
 using IUIS.Domain.Identity;
 using IUIS.Infrastructure.Persistence;
 using IUIS.Infrastructure.Security;
+using AppAuthResult = IUIS.Application.Security.AuthenticationResult;
+using InfraAuthResult = IUIS.Infrastructure.Security.AuthenticationResult;
 
 namespace IUIS.Infrastructure.Presentation
 {
@@ -39,7 +41,7 @@ namespace IUIS.Infrastructure.Presentation
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public AuthenticationResult Authenticate(LoginRequest request)
+        public AppAuthResult Authenticate(LoginRequest request)
         {
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
@@ -56,7 +58,7 @@ namespace IUIS.Infrastructure.Presentation
 
             if (infrastructureResult.IsLockedOut)
             {
-                return new AuthenticationResult
+                return new AppAuthResult
                 {
                     Status = AuthenticationStatus.AccountLocked,
                     UserMessage = "Your account is temporarily locked. Try again later or use password assistance.",
@@ -66,7 +68,7 @@ namespace IUIS.Infrastructure.Presentation
 
             if (!infrastructureResult.Succeeded)
             {
-                return new AuthenticationResult
+                return new AppAuthResult
                 {
                     Status = AuthenticationStatus.InvalidCredentials,
                     UserMessage = string.IsNullOrWhiteSpace(infrastructureResult.FailureReason)
@@ -78,7 +80,7 @@ namespace IUIS.Infrastructure.Presentation
             var account = ReadUserAccount(infrastructureResult.UserId);
             if (account == null)
             {
-                return new AuthenticationResult
+                return new AppAuthResult
                 {
                     Status = AuthenticationStatus.InvalidCredentials,
                     UserMessage = "Invalid Login ID or password."
@@ -88,7 +90,7 @@ namespace IUIS.Infrastructure.Presentation
             PrimaryRole role;
             if (!Enum.TryParse(account.PrimaryRole, true, out role) || role == PrimaryRole.Unspecified)
             {
-                return new AuthenticationResult
+                return new AppAuthResult
                 {
                     Status = AuthenticationStatus.AccountInactive,
                     UserMessage = "This account cannot sign in to the selected application."
@@ -125,7 +127,7 @@ namespace IUIS.Infrastructure.Presentation
                     _permissionResolver.ResolveEffectivePermissions(principal));
             }
 
-            return new AuthenticationResult
+            return new AppAuthResult
             {
                 Status = infrastructureResult.MustChangePassword
                     ? AuthenticationStatus.PasswordChangeRequired

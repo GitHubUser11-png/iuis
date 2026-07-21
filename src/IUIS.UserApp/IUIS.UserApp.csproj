@@ -20,25 +20,11 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\UserApplicationContext.cs" />
-    <Compile Include="Configuration\UserAppSettings.cs" />
-    <Compile Include="Forms\GeneralLoginForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Shell\UserShellForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\StartupCheckForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\StartupFailureForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Application\**\*.cs" />
+    <Compile Include="Configuration\**\*.cs" />
+    <Compile Include="Forms\**\*.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserStartupForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Properties\**\*.cs" />
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>

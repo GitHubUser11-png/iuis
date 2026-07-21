@@ -11,7 +11,7 @@
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.Infrastructure\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup><Reference Include="System" /><Reference Include="System.Configuration" /><Reference Include="System.Core" /></ItemGroup>
-  <ItemGroup><PackageReference Include="System.Text.Json" Version="8.0.5" /></ItemGroup>
+  <ItemGroup><PackageReference Include="System.Text.Json" Version="4.7.2" /></ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrap\ProductionBootstrapper.cs" />
     <Compile Include="Composition\IuisCompositionRoot.cs" />

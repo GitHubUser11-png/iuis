@@ -18,28 +18,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationIdentity.cs" />
-    <Compile Include="Application\TransitionAwareApplicationContext.cs" />
-    <Compile Include="Controls\ApplicationHeaderBarPanel.cs" />
-    <Compile Include="Controls\ApplicationIdentityPanel.cs" />
-    <Compile Include="Controls\ApplicationShellPanel.cs" />
-    <Compile Include="Controls\DashboardPagePanel.cs" />
-    <Compile Include="Controls\FormCardPanel.cs" />
-    <Compile Include="Controls\LabeledFieldPanel.cs" />
-    <Compile Include="Controls\LoadingOverlayPanel.cs" />
-    <Compile Include="Controls\ModulePagePanel.cs" />
-    <Compile Include="Controls\NavigationSidebarPanel.cs" />
-    <Compile Include="Controls\PasswordFieldPanel.cs" />
-    <Compile Include="Controls\StatusBannerPanel.cs" />
-    <Compile Include="Forms\FirstLoginPasswordChangeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Navigation\NavigationGroupBuilder.cs" />
-    <Compile Include="Navigation\NavigationGroupModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shell\ShellPageFactory.cs" />
-    <Compile Include="Theme\UiMetrics.cs" />
-    <Compile Include="Theme\UiTheme.cs" />
+    <Compile Include="**\*.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IUIS.Domain\IUIS.Domain.csproj">

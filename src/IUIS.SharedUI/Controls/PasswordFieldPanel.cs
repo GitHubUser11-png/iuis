@@ -9,6 +9,7 @@ namespace IUIS.SharedUI.Controls
     {
         private readonly Label _label;
         private readonly Label _errorLabel;
+        private readonly Label _helpLabel;
         private readonly Button _toggleButton;
         private bool _visibleText;
 
@@ -42,6 +43,13 @@ namespace IUIS.SharedUI.Controls
             _toggleButton.Font = UiTheme.CaptionFont;
             _toggleButton.Click += ToggleVisibility;
 
+            _helpLabel = new Label();
+            _helpLabel.Font = UiTheme.CaptionFont;
+            _helpLabel.ForeColor = UiTheme.TextSecondary;
+            _helpLabel.AutoSize = true;
+            _helpLabel.Location = new Point(0, 50);
+            _helpLabel.Visible = false;
+
             _errorLabel = new Label();
             _errorLabel.Font = UiTheme.CaptionFont;
             _errorLabel.ForeColor = UiTheme.Error;
@@ -52,6 +60,7 @@ namespace IUIS.SharedUI.Controls
             Controls.Add(_label);
             Controls.Add(InputControl);
             Controls.Add(_toggleButton);
+            Controls.Add(_helpLabel);
             Controls.Add(_errorLabel);
         }
 
@@ -69,6 +78,12 @@ namespace IUIS.SharedUI.Controls
         public void ClearError()
         {
             SetErrorText(null);
+        }
+
+        public void SetHelpText(string helpText)
+        {
+            _helpLabel.Text = helpText ?? string.Empty;
+            _helpLabel.Visible = !string.IsNullOrWhiteSpace(helpText);
         }
 
         private void ToggleVisibility(object sender, System.EventArgs e)
