@@ -35,11 +35,7 @@ namespace IUIS.Tests
                 var envelope = store.Read<JsonElement>("employees");
                 Assert.AreEqual(1L, envelope.Revision);
                 Assert.AreEqual(1, envelope.Records.Count);
-                Assert.AreEqual(
-                    1,
-                    envelope.Records[0]
-                        .GetProperty("recordSchemaVersion")
-                        .GetInt32());
+                Assert.AreEqual(1, envelope.Records[0].GetProperty("recordSchemaVersion").GetInt32());
 
                 var employee = new IuisCompositionRoot(root).Employees
                     .FindById(bootstrap.AdministratorEmployeeId);
@@ -61,9 +57,7 @@ namespace IUIS.Tests
                 Assert.AreEqual(0, composition.Courses.Read().Records.Count);
                 Assert.AreEqual(0, composition.Subjects.Read().Records.Count);
                 Assert.AreEqual(0, composition.AcademicPeriods.Read().Records.Count);
-                Assert.AreEqual(
-                    0,
-                    composition.AssessmentChargeRules.Read().Records.Count);
+                Assert.AreEqual(0, composition.AssessmentChargeRules.Read().Records.Count);
             });
         }
 
@@ -72,29 +66,15 @@ namespace IUIS.Tests
         {
             var student = CreateStudent("STU-2026-000010");
             student.UpdateContact(
-                new ContactInformation(
-                    "updated.student@example.edu",
-                    "+639181112222",
-                    null),
-                new PostalAddress(
-                    "2 University Road",
-                    null,
-                    "Poblacion",
-                    "Malvar",
-                    "Batangas",
-                    "4233",
-                    "PH"),
+                new ContactInformation("updated.student@example.edu", "+639181112222", null),
+                new PostalAddress("2 University Road", null, "Poblacion", "Malvar", "Batangas", "4233", "PH"),
                 Now.AddMinutes(1),
                 "USR-2026-000010");
-            student.Archive(
-                Now.AddMinutes(2),
-                "USR-2026-000010");
+            student.Archive(Now.AddMinutes(2), "USR-2026-000010");
 
             var mapper = new StudentRecordJsonMapper();
             var options = JsonOptions();
-            var restored = mapper.FromJson(
-                mapper.ToJson(student, options),
-                options);
+            var restored = mapper.FromJson(mapper.ToJson(student, options), options);
 
             Assert.AreEqual(student.Id, restored.Id);
             Assert.AreEqual(student.Version, restored.Version);
@@ -117,12 +97,9 @@ namespace IUIS.Tests
                 false,
                 Now.AddMinutes(1),
                 "USR-2026-000010");
-
             var mapper = new EmployeeRecordJsonMapper();
             var options = JsonOptions();
-            var restored = mapper.FromJson(
-                mapper.ToJson(employee, options),
-                options);
+            var restored = mapper.FromJson(mapper.ToJson(employee, options), options);
 
             Assert.AreEqual(employee.Id, restored.Id);
             Assert.AreEqual(employee.Version, restored.Version);
@@ -145,11 +122,7 @@ namespace IUIS.Tests
                 4,
                 Now,
                 "USR-2026-000001");
-            course.ChangeStatus(
-                CourseStatus.Active,
-                Now.AddMinutes(1),
-                "USR-2026-000001");
-
+            course.ChangeStatus(CourseStatus.Active, Now.AddMinutes(1), "USR-2026-000001");
             var subject = new Subject(
                 "SUB-2026-000010",
                 "IT-332",
@@ -161,11 +134,7 @@ namespace IUIS.Tests
                 new SubjectPrerequisite("SUB-2026-000009"),
                 Now.AddMinutes(1),
                 "USR-2026-000001");
-            subject.ChangeStatus(
-                SubjectStatus.Active,
-                Now.AddMinutes(2),
-                "USR-2026-000001");
-
+            subject.ChangeStatus(SubjectStatus.Active, Now.AddMinutes(2), "USR-2026-000001");
             var period = new AcademicPeriod(
                 "APD-2026-000010",
                 "AY2026-T1",
@@ -176,31 +145,21 @@ namespace IUIS.Tests
                 new InstitutionLocalDate(2026, 12, 15),
                 Now,
                 "USR-2026-000001");
-            period.TransitionTo(
-                AcademicPeriodStatus.Scheduled,
-                Now.AddMinutes(1),
-                "USR-2026-000001");
+            period.TransitionTo(AcademicPeriodStatus.Scheduled, Now.AddMinutes(1), "USR-2026-000001");
 
             var options = JsonOptions();
             var restoredCourse = new CourseJsonMapper().FromJson(
-                new CourseJsonMapper().ToJson(course, options),
-                options);
+                new CourseJsonMapper().ToJson(course, options), options);
             var restoredSubject = new SubjectJsonMapper().FromJson(
-                new SubjectJsonMapper().ToJson(subject, options),
-                options);
+                new SubjectJsonMapper().ToJson(subject, options), options);
             var restoredPeriod = new AcademicPeriodJsonMapper().FromJson(
-                new AcademicPeriodJsonMapper().ToJson(period, options),
-                options);
+                new AcademicPeriodJsonMapper().ToJson(period, options), options);
 
             Assert.AreEqual(CourseStatus.Active, restoredCourse.Status);
             Assert.AreEqual(course.Version, restoredCourse.Version);
             Assert.AreEqual(SubjectStatus.Active, restoredSubject.Status);
-            Assert.AreEqual(
-                "SUB-2026-000009",
-                restoredSubject.Prerequisites.Single().PrerequisiteSubjectId);
-            Assert.AreEqual(
-                AcademicPeriodStatus.Scheduled,
-                restoredPeriod.Status);
+            Assert.AreEqual("SUB-2026-000009", restoredSubject.Prerequisites.Single().PrerequisiteSubjectId);
+            Assert.AreEqual(AcademicPeriodStatus.Scheduled, restoredPeriod.Status);
             Assert.AreEqual(period.StartDate, restoredPeriod.StartDate);
             Assert.AreEqual(period.EndDate, restoredPeriod.EndDate);
         }
@@ -217,15 +176,10 @@ namespace IUIS.Tests
                 Money.PhilippinePeso(1250.50m),
                 Now,
                 "USR-2026-000001");
-            rule.Activate(
-                Now.AddMinutes(1),
-                "USR-2026-000001");
-
+            rule.Activate(Now.AddMinutes(1), "USR-2026-000001");
             var mapper = new AssessmentChargeRuleJsonMapper();
             var options = JsonOptions();
-            var restored = mapper.FromJson(
-                mapper.ToJson(rule, options),
-                options);
+            var restored = mapper.FromJson(mapper.ToJson(rule, options), options);
 
             Assert.AreEqual(ChargeRuleStatus.Active, restored.Status);
             Assert.AreEqual(1250.50m, restored.Rate.Amount);
@@ -254,7 +208,6 @@ namespace IUIS.Tests
                     Status = CourseStatus.Draft.ToString()
                 },
                 options);
-
             Assert.ThrowsException<InvalidOperationException>(() =>
                 new CourseJsonMapper().FromJson(source, options));
         }
@@ -285,25 +238,19 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        public void ReadinessCatalogActivatesExactlyElevenSpecializedMappers()
+        public void ReadinessCatalogActivatesExactlySixteenSpecializedMappers()
         {
             var records = AggregateMapperReadinessCatalog.All;
             Assert.AreEqual(18, records.Count);
             Assert.AreEqual(
-                11,
-                records.Count(item =>
-                    item.Readiness
-                    == AggregateMapperReadiness.SpecializedMapperCompleted));
+                16,
+                records.Count(item => item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted));
             Assert.AreEqual(
-                7,
-                records.Count(item =>
-                    item.Readiness
-                    == AggregateMapperReadiness.DeferredWithExplicitReason));
+                2,
+                records.Count(item => item.Readiness == AggregateMapperReadiness.DeferredWithExplicitReason));
             Assert.IsFalse(records.Any(item =>
-                item.Readiness
-                == AggregateMapperReadiness.GenericMapperCompatible
-                || item.Readiness
-                == AggregateMapperReadiness.RequiresSpecializedMapper));
+                item.Readiness == AggregateMapperReadiness.GenericMapperCompatible
+                || item.Readiness == AggregateMapperReadiness.RequiresSpecializedMapper));
         }
 
         [TestMethod]
@@ -311,11 +258,10 @@ namespace IUIS.Tests
         {
             WithStudentSession((root, credentials, student) =>
             {
-                var result = new IuisCompositionRoot(root)
-                    .StudentOwnRecords.GetOwnRecord(
-                        credentials.SessionId,
-                        credentials.Token,
-                        Now.AddMinutes(5));
+                var result = new IuisCompositionRoot(root).StudentOwnRecords.GetOwnRecord(
+                    credentials.SessionId,
+                    credentials.Token,
+                    Now.AddMinutes(5));
                 Assert.AreEqual(student.Id, result.StudentId);
                 Assert.AreEqual(student.Version, result.EntityVersion);
                 Assert.AreEqual(1L, result.RepositoryRevision);
@@ -328,11 +274,10 @@ namespace IUIS.Tests
         {
             WithEmployeeSession((root, credentials, employee) =>
             {
-                var result = new IuisCompositionRoot(root)
-                    .EmployeeSelfService.GetOwnRecord(
-                        credentials.SessionId,
-                        credentials.Token,
-                        Now.AddMinutes(5));
+                var result = new IuisCompositionRoot(root).EmployeeSelfService.GetOwnRecord(
+                    credentials.SessionId,
+                    credentials.Token,
+                    Now.AddMinutes(5));
                 Assert.AreEqual(employee.Id, result.EmployeeId);
                 Assert.AreEqual(employee.Version, result.EntityVersion);
                 Assert.AreEqual(2L, result.RepositoryRevision);
@@ -347,31 +292,20 @@ namespace IUIS.Tests
             {
                 var composition = new IuisCompositionRoot(root);
                 var read = composition.StudentOwnRecords.GetOwnRecord(
-                    credentials.SessionId,
-                    credentials.Token,
-                    Now.AddMinutes(5));
+                    credentials.SessionId, credentials.Token, Now.AddMinutes(5));
                 var result = composition.StudentContactUpdates.UpdateOwnContact(
                     credentials.SessionId,
                     credentials.Token,
-                    ContactRequest(
-                        read.RepositoryRevision,
-                        read.EntityVersion,
-                        "student.changed@example.edu"),
+                    ContactRequest(read.RepositoryRevision, read.EntityVersion, "student.changed@example.edu"),
                     Now.AddMinutes(6));
-
                 Assert.IsFalse(string.IsNullOrWhiteSpace(result.TransactionId));
                 Assert.AreEqual(2L, result.RepositoryRevision);
                 Assert.AreEqual(2L, result.EntityVersion);
                 Assert.AreEqual(credentials.UserId, result.UpdatedByUserId);
 
-                var persisted = new IuisCompositionRoot(root)
-                    .StudentOwnRecords.GetOwnRecord(
-                        credentials.SessionId,
-                        credentials.Token,
-                        Now.AddMinutes(7));
-                Assert.AreEqual(
-                    "student.changed@example.edu",
-                    persisted.EmailAddress);
+                var persisted = new IuisCompositionRoot(root).StudentOwnRecords.GetOwnRecord(
+                    credentials.SessionId, credentials.Token, Now.AddMinutes(7));
+                Assert.AreEqual("student.changed@example.edu", persisted.EmailAddress);
                 Assert.AreEqual(2L, persisted.RepositoryRevision);
                 Assert.AreEqual(2L, persisted.EntityVersion);
             });
@@ -384,31 +318,20 @@ namespace IUIS.Tests
             {
                 var composition = new IuisCompositionRoot(root);
                 var read = composition.EmployeeSelfService.GetOwnRecord(
-                    credentials.SessionId,
-                    credentials.Token,
-                    Now.AddMinutes(5));
+                    credentials.SessionId, credentials.Token, Now.AddMinutes(5));
                 var result = composition.EmployeeContactUpdates.UpdateOwnContact(
                     credentials.SessionId,
                     credentials.Token,
-                    ContactRequest(
-                        read.RepositoryRevision,
-                        read.EntityVersion,
-                        "employee.changed@example.edu"),
+                    ContactRequest(read.RepositoryRevision, read.EntityVersion, "employee.changed@example.edu"),
                     Now.AddMinutes(6));
-
                 Assert.IsFalse(string.IsNullOrWhiteSpace(result.TransactionId));
                 Assert.AreEqual(3L, result.RepositoryRevision);
                 Assert.AreEqual(2L, result.EntityVersion);
                 Assert.AreEqual(credentials.UserId, result.UpdatedByUserId);
 
-                var persisted = new IuisCompositionRoot(root)
-                    .EmployeeSelfService.GetOwnRecord(
-                        credentials.SessionId,
-                        credentials.Token,
-                        Now.AddMinutes(7));
-                Assert.AreEqual(
-                    "employee.changed@example.edu",
-                    persisted.EmailAddress);
+                var persisted = new IuisCompositionRoot(root).EmployeeSelfService.GetOwnRecord(
+                    credentials.SessionId, credentials.Token, Now.AddMinutes(7));
+                Assert.AreEqual("employee.changed@example.edu", persisted.EmailAddress);
                 Assert.AreEqual(3L, persisted.RepositoryRevision);
             });
         }
@@ -420,36 +343,22 @@ namespace IUIS.Tests
             {
                 var composition = new IuisCompositionRoot(root);
                 var read = composition.StudentOwnRecords.GetOwnRecord(
-                    credentials.SessionId,
-                    credentials.Token,
-                    Now.AddMinutes(5));
+                    credentials.SessionId, credentials.Token, Now.AddMinutes(5));
                 composition.StudentContactUpdates.UpdateOwnContact(
                     credentials.SessionId,
                     credentials.Token,
-                    ContactRequest(
-                        read.RepositoryRevision,
-                        read.EntityVersion,
-                        "first.change@example.edu"),
+                    ContactRequest(read.RepositoryRevision, read.EntityVersion, "first.change@example.edu"),
                     Now.AddMinutes(6));
-
                 Assert.ThrowsException<InvalidOperationException>(() =>
                     composition.StudentContactUpdates.UpdateOwnContact(
                         credentials.SessionId,
                         credentials.Token,
-                        ContactRequest(
-                            read.RepositoryRevision,
-                            read.EntityVersion,
-                            "stale.change@example.edu"),
+                        ContactRequest(read.RepositoryRevision, read.EntityVersion, "stale.change@example.edu"),
                         Now.AddMinutes(7)));
 
-                var persisted = new IuisCompositionRoot(root)
-                    .StudentOwnRecords.GetOwnRecord(
-                        credentials.SessionId,
-                        credentials.Token,
-                        Now.AddMinutes(8));
-                Assert.AreEqual(
-                    "first.change@example.edu",
-                    persisted.EmailAddress);
+                var persisted = new IuisCompositionRoot(root).StudentOwnRecords.GetOwnRecord(
+                    credentials.SessionId, credentials.Token, Now.AddMinutes(8));
+                Assert.AreEqual("first.change@example.edu", persisted.EmailAddress);
                 Assert.AreEqual(2L, persisted.RepositoryRevision);
                 Assert.AreEqual(2L, persisted.EntityVersion);
             });
@@ -469,12 +378,8 @@ namespace IUIS.Tests
             foreach (var type in types)
             {
                 Assert.IsFalse(type.GetProperties().Any(property =>
-                    property.Name.IndexOf(
-                        "Internal",
-                        StringComparison.OrdinalIgnoreCase) >= 0
-                    || property.Name.IndexOf(
-                        "Confidential",
-                        StringComparison.OrdinalIgnoreCase) >= 0));
+                    property.Name.IndexOf("Internal", StringComparison.OrdinalIgnoreCase) >= 0
+                    || property.Name.IndexOf("Confidential", StringComparison.OrdinalIgnoreCase) >= 0));
             }
         }
 
@@ -500,18 +405,8 @@ namespace IUIS.Tests
                 id,
                 id,
                 new PersonName("Ada", null, "Lovelace", null),
-                new ContactInformation(
-                    "ada.lovelace@example.edu",
-                    "+639171234567",
-                    null),
-                new PostalAddress(
-                    "1 University Road",
-                    null,
-                    "Poblacion",
-                    "Malvar",
-                    "Batangas",
-                    "4233",
-                    "PH"),
+                new ContactInformation("ada.lovelace@example.edu", "+639171234567", null),
+                new PostalAddress("1 University Road", null, "Poblacion", "Malvar", "Batangas", "4233", "PH"),
                 new InstitutionLocalDate(2000, 1, 1),
                 "CRS-2026-000001",
                 StudentStatus.Active,
@@ -525,18 +420,8 @@ namespace IUIS.Tests
                 id,
                 id,
                 new PersonName("Grace", null, "Hopper", null),
-                new ContactInformation(
-                    "grace.hopper@example.edu",
-                    "+639181234567",
-                    null),
-                new PostalAddress(
-                    "3 Faculty Road",
-                    null,
-                    "Poblacion",
-                    "Malvar",
-                    "Batangas",
-                    "4233",
-                    "PH"),
+                new ContactInformation("grace.hopper@example.edu", "+639181234567", null),
+                new PostalAddress("3 Faculty Road", null, "Poblacion", "Malvar", "Batangas", "4233", "PH"),
                 new InstitutionLocalDate(1985, 12, 9),
                 "DEPT-IT",
                 "Faculty Member",
@@ -566,17 +451,13 @@ namespace IUIS.Tests
             };
         }
 
-        private static void WithStudentSession(
-            Action<string, SessionCredentials, StudentRecord> action)
+        private static void WithStudentSession(Action<string, SessionCredentials, StudentRecord> action)
         {
             WithBootstrap((root, bootstrap) =>
             {
                 var composition = new IuisCompositionRoot(root);
                 var student = CreateStudent("STU-2026-000020");
-                composition.Students.Write(
-                    new[] { student },
-                    0,
-                    bootstrap.AdministratorUserId);
+                composition.Students.Write(new[] { student }, 0, bootstrap.AdministratorUserId);
                 var credentials = SeedUserSession(
                     root,
                     "student.20",
@@ -584,17 +465,12 @@ namespace IUIS.Tests
                     student.Id,
                     PrimaryRole.Student,
                     PersonRecordKind.Student,
-                    new[]
-                    {
-                        "student.profile.read",
-                        "student.profile.contact.update"
-                    });
+                    new[] { "student.profile.read", "student.profile.contact.update" });
                 action(root, credentials, student);
             });
         }
 
-        private static void WithEmployeeSession(
-            Action<string, SessionCredentials, EmployeeRecord> action)
+        private static void WithEmployeeSession(Action<string, SessionCredentials, EmployeeRecord> action)
         {
             WithBootstrap((root, bootstrap) =>
             {
@@ -603,10 +479,7 @@ namespace IUIS.Tests
                 var existing = composition.Employees.Read();
                 var records = existing.Records.ToList();
                 records.Add(employee);
-                composition.Employees.Write(
-                    records,
-                    existing.Revision,
-                    bootstrap.AdministratorUserId);
+                composition.Employees.Write(records, existing.Revision, bootstrap.AdministratorUserId);
                 var credentials = SeedUserSession(
                     root,
                     "employee.20",
@@ -614,11 +487,7 @@ namespace IUIS.Tests
                     employee.Id,
                     PrimaryRole.EmployeeFaculty,
                     PersonRecordKind.EmployeeFaculty,
-                    new[]
-                    {
-                        "employee.profile.read",
-                        "employee.profile.contact.update"
-                    });
+                    new[] { "employee.profile.read", "employee.profile.contact.update" });
                 action(root, credentials, employee);
             });
         }
@@ -636,7 +505,6 @@ namespace IUIS.Tests
             var token = "token-" + userId;
             var sessionId = "SES-" + userId.Substring(4);
             var securityStamp = "stamp-" + userId;
-
             var users = store.Read<PersistedUserAccount>("users");
             users.Records.Add(new PersistedUserAccount
             {
@@ -657,7 +525,6 @@ namespace IUIS.Tests
                 DirectPermissionRestrictions = new List<string>()
             });
             store.Write("users", users, users.Revision);
-
             var sessions = store.Read<PersistedSessionRecord>("sessions");
             sessions.Records.Add(new PersistedSessionRecord
             {
@@ -674,17 +541,10 @@ namespace IUIS.Tests
                 AbsoluteExpiresAtUtc = Now.AddHours(8)
             });
             store.Write("sessions", sessions, sessions.Revision);
-
-            return new SessionCredentials
-            {
-                UserId = userId,
-                SessionId = sessionId,
-                Token = token
-            };
+            return new SessionCredentials { UserId = userId, SessionId = sessionId, Token = token };
         }
 
-        private static void WithBootstrap(
-            Action<string, ProductionBootstrapResult> action)
+        private static void WithBootstrap(Action<string, ProductionBootstrapResult> action)
         {
             var root = Path.Combine(
                 Path.GetTempPath(),

@@ -71,6 +71,27 @@ namespace IUIS.Domain.Library
 
         public LibraryCopyStatus Status { get; private set; }
 
+        public static LibraryBookCopy Rehydrate(
+            string copyId,
+            string barcode,
+            LibraryCopyCondition condition,
+            LibraryCopyStatus status)
+        {
+            condition = ServiceDomainGuard.RequireDefined(condition, nameof(condition));
+            status = ServiceDomainGuard.RequireDefined(status, nameof(status));
+            ValidatePersistedState(condition, status);
+
+            var seedCondition = condition == LibraryCopyCondition.Lost
+                ? LibraryCopyCondition.Good
+                : condition;
+            var copy = new LibraryBookCopy(copyId, barcode, seedCondition)
+            {
+                Condition = condition,
+                Status = status
+            };
+            return copy;
+        }
+
         internal void MarkOnLoan()
         {
             if (Status != LibraryCopyStatus.Available)
@@ -145,6 +166,45 @@ namespace IUIS.Domain.Library
             Condition = LibraryCopyCondition.Lost;
             Status = LibraryCopyStatus.Lost;
         }
+
+        private static void ValidatePersistedState(
+            LibraryCopyCondition condition,
+            LibraryCopyStatus status)
+        {
+            if (status == LibraryCopyStatus.Lost)
+            {
+                if (condition != LibraryCopyCondition.Lost)
+                {
+                    throw new DomainValidationException(
+                        "A persisted lost Library Book Copy must have Lost condition.");
+                }
+
+                return;
+            }
+
+            if (condition == LibraryCopyCondition.Lost)
+            {
+                throw new DomainValidationException(
+                    "Only a persisted lost Library Book Copy may have Lost condition.");
+            }
+
+            if (status == LibraryCopyStatus.Maintenance)
+            {
+                if (condition != LibraryCopyCondition.Damaged)
+                {
+                    throw new DomainValidationException(
+                        "A persisted maintenance Library Book Copy must have Damaged condition.");
+                }
+
+                return;
+            }
+
+            if (condition == LibraryCopyCondition.Damaged)
+            {
+                throw new DomainValidationException(
+                    "A persisted damaged Library Book Copy must be in maintenance.");
+            }
+        }
     }
 
     public sealed class LibraryBook : EntityBase
@@ -216,6 +276,86 @@ namespace IUIS.Domain.Library
         public int LostCopies
         {
             get { return CountCopies(LibraryCopyStatus.Lost); }
+        }
+
+        public static LibraryBook Rehydrate(
+            string id,
+            string isbn,
+            string title,
+            string author,
+            string publisher,
+            string category,
+            LibraryBookStatus status,
+            IEnumerable<LibraryBookCopy> copies,
+            long version,
+            bool isArchived,
+            DateTime createdAtUtc,
+            string createdByUserId,
+            DateTime updatedAtUtc,
+            string updatedByUserId,
+            DateTime? archivedAtUtc,
+            string archivedByUserId)
+        {
+            status = ServiceDomainGuard.RequireDefined(status, nameof(status));
+            if (copies == null)
+            {
+                throw new DomainValidationException(
+                    "Persisted Library Book copies are required.");
+            }
+
+            var book = new LibraryBook(
+                id,
+                isbn,
+                title,
+                author,
+                publisher,
+                category,
+                createdAtUtc,
+                createdByUserId);
+            foreach (var copy in copies)
+            {
+                if (copy == null)
+                {
+                    throw new DomainValidationException(
+                        "A persisted Library Book Copy is invalid.");
+                }
+
+                if (book._copies.Any(item =>
+                    StringComparer.Ordinal.Equals(item.CopyId, copy.CopyId)))
+                {
+                    throw new DomainValidationException(
+                        "Persisted Library Book Copy IDs must be unique.");
+                }
+
+                if (book._copies.Any(item =>
+                    StringComparer.Ordinal.Equals(item.Barcode, copy.Barcode)))
+                {
+                    throw new DomainValidationException(
+                        "Persisted Library Book Copy barcodes must be unique.");
+                }
+
+                book._copies.Add(copy);
+            }
+
+            book.Status = status;
+            book.AssertInventoryInvariant();
+            if (status == LibraryBookStatus.Retired
+                && book.ActiveBorrowedCopies > 0)
+            {
+                throw new DomainValidationException(
+                    "A persisted retired Library Book cannot contain on-loan copies.");
+            }
+
+            book.RestorePersistenceState(
+                version,
+                isArchived,
+                createdAtUtc,
+                createdByUserId,
+                updatedAtUtc,
+                updatedByUserId,
+                archivedAtUtc,
+                archivedByUserId);
+            return book;
         }
 
         public void AddCopy(
@@ -459,6 +599,87 @@ namespace IUIS.Domain.Library
 
         public string LostRecordedByUserId { get; private set; }
 
+        public static LibraryBorrowing Rehydrate(
+            string id,
+            string studentId,
+            string bookId,
+            string copyId,
+            InstitutionLocalDate dueDate,
+            LibraryBorrowingStatus status,
+            DateTime? issuedAtUtc,
+            string issuedByUserId,
+            int renewalCount,
+            DateTime? returnedAtUtc,
+            string returnedByUserId,
+            LibraryCopyCondition? returnCondition,
+            DateTime? lostAtUtc,
+            string lostRecordedByUserId,
+            long version,
+            bool isArchived,
+            DateTime createdAtUtc,
+            string createdByUserId,
+            DateTime updatedAtUtc,
+            string updatedByUserId,
+            DateTime? archivedAtUtc,
+            string archivedByUserId)
+        {
+            status = ServiceDomainGuard.RequireDefined(status, nameof(status));
+            if (renewalCount < 0)
+            {
+                throw new DomainValidationException(
+                    "Persisted Library Borrowing renewal count cannot be negative.");
+            }
+
+            ValidatePersistedWorkflow(
+                status,
+                createdAtUtc,
+                updatedAtUtc,
+                issuedAtUtc,
+                issuedByUserId,
+                renewalCount,
+                returnedAtUtc,
+                returnedByUserId,
+                returnCondition,
+                lostAtUtc,
+                lostRecordedByUserId);
+
+            var borrowing = new LibraryBorrowing(
+                id,
+                studentId,
+                bookId,
+                copyId,
+                dueDate,
+                createdAtUtc,
+                createdByUserId)
+            {
+                Status = status,
+                IssuedAtUtc = issuedAtUtc,
+                IssuedByUserId = NormalizeOptionalActor(
+                    issuedByUserId,
+                    nameof(issuedByUserId)),
+                RenewalCount = renewalCount,
+                ReturnedAtUtc = returnedAtUtc,
+                ReturnedByUserId = NormalizeOptionalActor(
+                    returnedByUserId,
+                    nameof(returnedByUserId)),
+                ReturnCondition = returnCondition,
+                LostAtUtc = lostAtUtc,
+                LostRecordedByUserId = NormalizeOptionalActor(
+                    lostRecordedByUserId,
+                    nameof(lostRecordedByUserId))
+            };
+            borrowing.RestorePersistenceState(
+                version,
+                isArchived,
+                createdAtUtc,
+                createdByUserId,
+                updatedAtUtc,
+                updatedByUserId,
+                archivedAtUtc,
+                archivedByUserId);
+            return borrowing;
+        }
+
         public void Issue(DateTime issuedAtUtc, string librarianUserId)
         {
             if (Status != LibraryBorrowingStatus.Prepared)
@@ -603,6 +824,136 @@ namespace IUIS.Domain.Library
                     librarianUserId,
                     "USR",
                     nameof(librarianUserId)));
+        }
+
+        private static void ValidatePersistedWorkflow(
+            LibraryBorrowingStatus status,
+            DateTime createdAtUtc,
+            DateTime updatedAtUtc,
+            DateTime? issuedAtUtc,
+            string issuedByUserId,
+            int renewalCount,
+            DateTime? returnedAtUtc,
+            string returnedByUserId,
+            LibraryCopyCondition? returnCondition,
+            DateTime? lostAtUtc,
+            string lostRecordedByUserId)
+        {
+            createdAtUtc = ServiceDomainGuard.RequireUtc(createdAtUtc, nameof(createdAtUtc));
+            updatedAtUtc = ServiceDomainGuard.RequireUtc(updatedAtUtc, nameof(updatedAtUtc));
+            if (updatedAtUtc < createdAtUtc)
+            {
+                throw new DomainValidationException(
+                    "Persisted Library Borrowing update time cannot precede creation.");
+            }
+
+            var requiresIssue = status == LibraryBorrowingStatus.Issued
+                || status == LibraryBorrowingStatus.Overdue
+                || status == LibraryBorrowingStatus.Returned
+                || status == LibraryBorrowingStatus.Lost;
+            if (requiresIssue)
+            {
+                if (!issuedAtUtc.HasValue || string.IsNullOrWhiteSpace(issuedByUserId))
+                {
+                    throw new DomainValidationException(
+                        "Persisted active or terminal Library Borrowing state requires issue metadata.");
+                }
+
+                var issueTime = ServiceDomainGuard.RequireUtc(
+                    issuedAtUtc.Value,
+                    nameof(issuedAtUtc));
+                if (issueTime < createdAtUtc || issueTime > updatedAtUtc)
+                {
+                    throw new DomainValidationException(
+                        "Persisted Library Borrowing issue time is outside the entity timeline.");
+                }
+
+                NormalizeOptionalActor(issuedByUserId, nameof(issuedByUserId));
+            }
+            else if (issuedAtUtc.HasValue
+                || !string.IsNullOrWhiteSpace(issuedByUserId)
+                || renewalCount != 0)
+            {
+                throw new DomainValidationException(
+                    "Prepared or cancelled Library Borrowing state cannot retain issue metadata.");
+            }
+
+            if (status == LibraryBorrowingStatus.Returned)
+            {
+                if (!returnedAtUtc.HasValue
+                    || string.IsNullOrWhiteSpace(returnedByUserId)
+                    || !returnCondition.HasValue)
+                {
+                    throw new DomainValidationException(
+                        "Persisted returned Library Borrowing state requires return metadata.");
+                }
+
+                if (returnCondition.Value == LibraryCopyCondition.Lost
+                    || !Enum.IsDefined(typeof(LibraryCopyCondition), returnCondition.Value))
+                {
+                    throw new DomainValidationException(
+                        "Persisted returned Library Borrowing condition is invalid.");
+                }
+
+                var returnTime = ServiceDomainGuard.RequireUtc(
+                    returnedAtUtc.Value,
+                    nameof(returnedAtUtc));
+                if (!issuedAtUtc.HasValue
+                    || returnTime < issuedAtUtc.Value
+                    || returnTime != updatedAtUtc)
+                {
+                    throw new DomainValidationException(
+                        "Persisted Library Borrowing return time is inconsistent.");
+                }
+
+                NormalizeOptionalActor(returnedByUserId, nameof(returnedByUserId));
+            }
+            else if (returnedAtUtc.HasValue
+                || !string.IsNullOrWhiteSpace(returnedByUserId)
+                || returnCondition.HasValue)
+            {
+                throw new DomainValidationException(
+                    "Only returned Library Borrowing state may retain return metadata.");
+            }
+
+            if (status == LibraryBorrowingStatus.Lost)
+            {
+                if (!lostAtUtc.HasValue || string.IsNullOrWhiteSpace(lostRecordedByUserId))
+                {
+                    throw new DomainValidationException(
+                        "Persisted lost Library Borrowing state requires lost metadata.");
+                }
+
+                var lostTime = ServiceDomainGuard.RequireUtc(
+                    lostAtUtc.Value,
+                    nameof(lostAtUtc));
+                if (!issuedAtUtc.HasValue
+                    || lostTime < issuedAtUtc.Value
+                    || lostTime != updatedAtUtc)
+                {
+                    throw new DomainValidationException(
+                        "Persisted Library Borrowing lost time is inconsistent.");
+                }
+
+                NormalizeOptionalActor(
+                    lostRecordedByUserId,
+                    nameof(lostRecordedByUserId));
+            }
+            else if (lostAtUtc.HasValue
+                || !string.IsNullOrWhiteSpace(lostRecordedByUserId))
+            {
+                throw new DomainValidationException(
+                    "Only lost Library Borrowing state may retain lost metadata.");
+            }
+        }
+
+        private static string NormalizeOptionalActor(
+            string value,
+            string parameterName)
+        {
+            return string.IsNullOrWhiteSpace(value)
+                ? null
+                : ServiceDomainGuard.RequireIdentifier(value, "USR", parameterName);
         }
     }
 }

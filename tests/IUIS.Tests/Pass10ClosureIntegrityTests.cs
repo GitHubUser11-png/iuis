@@ -36,46 +36,23 @@ namespace IUIS.Tests
                 var period = CreateAcademicPeriod("APD-2026-000101");
                 var rule = CreateChargeRule("ACR-2026-000101");
 
-                composition.Students.Write(
-                    new[] { student },
-                    0,
-                    bootstrap.AdministratorUserId);
-
+                composition.Students.Write(new[] { student }, 0, bootstrap.AdministratorUserId);
                 var employees = composition.Employees.Read();
                 var employeeRecords = employees.Records.ToList();
                 employeeRecords.Add(employee);
-                composition.Employees.Write(
-                    employeeRecords,
-                    employees.Revision,
-                    bootstrap.AdministratorUserId);
-
-                composition.Courses.Write(
-                    new[] { course },
-                    0,
-                    bootstrap.AdministratorUserId);
-                composition.Subjects.Write(
-                    new[] { subject },
-                    0,
-                    bootstrap.AdministratorUserId);
-                composition.AcademicPeriods.Write(
-                    new[] { period },
-                    0,
-                    bootstrap.AdministratorUserId);
-                composition.AssessmentChargeRules.Write(
-                    new[] { rule },
-                    0,
-                    bootstrap.AdministratorUserId);
+                composition.Employees.Write(employeeRecords, employees.Revision, bootstrap.AdministratorUserId);
+                composition.Courses.Write(new[] { course }, 0, bootstrap.AdministratorUserId);
+                composition.Subjects.Write(new[] { subject }, 0, bootstrap.AdministratorUserId);
+                composition.AcademicPeriods.Write(new[] { period }, 0, bootstrap.AdministratorUserId);
+                composition.AssessmentChargeRules.Write(new[] { rule }, 0, bootstrap.AdministratorUserId);
 
                 var restarted = new IuisCompositionRoot(root);
                 Assert.AreEqual(student.Id, restarted.Students.Read().Records.Single().Id);
-                Assert.IsTrue(restarted.Employees.Read().Records.Any(
-                    item => item.Id == employee.Id));
+                Assert.IsTrue(restarted.Employees.Read().Records.Any(item => item.Id == employee.Id));
                 Assert.AreEqual(course.Id, restarted.Courses.Read().Records.Single().Id);
                 Assert.AreEqual(subject.Id, restarted.Subjects.Read().Records.Single().Id);
                 Assert.AreEqual(period.Id, restarted.AcademicPeriods.Read().Records.Single().Id);
-                Assert.AreEqual(
-                    rule.Id,
-                    restarted.AssessmentChargeRules.Read().Records.Single().Id);
+                Assert.AreEqual(rule.Id, restarted.AssessmentChargeRules.Read().Records.Single().Id);
             });
         }
 
@@ -86,25 +63,16 @@ namespace IUIS.Tests
             {
                 var student = CreateStudent("STU-2026-000102");
                 student.UpdateContact(
-                    new ContactInformation(
-                        "archived.student@example.edu",
-                        "+639171010202",
-                        null),
+                    new ContactInformation("archived.student@example.edu", "+639171010202", null),
                     student.Address,
                     Now.AddMinutes(1),
                     bootstrap.AdministratorUserId);
-                student.Archive(
-                    Now.AddMinutes(2),
-                    bootstrap.AdministratorUserId);
+                student.Archive(Now.AddMinutes(2), bootstrap.AdministratorUserId);
 
                 var composition = new IuisCompositionRoot(root);
-                composition.Students.Write(
-                    new[] { student },
-                    0,
-                    bootstrap.AdministratorUserId);
+                composition.Students.Write(new[] { student }, 0, bootstrap.AdministratorUserId);
+                var restored = new IuisCompositionRoot(root).Students.Read().Records.Single();
 
-                var restored = new IuisCompositionRoot(root)
-                    .Students.Read().Records.Single();
                 Assert.AreEqual(student.Id, restored.Id);
                 Assert.AreEqual(student.Version, restored.Version);
                 Assert.IsTrue(restored.IsArchived);
@@ -142,7 +110,6 @@ namespace IUIS.Tests
                     },
                     JsonOptions()));
                 store.Write("courses", envelope, envelope.Revision);
-
                 Assert.ThrowsException<InvalidOperationException>(() =>
                     new IuisCompositionRoot(root).Courses.Read());
             });
@@ -156,11 +123,7 @@ namespace IUIS.Tests
                 RecordSchemaVersion = 1,
                 Id = "STU-2026-000104",
                 StudentNumber = "STU-2026-000104",
-                Name = new PersistedPersonName
-                {
-                    GivenName = "Katherine",
-                    FamilyName = "Johnson"
-                },
+                Name = new PersistedPersonName { GivenName = "Katherine", FamilyName = "Johnson" },
                 Contact = new PersistedContactInformation
                 {
                     EmailAddress = "katherine.johnson@example.edu",
@@ -187,7 +150,6 @@ namespace IUIS.Tests
                 ArchivedAtUtc = Now.AddMinutes(1),
                 ArchivedByUserId = null
             };
-
             var json = JsonSerializer.SerializeToElement(persisted, JsonOptions());
             Assert.ThrowsException<DomainValidationException>(() =>
                 new StudentRecordJsonMapper().FromJson(json, JsonOptions()));
@@ -212,7 +174,6 @@ namespace IUIS.Tests
                     Money.PhilippinePeso(99m),
                     Now.AddMinutes(-1),
                     "USR-2026-000001"));
-
             Assert.AreEqual(originalDescription, rule.Description);
             Assert.AreEqual(originalCategory, rule.Category);
             Assert.AreEqual(originalCalculation, rule.CalculationKind);
@@ -234,23 +195,25 @@ namespace IUIS.Tests
         public void ReadinessCatalogMatchesCompositionRootActivationSet()
         {
             var completed = AggregateMapperReadinessCatalog.All
-                .Where(item =>
-                    item.Readiness
-                    == AggregateMapperReadiness.SpecializedMapperCompleted)
+                .Where(item => item.Readiness == AggregateMapperReadiness.SpecializedMapperCompleted)
                 .Select(item => item.RepositoryName)
                 .OrderBy(item => item, StringComparer.Ordinal)
                 .ToArray();
-
             CollectionAssert.AreEqual(
                 new[]
                 {
                     "academic_periods",
+                    "appointments",
                     "assessment_charge_rules",
                     "assessments",
+                    "books",
+                    "borrowings",
+                    "clearances",
                     "courses",
                     "employees",
                     "enrollments",
                     "financial_adjustments",
+                    "medical_records",
                     "payments",
                     "scholarship_awards",
                     "students",
@@ -274,18 +237,8 @@ namespace IUIS.Tests
                 id,
                 id,
                 new PersonName("Ada", null, "Lovelace", null),
-                new ContactInformation(
-                    "ada.lovelace@example.edu",
-                    "+639171234567",
-                    null),
-                new PostalAddress(
-                    "1 University Road",
-                    null,
-                    "Poblacion",
-                    "Malvar",
-                    "Batangas",
-                    "4233",
-                    "PH"),
+                new ContactInformation("ada.lovelace@example.edu", "+639171234567", null),
+                new PostalAddress("1 University Road", null, "Poblacion", "Malvar", "Batangas", "4233", "PH"),
                 new InstitutionLocalDate(2000, 1, 1),
                 "CRS-2026-000101",
                 StudentStatus.Active,
@@ -299,18 +252,8 @@ namespace IUIS.Tests
                 id,
                 id,
                 new PersonName("Grace", null, "Hopper", null),
-                new ContactInformation(
-                    "grace.hopper@example.edu",
-                    "+639181234567",
-                    null),
-                new PostalAddress(
-                    "3 Faculty Road",
-                    null,
-                    "Poblacion",
-                    "Malvar",
-                    "Batangas",
-                    "4233",
-                    "PH"),
+                new ContactInformation("grace.hopper@example.edu", "+639181234567", null),
+                new PostalAddress("3 Faculty Road", null, "Poblacion", "Malvar", "Batangas", "4233", "PH"),
                 new InstitutionLocalDate(1985, 12, 9),
                 "DEPT-IT",
                 "Faculty Member",
@@ -330,10 +273,7 @@ namespace IUIS.Tests
                 4,
                 Now,
                 "USR-2026-000001");
-            value.ChangeStatus(
-                CourseStatus.Active,
-                Now.AddMinutes(1),
-                "USR-2026-000001");
+            value.ChangeStatus(CourseStatus.Active, Now.AddMinutes(1), "USR-2026-000001");
             return value;
         }
 
@@ -350,10 +290,7 @@ namespace IUIS.Tests
                 new SubjectPrerequisite("SUB-2026-000100"),
                 Now.AddMinutes(1),
                 "USR-2026-000001");
-            value.ChangeStatus(
-                SubjectStatus.Active,
-                Now.AddMinutes(2),
-                "USR-2026-000001");
+            value.ChangeStatus(SubjectStatus.Active, Now.AddMinutes(2), "USR-2026-000001");
             return value;
         }
 
@@ -389,8 +326,7 @@ namespace IUIS.Tests
                 "USR-2026-000001");
         }
 
-        private static void WithBootstrap(
-            Action<string, ProductionBootstrapResult> action)
+        private static void WithBootstrap(Action<string, ProductionBootstrapResult> action)
         {
             var root = Path.Combine(
                 Path.GetTempPath(),
@@ -404,8 +340,7 @@ namespace IUIS.Tests
                     .Initialize(new ProductionBootstrapRequest
                     {
                         AdministratorLoginId = "root.admin",
-                        AdministratorInitialPassword =
-                            "Temporary-Admin-Password-1",
+                        AdministratorInitialPassword = "Temporary-Admin-Password-1",
                         AdministratorGivenName = "Initial",
                         AdministratorFamilyName = "Administrator",
                         AdministratorEmailAddress = "admin@example.edu",
