@@ -247,6 +247,8 @@ namespace IUIS.Tests
                     "academic_periods",
                     "assessment_charge_rules",
                     "assessments",
+                    "books",
+                    "borrowings",
                     "courses",
                     "employees",
                     "enrollments",
