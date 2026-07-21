@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
+using IUIS.SharedUI.Theme;
+
 namespace IUIS.SharedUI.DataGridViews
 {
     public static class AppDataGridViewFactory
@@ -18,36 +20,84 @@ namespace IUIS.SharedUI.DataGridViews
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 MultiSelect = false,
                 RowHeadersVisible = false,
-                BackgroundColor = Color.White,
-                BorderStyle = BorderStyle.Fixed3D,
+                BackgroundColor = UiTheme.ElevatedSurface,
+                BorderStyle = BorderStyle.None,
+                CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal,
+                ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None,
                 EnableHeadersVisualStyles = false,
-                GridColor = Color.FromArgb(229, 231, 235),
-                Font = new Font("Segoe UI", 9F),
-                ForeColor = Color.FromArgb(55, 65, 81),
-                BackColor = Color.White,
+                GridColor = Color.FromArgb(232, 236, 240),
+                Font = UiTheme.FieldLabelFont,
+                ForeColor = UiTheme.TextPrimary,
+                BackColor = UiTheme.ElevatedSurface,
+                RowTemplate = { Height = UiMetrics.GridRowHeight },
+                ColumnHeadersHeight = UiMetrics.GridHeaderHeight,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing,
+                AllowUserToResizeRows = false,
                 AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle
                 {
-                    BackColor = Color.FromArgb(249, 250, 251)
+                    BackColor = Color.FromArgb(249, 250, 252)
                 }
             };
 
             dataGridView.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
             {
-                BackColor = Color.FromArgb(243, 244, 246),
-                ForeColor = Color.FromArgb(55, 65, 81),
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                BackColor = UiTheme.SurfaceSunken,
+                ForeColor = UiTheme.TextSecondary,
+                SelectionBackColor = UiTheme.SurfaceSunken,
+                SelectionForeColor = UiTheme.TextSecondary,
+                Font = new Font("Segoe UI", 9f, FontStyle.Bold),
                 Alignment = DataGridViewContentAlignment.MiddleLeft,
-                Padding = new Padding(8, 4, 8, 4)
+                Padding = new Padding(12, 6, 12, 6)
             };
 
             dataGridView.DefaultCellStyle = new DataGridViewCellStyle
             {
-                Padding = new Padding(8, 4, 8, 4),
-                SelectionBackColor = Color.FromArgb(79, 70, 229),
-                SelectionForeColor = Color.White
+                BackColor = UiTheme.ElevatedSurface,
+                ForeColor = UiTheme.TextPrimary,
+                Padding = new Padding(12, 6, 12, 6),
+                SelectionBackColor = UiTheme.PrimarySoft,
+                SelectionForeColor = UiTheme.TextPrimary
             };
 
+            AttachRowHoverHighlight(dataGridView);
+
             return dataGridView;
+        }
+
+        /// <summary>
+        /// Hosts a grid inside a rounded, bordered card so every table
+        /// gets consistent modern framing. Dock the returned panel.
+        /// </summary>
+        public static Panel WrapInRoundedCard(DataGridView dataGridView)
+        {
+            var card = new RoundedGridCardPanel();
+            dataGridView.Dock = DockStyle.Fill;
+            card.Controls.Add(dataGridView);
+            return card;
+        }
+
+        private static void AttachRowHoverHighlight(DataGridView dataGridView)
+        {
+            dataGridView.CellMouseEnter += delegate (object sender, DataGridViewCellEventArgs e)
+            {
+                var grid = (DataGridView)sender;
+                if (e.RowIndex < 0 || e.RowIndex >= grid.Rows.Count)
+                    return;
+                var row = grid.Rows[e.RowIndex];
+                if (!row.Selected)
+                {
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(238, 243, 249);
+                }
+            };
+
+            dataGridView.CellMouseLeave += delegate (object sender, DataGridViewCellEventArgs e)
+            {
+                var grid = (DataGridView)sender;
+                if (e.RowIndex < 0 || e.RowIndex >= grid.Rows.Count)
+                    return;
+                var row = grid.Rows[e.RowIndex];
+                row.DefaultCellStyle.BackColor = Color.Empty;
+            };
         }
 
         public static void AddTextBoxColumn(
@@ -142,7 +192,50 @@ namespace IUIS.SharedUI.DataGridViews
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.None
             };
 
+            column.FlatStyle = FlatStyle.Flat;
+            column.DefaultCellStyle.BackColor = UiTheme.ElevatedSurface;
+            column.DefaultCellStyle.ForeColor = UiTheme.InstitutionalPrimary;
+            column.DefaultCellStyle.SelectionBackColor = UiTheme.PrimarySoft;
+            column.DefaultCellStyle.SelectionForeColor = UiTheme.InstitutionalPrimary;
+
             dataGridView.Columns.Add(column);
+        }
+
+        /// <summary>
+        /// Rounded, bordered panel that hosts a DataGridView and clips it
+        /// to rounded corners.
+        /// </summary>
+        private sealed class RoundedGridCardPanel : Panel
+        {
+            public RoundedGridCardPanel()
+            {
+                SetStyle(
+                    ControlStyles.AllPaintingInWmPaint |
+                    ControlStyles.UserPaint |
+                    ControlStyles.OptimizedDoubleBuffer |
+                    ControlStyles.ResizeRedraw,
+                    true);
+                Dock = DockStyle.Fill;
+                BackColor = UiTheme.ElevatedSurface;
+                Padding = new Padding(1);
+            }
+
+            protected override void OnResize(EventArgs eventargs)
+            {
+                base.OnResize(eventargs);
+                UiPainting.ApplyRoundedRegion(this, UiMetrics.CardCornerRadius);
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                base.OnPaint(e);
+                UiPainting.PaintRoundedSurface(
+                    e.Graphics,
+                    ClientRectangle,
+                    UiMetrics.CardCornerRadius,
+                    Color.Empty,
+                    UiTheme.BorderNeutral);
+            }
         }
     }
 }
