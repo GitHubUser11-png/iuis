@@ -9,4 +9,6 @@ Purpose:
 - preserve all Unit 4 production behavior unchanged;
 - obtain an independent Windows Release build, full MSTest result, TRX, and evidence artifact on the corrected exact head.
 
-This file records the corrective boundary only. Final run identifiers, artifact digest, and closure state will be registered after independent validation.
+The branch-local corrective workflow has been staged. This metadata update provides the second push event required for that self-deleting workflow to execute against the already-registered branch definition.
+
+Final run identifiers, artifact digest, and closure state will be registered after independent validation.
