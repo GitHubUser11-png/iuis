@@ -356,15 +356,15 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        public void ReadinessCatalogContainsElevenCompletedAndSevenDeferredAdapters()
+        public void ReadinessCatalogReflectsPass12LibraryActivation()
         {
             Assert.AreEqual(
-                11,
+                13,
                 AggregateMapperReadinessCatalog.All.Count(item =>
                     item.Readiness
                     == AggregateMapperReadiness.SpecializedMapperCompleted));
             Assert.AreEqual(
-                7,
+                5,
                 AggregateMapperReadinessCatalog.All.Count(item =>
                     item.Readiness
                     == AggregateMapperReadiness.DeferredWithExplicitReason));
