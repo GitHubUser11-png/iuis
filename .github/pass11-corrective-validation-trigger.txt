@@ -1,0 +1,1 @@
+Temporary validation trigger. This file is removed in the next commit so the final corrective diff remains source-and-test only.
