@@ -282,12 +282,12 @@ namespace IUIS.Tests
                         .Distinct(StringComparer.Ordinal)
                         .Count());
                 Assert.AreEqual(
-                    11,
+                    13,
                     readiness.Count(item =>
                         item.Readiness
                         == AggregateMapperReadiness.SpecializedMapperCompleted));
                 Assert.AreEqual(
-                    7,
+                    5,
                     readiness.Count(item =>
                         item.Readiness
                         == AggregateMapperReadiness.DeferredWithExplicitReason));
