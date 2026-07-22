@@ -18,10 +18,10 @@ namespace IUIS.UserApp.Forms
         private readonly Panel _brandPanel;
         private readonly Panel _contentHost;
         private readonly Panel _card;
-        private readonly StatusBannerPanel _banner;
-        private readonly LabeledFieldPanel _loginIdField;
-        private readonly PasswordFieldPanel _passwordField;
-        private readonly CheckBox _rememberIdCheckBox;
+        private StatusBannerPanel _banner;
+        private LabeledFieldPanel _loginIdField;
+        private PasswordFieldPanel _passwordField;
+        private CheckBox _rememberIdCheckBox;
         private readonly Button _signInButton;
         private readonly LoadingOverlayPanel _loadingOverlay;
 

@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using IUIS.SharedUI.Controls;
 using IUIS.SharedUI.DataGridViews;
 
 namespace IUIS.AdminApp.Forms
