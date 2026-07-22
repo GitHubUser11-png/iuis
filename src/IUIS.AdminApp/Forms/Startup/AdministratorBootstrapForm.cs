@@ -34,7 +34,6 @@ namespace IUIS.AdminApp.Forms.Startup
             _departmentField.SetHelpText("e.g. ADMIN");
             _positionField.SetHelpText("e.g. System Administrator");
 
-            _submitButton = UiTheme.CreatePrimaryButton("Create Administrator", 200, UiMetrics.StandardButtonHeight);
             _submitButton.Click += SubmitClick;
 
             AcceptButton = _submitButton;

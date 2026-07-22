@@ -1,8 +1,401 @@
 {
   "repositoryName": "repository_manifest",
   "schemaVersion": 1,
-  "revision": 0,
-  "updatedAtUtc": "1970-01-01T00:00:00Z",
+  "revision": 1,
+  "updatedAtUtc": "2026-07-22T03:11:03.5034648Z",
   "updatedByUserId": "SYSTEM",
-  "records": []
+  "records": [
+    {
+      "repositoryName": "students",
+      "fileName": "students.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "5b460d469fa7f871e450fe49b3facbf7c1f16f4c9f08fb53e0ddac64104d8387",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "courses",
+      "fileName": "courses.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "5e3b0b9096434d624cfa1e4055ca5a9cccaa704c01b8a45e9892d3c1911bbcfa",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "subjects",
+      "fileName": "subjects.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "5646a6286d26ea10374ba08a9164c2afafd3286c1863d8dc6d46754990936e07",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "enrollments",
+      "fileName": "enrollments.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "5f2d1a1e0367f8fdf97cf20fb318c7df28ea6492421deac84114639882ff9982",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "payments",
+      "fileName": "payments.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "b850f0fc407ea61799ad04f8f53952f1d2bc4c44b117e944d2a2937af974e0a3",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "books",
+      "fileName": "books.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "5537606171608eb1576ccb8e42886bba424d7a437202a916e61788e11bb85276",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "borrowings",
+      "fileName": "borrowings.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "a361f92f0095515130c3db494b8de81c5d5861a3db1931652d7390f45ff154c3",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "counseling",
+      "fileName": "counseling.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "8d1749871a2a1ef986fddde23be9435cafe76b508e5a5aa5f7362d8e4965d186",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "violations",
+      "fileName": "violations.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "c43d214c8846fc7ae0eefc875bbcb1de59ffe4102a8ffbfc6d51ad7dea15cd28",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "medical_records",
+      "fileName": "medical_records.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "551ee804908cbe8b910cdf68302216fc784c1a3b5ff7028d840ad3042ece0de6",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "employees",
+      "fileName": "employees.json",
+      "schemaVersion": 1,
+      "revision": 1,
+      "sha256": "594290fac31d45d83e0a84881b9c95a3cde0f0b567f606e64797e22c8662fca4",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "attendance",
+      "fileName": "attendance.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "828a446dc441313a4eb31b24605c54505d07cfd3561b5a4022290f838e93b449",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "clearances",
+      "fileName": "clearances.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "603ba7eeebfbdb99d713a07ca0d7b4f463397f21e9d6d603bbed25490b4830fe",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "users",
+      "fileName": "users.json",
+      "schemaVersion": 1,
+      "revision": 1,
+      "sha256": "164029afe64968bace1fdc0fb23a0257dbc34f132b1e1918b2eaba6c0ea18cdf",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "academic_periods",
+      "fileName": "academic_periods.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "ff5760c617c0150a913c29cc2d1aa446a77bafd5baf2254096848f8d748db593",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "assessments",
+      "fileName": "assessments.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "f564c543ddb4addd75edf23625399826a6325f8e8a8daf21cb1d551b6dd6f8c8",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "assessment_charge_rules",
+      "fileName": "assessment_charge_rules.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "fb7b2fc500d5f1beeb6bad76550700ec6503b92dd03b00b6d7e3c0403eb9522f",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "scholarship_programs",
+      "fileName": "scholarship_programs.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "68ea2a0fabb57059db55680aa6966d78f13e8dabe10965a1ff968e6fadca480c",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "scholarship_applications",
+      "fileName": "scholarship_applications.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "ff68e5e3093a026f6746c073262505929a632e20aa610d075c444142e601bcbd",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "scholarship_awards",
+      "fileName": "scholarship_awards.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "e21f16a82c94558d92fde9c08f6e0f074fb55572fca94bc82a4eaeccd2f7a0ad",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "appointments",
+      "fileName": "appointments.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "274c6aefbc123b18462530aa27d71b1eb71b8fead780242c7b7865103b410c13",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "consultations",
+      "fileName": "consultations.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "cedfaf05ac6bd2ce7290b52a1b4a1df6536ad4792917524140f6bcd7757a0876",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "subject_assignments",
+      "fileName": "subject_assignments.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "a71f80d945b1ca63a9728ccf105b4842d495d4c53ec11a914417b082189ca372",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "notifications",
+      "fileName": "notifications.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "01cf8321cc49a2bd3cc7cc48c574de2e97e60c02f5e1c3998349248a0d325553",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "account_applications",
+      "fileName": "account_applications.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "867cc0d5fc818056687b68be1cf2e72be7c915498ffe7e5e0909f590b8fd5a6c",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "permission_profiles",
+      "fileName": "permission_profiles.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "c0fc772afd4ad5e5bf21da84ababda6b2d789372883592c55b64b10e5bbae6de",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "login_attempts",
+      "fileName": "login_attempts.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "1830f33fd305ba4564aef914dea239fb4375fa21d558f1de23d3db760a90dfeb",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "sessions",
+      "fileName": "sessions.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "99787b5610afd8e13985fa98d45ef2d68df566cb9ed48ca97299787af36381e3",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "security_policy",
+      "fileName": "security_policy.json",
+      "schemaVersion": 1,
+      "revision": 1,
+      "sha256": "3547766b32362c56f1d304fe04bbc22b4f3f7740ef5ec708c9f2c09ae641fd60",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "password_assistance_requests",
+      "fileName": "password_assistance_requests.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "24adf7cfcf1118e84bf534c8d4466e341a5eadc6640adaab186d0038d3818b1d",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "admin_access_rules",
+      "fileName": "admin_access_rules.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "8a073cfc1720aac3ddc279d4c87af1bd66b711ba6d90bc23e2048d159e6abacc",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "administrative_approvals",
+      "fileName": "administrative_approvals.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "03fcdc36c85b1d05502d487bc14a6167ec20144bec7544ea2b44ceb1273cea13",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "discipline_incidents",
+      "fileName": "discipline_incidents.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "9001f7bc647c3c835fa43b7dcc58f37b3fc439d7607a84b869d8ee351c51549e",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "violation_responses",
+      "fileName": "violation_responses.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "ea698236db8c10f9a6a61176808a320f13b3e3d4f15ef2d0af5601b0fd3bbf2e",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "work_schedules",
+      "fileName": "work_schedules.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "9b1276117b4fd3cb31846daa11f8fab400cdb657367416da2b3ed642aaf04a91",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "attendance_corrections",
+      "fileName": "attendance_corrections.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "d783e4fd99a09303a9147925d1e465bdd8907ef9f9b70720afa30b77e2b3c3a0",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "employee_profile_corrections",
+      "fileName": "employee_profile_corrections.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "247290902d36a1be479c87d3274e4c2c57a38920f0a17938f21e80f826a0e6a7",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "student_profile_corrections",
+      "fileName": "student_profile_corrections.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "f909ccb61a5b3a3cbd8e308c12caae321ec3935270cb9a80f0ae81392de128ab",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "payment_void_requests",
+      "fileName": "payment_void_requests.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "9f73dc690595466a2c0aeb86e618f02c960bd3343864e56ee01b45c737452d4a",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "financial_adjustments",
+      "fileName": "financial_adjustments.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "6f82a6fd896b4f83c3bcfd55654d18ece0d1ef911e12f3fddc74a2f21a46d412",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "audit_logs",
+      "fileName": "audit_logs.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "95038db3f9f570d5ad2ad7f6ef2759ea98eab349e520c8bd4ffd125892275736",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "id_sequences",
+      "fileName": "id_sequences.json",
+      "schemaVersion": 1,
+      "revision": 1,
+      "sha256": "52d277aa664aa4c4093da8b06421ca4aacf00d1e8821f2634e9def04b414137f",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "transaction_journal",
+      "fileName": "transaction_journal.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "e8168e5c82b2522c55e17de4575f1d2efd8fe1459790f1c4f51b09144a3f0590",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "repository_manifest",
+      "fileName": "repository_manifest.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "dcd76026e56ae18634e75a35b2b5adb854b941d8ac21dd760f0f822719f91116",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "system_settings",
+      "fileName": "system_settings.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "e8ab86cc36b4392569a6bbe485f88a0284c2b1f0bd07900cb1069ec7845564fd",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "backup_catalog",
+      "fileName": "backup_catalog.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "d8f9e020869919547dc479f752101ba95814fc64c30eeb054708ba3a1aa28255",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "repository_health_history",
+      "fileName": "repository_health_history.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "99595aa18dc80b99b0ea29281996fa1e23eda3b9f56fd8664c8f6f78002e4fb1",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "operational_report_runs",
+      "fileName": "operational_report_runs.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "d13fe8a3ff18350fca6e5989b3d23985c94e9f297be120549c4782068b955873",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    },
+    {
+      "repositoryName": "restore_history",
+      "fileName": "restore_history.json",
+      "schemaVersion": 1,
+      "revision": 0,
+      "sha256": "ebd1401bbebb737bf70e2e42ef61fdf4488945b9d1d208c8f929b5d7522c4f9d",
+      "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    }
+  ]
 }

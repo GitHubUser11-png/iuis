@@ -61,7 +61,7 @@ namespace IUIS.AdminApp.Forms.Startup
             this.continueButton.Size = new System.Drawing.Size(180, 36);
             this.continueButton.TabIndex = 2;
             this.continueButton.Text = "Continue to Sign In";
-            this.continueButton.UseVisualStyleBackColor = true;
+            this.continueButton.Click += new System.EventHandler(this.continueButton_Click);
             // 
             // BootstrapResultDialog
             // 

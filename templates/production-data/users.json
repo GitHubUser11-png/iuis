@@ -1,8 +1,26 @@
 {
   "repositoryName": "users",
   "schemaVersion": 1,
-  "revision": 0,
-  "updatedAtUtc": "1970-01-01T00:00:00Z",
-  "updatedByUserId": "SYSTEM",
-  "records": []
+  "revision": 1,
+  "updatedAtUtc": "2026-07-22T03:11:03.5034648Z",
+  "updatedByUserId": "USR-2026-000001",
+  "records": [
+    {
+      "id": "USR-2026-000001",
+      "loginId": "1234",
+      "primaryRole": "Administrator",
+      "personRecordKind": "EmployeeFaculty",
+      "personRecordId": "EMP-2026-000001",
+      "credentialHash": "pbkdf2-sha256$210000$fHmfxlqh26lloPiG6zXW5kDVUqIByWAT0mN4DdaJCh0=$oUCT15Df/gI84cgZSdE9OUc1xxpmfgdF7KmnsgaUWCc=",
+      "securityStamp": "e0a6788572c44e9e8c1c40e303c74a79",
+      "status": "Active",
+      "mustChangePassword": true,
+      "createdAtUtc": "2026-07-22T03:11:03.5034648Z",
+      "updatedAtUtc": "2026-07-22T03:11:03.5034648Z",
+      "version": 1,
+      "permissionProfileIds": [],
+      "directPermissionGrants": [],
+      "directPermissionRestrictions": []
+    }
+  ]
 }

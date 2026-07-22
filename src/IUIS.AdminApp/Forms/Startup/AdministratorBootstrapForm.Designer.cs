@@ -132,7 +132,7 @@ namespace IUIS.AdminApp.Forms.Startup
             this._submitButton.Size = new System.Drawing.Size(200, 36);
             this._submitButton.TabIndex = 11;
             this._submitButton.Text = "Create Administrator";
-            this._submitButton.UseVisualStyleBackColor = true;
+            this._submitButton.Click += new System.EventHandler(this.SubmitClick);
             // 
             // AdministratorBootstrapForm
             // 

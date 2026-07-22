@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -12,7 +13,7 @@ namespace IUIS.AdminApp.Forms.Startup
         {
             InitializeComponent();
 
-            Text = ApplicationIdentity.ProductName + " — Bootstrap Complete";
+            Text = IUIS.SharedUI.ApplicationIdentity.ProductName + " — Bootstrap Complete";
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterParent;
             MaximizeBox = false;
@@ -30,12 +31,13 @@ namespace IUIS.AdminApp.Forms.Startup
                 "Temporary Password: " + temporaryPassword + "\r\n\r\n" +
                 "You must change this password at first sign-in.";
 
-            continueButton = UiTheme.CreatePrimaryButton("Continue to Sign In", 180, UiMetrics.StandardButtonHeight);
-            continueButton.Click += delegate
-            {
-                DialogResult = DialogResult.OK;
-                Close();
-            };
+            continueButton.Click += continueButton_Click;
+        }
+
+        private void continueButton_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }

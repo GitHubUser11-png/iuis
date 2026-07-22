@@ -1,8 +1,18 @@
 {
   "repositoryName": "security_policy",
   "schemaVersion": 1,
-  "revision": 0,
-  "updatedAtUtc": "1970-01-01T00:00:00Z",
+  "revision": 1,
+  "updatedAtUtc": "2026-07-22T03:11:03.5034648Z",
   "updatedByUserId": "SYSTEM",
-  "records": []
+  "records": [
+    {
+      "id": "SECURITY-POLICY-1",
+      "maximumFailedAttempts": 5,
+      "observationWindowMinutes": 15,
+      "lockoutMinutes": 15,
+      "minimumPasswordLength": 12,
+      "pbkdf2Iterations": 210000,
+      "updatedAtUtc": "2026-07-22T03:11:03.5034648Z"
+    }
+  ]
 }
