@@ -742,15 +742,27 @@ namespace IUIS.Tests
 
         private static string FindRepositoryRoot()
         {
-            var directory = new DirectoryInfo(
-                AppDomain.CurrentDomain.BaseDirectory);
-            while (directory != null)
+            var candidates = new[]
             {
-                if (File.Exists(Path.Combine(
-                    directory.FullName,
-                    "IUIS.sln")))
-                    return directory.FullName;
-                directory = directory.Parent;
+                AppDomain.CurrentDomain.BaseDirectory,
+                Environment.CurrentDirectory,
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+            };
+
+            foreach (var candidate in candidates)
+            {
+                if (string.IsNullOrWhiteSpace(candidate))
+                    continue;
+
+                var directory = new DirectoryInfo(candidate);
+                while (directory != null)
+                {
+                    if (File.Exists(Path.Combine(
+                        directory.FullName,
+                        "IUIS.sln")))
+                        return directory.FullName;
+                    directory = directory.Parent;
+                }
             }
 
             throw new DirectoryNotFoundException(
