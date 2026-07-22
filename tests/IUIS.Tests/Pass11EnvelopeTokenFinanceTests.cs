@@ -208,7 +208,7 @@ namespace IUIS.Tests
                 sessions.UpdatedByUserId = bootstrap.AdministratorUserId;
                 store.Write("sessions", sessions, sessions.Revision);
 
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     new JsonAuthorizationPrincipalProvider(
                         new ProductionRepositoryCatalog(),
                         new JsonInfrastructureOptions(root))
@@ -306,7 +306,7 @@ namespace IUIS.Tests
                 Allocations = new List<PersistedPaymentAllocation>()
             };
             var json = JsonSerializer.SerializeToElement(record, JsonOptions());
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
                 new PaymentJsonMapper().FromJson(json, JsonOptions()));
         }
 
@@ -382,7 +382,7 @@ namespace IUIS.Tests
                     composition.Transactions,
                     composition.IdentifierAllocator);
 
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     service.Post(
                         "SES-2026-000401",
                         "token",

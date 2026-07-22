@@ -113,7 +113,7 @@ namespace IUIS.Tests
                 var store = new JsonRepositoryStore(catalog, new JsonInfrastructureOptions(root));
                 var envelope = store.Read<object>("courses");
                 store.Write("courses", envelope, 0);
-                Assert.ThrowsException<InvalidOperationException>(() => store.Write("courses", envelope, 0));
+                Assert.ThrowsExactly<InvalidOperationException>(() => store.Write("courses", envelope, 0));
             });
         }
 

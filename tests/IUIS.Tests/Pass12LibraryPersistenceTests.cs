@@ -66,14 +66,14 @@ namespace IUIS.Tests
         [TestMethod]
         public void RehydrationRejectsInconsistentPersistedState()
         {
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 LibraryBookCopy.Rehydrate(
                     "LCP-2026-000001",
                     "BC-001",
                     LibraryCopyCondition.Good,
                     LibraryCopyStatus.Lost));
 
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 LibraryBorrowing.Rehydrate(
                     "BRW-2026-000001",
                     "STU-2026-000001",
@@ -196,7 +196,7 @@ namespace IUIS.Tests
         public void StaleRevisionAndStaleEntityFailBeforeTransaction()
         {
             var pair = CreateIssuedPair("BRW-2026-000001");
-            Assert.ThrowsException<InvalidOperationException>(() => pair.Service.Return(
+            Assert.ThrowsExactly<InvalidOperationException>(() => pair.Service.Return(
                 "SES-2026-000001",
                 "token",
                 new LibraryReturnRequest
@@ -211,7 +211,7 @@ namespace IUIS.Tests
                 StartUtc.AddMinutes(3)));
             Assert.AreEqual(0, pair.Coordinator.ExecutionCount);
 
-            Assert.ThrowsException<InvalidOperationException>(() => pair.Service.Return(
+            Assert.ThrowsExactly<InvalidOperationException>(() => pair.Service.Return(
                 "SES-2026-000001",
                 "token",
                 new LibraryReturnRequest
@@ -283,7 +283,7 @@ namespace IUIS.Tests
                 new FakeCoordinator(),
                 new FakeAllocator());
 
-            Assert.ThrowsException<AuthorizationDeniedException>(() => service.Issue(
+            Assert.ThrowsExactly<AuthorizationDeniedException>(() => service.Issue(
                 "SES-2026-000001",
                 "token",
                 new LibraryIssueRequest

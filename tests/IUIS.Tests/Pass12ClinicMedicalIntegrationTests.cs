@@ -100,12 +100,12 @@ namespace IUIS.Tests
                 RecordSchemaVersion = 2,
                 Id = "CAP-2026-000001"
             };
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
                 new ClinicAppointmentJsonMapper().FromJson(
                     JsonSerializer.SerializeToElement(invalidSchema, options),
                     options));
 
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 ClinicAppointment.Rehydrate(
                     "CAP-2026-000001",
                     StudentId,
@@ -127,7 +127,7 @@ namespace IUIS.Tests
                     null,
                     null));
 
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 MedicalRecord.Rehydrate(
                     "MDR-2026-000001",
                     StudentId,
@@ -266,7 +266,7 @@ namespace IUIS.Tests
             var denied = new RestrictedMedicalRecordQueryService(
                 Executor(AdminPrincipal("clinic.medical.restricted.read")),
                 repository);
-            Assert.ThrowsException<AuthorizationDeniedException>(() =>
+            Assert.ThrowsExactly<AuthorizationDeniedException>(() =>
                 denied.Get(
                     "SES-2026-000301",
                     "token",
@@ -308,7 +308,7 @@ namespace IUIS.Tests
                 coordinator,
                 new FakeAllocator());
 
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
                 service.Schedule(
                     "SES-2026-000401",
                     "token",
@@ -321,7 +321,7 @@ namespace IUIS.Tests
                         ClinicianEmployeeId = ClinicianEmployeeId
                     },
                     StartUtc.AddMinutes(5)));
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
                 service.Schedule(
                     "SES-2026-000401",
                     "token",
@@ -404,7 +404,7 @@ namespace IUIS.Tests
                 coordinator,
                 new FakeAllocator());
 
-            Assert.ThrowsException<AuthorizationDeniedException>(() =>
+            Assert.ThrowsExactly<AuthorizationDeniedException>(() =>
                 service.Request(
                     "SES-2026-000601",
                     "token",
@@ -527,7 +527,7 @@ namespace IUIS.Tests
                             new FailAfterFirstMutation())),
                     new ApplicationIdentifierAllocator(catalog, options));
 
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     service.CompleteWithConsultation(
                         "SES-2026-000801",
                         "token",

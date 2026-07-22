@@ -47,7 +47,7 @@ namespace IUIS.Tests
                     injector,
                     null);
 
-                Assert.ThrowsException<InjectedTransactionFailureException>(() =>
+                Assert.ThrowsExactly<InjectedTransactionFailureException>(() =>
                     service.MigrateAll(
                         Now.AddMinutes(1),
                         bootstrap.AdministratorUserId));
@@ -121,7 +121,7 @@ namespace IUIS.Tests
                     null,
                     new ThrowBeforeAuditRegistration());
 
-                var failure = Assert.ThrowsException<
+                var failure = Assert.ThrowsExactly<
                     RepositoryEnvelopeMigrationAuditRegistrationException>(() =>
                         service.MigrateAll(
                             Now.AddMinutes(3),
@@ -251,7 +251,7 @@ namespace IUIS.Tests
                     failingTransactions);
                 var request = ScholarshipRequest(assessment, award);
 
-                Assert.ThrowsException<InjectedTransactionFailureException>(() =>
+                Assert.ThrowsExactly<InjectedTransactionFailureException>(() =>
                     service.Apply(
                         "SES-2026-000901",
                         "token",
