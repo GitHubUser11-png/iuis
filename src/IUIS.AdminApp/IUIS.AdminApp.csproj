@@ -24,6 +24,9 @@
     <Reference Include="Microsoft.ApplicationInsights, Version=2.23.0.29, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.ApplicationInsights.2.23.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.10, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Bcl.AsyncInterfaces.10.0.10\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Testing.Extensions.MSBuild, Version=2.3.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.Testing.Platform.MSBuild.2.3.2\lib\netstandard2.0\Microsoft.Testing.Extensions.MSBuild.dll</HintPath>
@@ -71,6 +74,9 @@
       <HintPath>..\..\..\packages\System.Diagnostics.DiagnosticSource.6.0.0\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Pipelines, Version=10.0.0.10, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.IO.Pipelines.10.0.10\lib\net462\System.IO.Pipelines.dll</HintPath>
+    </Reference>
     <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
     </Reference>
@@ -87,9 +93,16 @@
       <HintPath>..\..\..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    <Reference Include="System.Text.Encodings.Web, Version=10.0.0.10, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Text.Encodings.Web.10.0.10\lib\net462\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
+    <Reference Include="System.Text.Json, Version=10.0.0.10, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Text.Json.10.0.10\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Threading.Tasks.Extensions.4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -169,9 +182,11 @@
     <Error Condition="!Exists('..\..\..\packages\Microsoft.Testing.Extensions.Telemetry.2.3.2\build\netstandard2.0\Microsoft.Testing.Extensions.Telemetry.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.Testing.Extensions.Telemetry.2.3.2\build\netstandard2.0\Microsoft.Testing.Extensions.Telemetry.props'))" />
     <Error Condition="!Exists('..\..\..\packages\MSTest.TestAdapter.4.3.2\build\net462\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\MSTest.TestAdapter.4.3.2\build\net462\MSTest.TestAdapter.props'))" />
     <Error Condition="!Exists('..\..\..\packages\MSTest.TestAdapter.4.3.2\build\net462\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\MSTest.TestAdapter.4.3.2\build\net462\MSTest.TestAdapter.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets'))" />
   </Target>
   <Import Project="..\..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets" Condition="Exists('..\..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets')" />
   <Import Project="..\..\..\packages\Microsoft.Testing.Platform.MSBuild.2.3.2\build\Microsoft.Testing.Platform.MSBuild.targets" Condition="Exists('..\..\..\packages\Microsoft.Testing.Platform.MSBuild.2.3.2\build\Microsoft.Testing.Platform.MSBuild.targets')" />
   <Import Project="..\..\..\packages\MSTest.TestFramework.4.3.2\build\net462\MSTest.TestFramework.targets" Condition="Exists('..\..\..\packages\MSTest.TestFramework.4.3.2\build\net462\MSTest.TestFramework.targets')" />
   <Import Project="..\..\..\packages\MSTest.TestAdapter.4.3.2\build\net462\MSTest.TestAdapter.targets" Condition="Exists('..\..\..\packages\MSTest.TestAdapter.4.3.2\build\net462\MSTest.TestAdapter.targets')" />
+  <Import Project="..\..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
 </Project>
