@@ -9,15 +9,10 @@ using IUIS.SharedUI.Theme;
 
 namespace IUIS.SharedUI.Forms
 {
-    public sealed class FirstLoginPasswordChangeForm : Form
+    public sealed partial class FirstLoginPasswordChangeForm : Form
     {
         private readonly IFirstLoginPasswordChangeService _passwordChange;
         private readonly SessionCredential _credential;
-        private readonly StatusBannerPanel _banner;
-        private readonly PasswordFieldPanel _newPasswordField;
-        private readonly PasswordFieldPanel _confirmPasswordField;
-        private readonly Button _submitButton;
-        private readonly LoadingOverlayPanel _loadingOverlay;
 
         public FirstLoginPasswordChangeForm(
             IFirstLoginPasswordChangeService passwordChange,
@@ -30,6 +25,7 @@ namespace IUIS.SharedUI.Forms
 
             _passwordChange = passwordChange;
             _credential = session.ToCredential();
+            InitializeComponent();
 
             Text = ApplicationIdentity.ProductName + " — Change Password";
             StartPosition = FormStartPosition.CenterScreen;
@@ -37,37 +33,13 @@ namespace IUIS.SharedUI.Forms
             ClientSize = new Size(960, 640);
             UiTheme.ApplyBaseFormStyle(this);
 
-            var card = new FormCardPanel();
-            card.Location = new Point(240, 72);
-
-            var title = new Label();
-            title.Text = "Change your password";
             title.Font = UiTheme.PageTitleFont;
-            title.AutoSize = true;
-            title.Location = new Point(32, 28);
-
-            var subtitle = new Label();
-            subtitle.Text =
-                "Your account requires a new password before you can access university services.";
             subtitle.Font = UiTheme.BodyFont;
             subtitle.ForeColor = UiTheme.TextSecondary;
-            subtitle.AutoSize = false;
-            subtitle.Location = new Point(32, 64);
-            subtitle.Size = new Size(400, 48);
 
-            _banner = new StatusBannerPanel();
-            _banner.Location = new Point(32, 120);
-            _banner.Width = 400;
-
-            _newPasswordField = new PasswordFieldPanel("New Password", true);
             _newPasswordField.SetHelpText("At least 12 characters with mixed character types.");
-            _newPasswordField.Location = new Point(32, 176);
-
-            _confirmPasswordField = new PasswordFieldPanel("Confirm New Password", true);
-            _confirmPasswordField.Location = new Point(32, 268);
 
             _submitButton = UiTheme.CreatePrimaryButton("Update Password", 180, UiMetrics.StandardButtonHeight);
-            _submitButton.Location = new Point(32, 360);
             _submitButton.Click += SubmitClick;
 
             card.Controls.Add(title);
@@ -76,10 +48,6 @@ namespace IUIS.SharedUI.Forms
             card.Controls.Add(_newPasswordField);
             card.Controls.Add(_confirmPasswordField);
             card.Controls.Add(_submitButton);
-
-            _loadingOverlay = new LoadingOverlayPanel();
-            Controls.Add(_loadingOverlay);
-            Controls.Add(card);
 
             AcceptButton = _submitButton;
         }
