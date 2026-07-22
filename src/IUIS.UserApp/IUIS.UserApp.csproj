@@ -186,9 +186,11 @@
     <Compile Include="UserPageFactory.cs" />
     <Compile Include="UserStartupForm.cs">
       <SubType>Form</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="UserStartupForm.Designer.cs">
       <DependentUpon>UserStartupForm.cs</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +218,7 @@
   <ItemGroup>
     <EmbeddedResource Include="UserStartupForm.resx">
       <DependentUpon>UserStartupForm.cs</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

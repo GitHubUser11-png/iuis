@@ -189,9 +189,11 @@
   <ItemGroup>
     <Compile Include="AdminStartupForm.cs">
       <SubType>Form</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="AdminStartupForm.Designer.cs">
       <DependentUpon>AdminStartupForm.cs</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Application\AdministratorApplicationContext.cs" />
     <Compile Include="Configuration\AdminAppSettings.cs" />
@@ -266,6 +268,7 @@
   <ItemGroup>
     <EmbeddedResource Include="AdminStartupForm.resx">
       <DependentUpon>AdminStartupForm.cs</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
