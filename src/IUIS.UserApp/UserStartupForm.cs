@@ -15,5 +15,10 @@ namespace IUIS.UserApp
             MinimumSize = new Size(720, 480);
             ClientSize = new Size(960, 640);
         }
+
+        private void detailLabel_Click(object sender, System.EventArgs e)
+        {
+
+        }
     }
 }

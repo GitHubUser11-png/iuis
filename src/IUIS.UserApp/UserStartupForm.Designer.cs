@@ -38,7 +38,7 @@ namespace IUIS.UserApp
             this.statusLabel.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.statusLabel.Location = new System.Drawing.Point(32, 32);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(316, 32);
+            this.statusLabel.Size = new System.Drawing.Size(340, 25);
             this.statusLabel.TabIndex = 0;
             this.statusLabel.Text = "User application solution foundation";
             // 
@@ -47,9 +47,10 @@ namespace IUIS.UserApp
             this.detailLabel.AutoSize = true;
             this.detailLabel.Location = new System.Drawing.Point(35, 76);
             this.detailLabel.Name = "detailLabel";
-            this.detailLabel.Size = new System.Drawing.Size(419, 20);
+            this.detailLabel.Size = new System.Drawing.Size(360, 13);
             this.detailLabel.TabIndex = 1;
             this.detailLabel.Text = "Authentication and module routing are intentionally deferred to later passes.";
+            this.detailLabel.Click += new System.EventHandler(this.detailLabel_Click);
             // 
             // UserStartupForm
             // 

@@ -49,7 +49,7 @@ namespace IUIS.AdminApp
             this.detailLabel.Name = "detailLabel";
             this.detailLabel.Size = new System.Drawing.Size(447, 20);
             this.detailLabel.TabIndex = 1;
-            this.detailLabel.Text = "Restricted authentication and operations are intentionally deferred to later passes.";
+            this.detailLabel.Text = "Initializing administrator application...";
             // 
             // AdminStartupForm
             // 
