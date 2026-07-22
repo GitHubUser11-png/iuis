@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using IUIS.SharedUI.Forms;
+using IUIS.SharedUI.Theme;
 
 namespace IUIS.UserApp.Forms.Employee.Library
 {
@@ -29,6 +30,7 @@ namespace IUIS.UserApp.Forms.Employee.Library
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            UiTheme.ApplyBaseFormStyle(this);
         }
 
         private void SetupLayout()
@@ -48,17 +50,8 @@ namespace IUIS.UserApp.Forms.Employee.Library
                 BorderStyle = BorderStyle.FixedSingle
             };
 
-            _closeButton = new Button
-            {
-                Text = "Close",
-                Location = new Point(440, 400),
-                Size = new Size(100, 35),
-                BackColor = Color.FromArgb(229, 231, 235),
-                ForeColor = Color.FromArgb(55, 65, 81),
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F)
-            };
-            _closeButton.FlatAppearance.BorderSize = 0;
+            _closeButton = UiTheme.CreateSecondaryButton("Close", 120, UiMetrics.StandardButtonHeight);
+            _closeButton.Location = new Point(440, 400);
             _closeButton.Click += (s, e) => this.DialogResult = DialogResult.OK;
 
             mainPanel.Controls.Add(_detailsPanel);
@@ -101,8 +94,8 @@ namespace IUIS.UserApp.Forms.Employee.Library
                     var labelControl = new Label
                     {
                         Text = label,
-                        Font = new Font("Segoe UI", 8F),
-                        ForeColor = Color.FromArgb(107, 114, 128),
+                        Font = UiTheme.CaptionFont,
+                        ForeColor = UiTheme.TextSecondary,
                         Location = new Point(x, y),
                         AutoSize = true
                     };
@@ -110,8 +103,8 @@ namespace IUIS.UserApp.Forms.Employee.Library
                     var valueControl = new Label
                     {
                         Text = value,
-                        Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                        ForeColor = Color.FromArgb(17, 24, 39),
+                        Font = UiTheme.BodyFont,
+                        ForeColor = UiTheme.TextPrimary,
                         Location = new Point(x, y + 18),
                         AutoSize = true
                     };

@@ -169,6 +169,11 @@
     <Analyzer Include="..\..\..\packages\MSTest.Analyzers.4.3.2\analyzers\dotnet\cs\MSTest.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\..\..\packages\MSTest.Analyzers.4.3.2\analyzers\dotnet\cs\MSTest.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AdminStartupForm.resx">
+      <DependentUpon>AdminStartupForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -27,5 +27,23 @@ namespace IUIS.AdminApp
             Controls.Add(statusLabel);
             Controls.Add(detailLabel);
         }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // AdminStartupForm
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Name = "AdminStartupForm";
+            this.Load += new System.EventHandler(this.AdminStartupForm_Load);
+            this.ResumeLayout(false);
+
+        }
+
+        private void AdminStartupForm_Load(object sender, System.EventArgs e)
+        {
+
+        }
     }
 }
