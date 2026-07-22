@@ -13,8 +13,6 @@
     <LangVersion>7.3</LangVersion>
     <OutputPath>..\..\artifacts\bin\$(Configuration)\IUIS.Infrastructure\</OutputPath>
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.Infrastructure\</IntermediateOutputPath>
-    <RuntimeIdentifier>win</RuntimeIdentifier>
-    <RuntimeIdentifiers>win</RuntimeIdentifiers>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -82,7 +80,47 @@
     <Reference Include="System.ValueTuple" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="**\*.cs" />
+    <Compile Include="Bootstrap\ProductionBootstrapper.cs" />
+    <Compile Include="Composition\IuisCompositionRoot.cs" />
+    <Compile Include="Identity\ApplicationIdentifierAllocator.cs" />
+    <Compile Include="Persistence\AggregateMapperReadinessCatalog.cs" />
+    <Compile Include="Persistence\AggregateRepositoryAdapters.cs" />
+    <Compile Include="Persistence\AtomicFileWriter.cs" />
+    <Compile Include="Persistence\CanonicalPersistedRecords.cs" />
+    <Compile Include="Persistence\ClinicJsonMappers.cs" />
+    <Compile Include="Persistence\CounselingDisciplineJsonMappers.cs" />
+    <Compile Include="Persistence\CrossProcessFileLock.cs" />
+    <Compile Include="Persistence\EnrollmentFinanceJsonMappers.cs" />
+    <Compile Include="Persistence\EnrollmentFinancePersistedRecords.cs" />
+    <Compile Include="Persistence\IdSequenceService.cs" />
+    <Compile Include="Persistence\JsonInfrastructureOptions.cs" />
+    <Compile Include="Persistence\JsonRepositoryStore.cs" />
+    <Compile Include="Persistence\LibraryJsonMappers.cs" />
+    <Compile Include="Persistence\MappedJsonRepository.cs" />
+    <Compile Include="Persistence\RepositoryCatalog.cs" />
+    <Compile Include="Persistence\RepositoryEnvelope.cs" />
+    <Compile Include="Persistence\RepositoryEnvelopeJson.cs" />
+    <Compile Include="Persistence\RepositoryEnvelopeMigrationService.cs" />
+    <Compile Include="Persistence\SpecializedAggregateJsonMappers.cs" />
+    <Compile Include="Persistence\StudentServicePersistedRecords.cs" />
+    <Compile Include="Persistence\TransactionCoordinator.cs" />
+    <Compile Include="Presentation\ApplicationRuntime.cs" />
+    <Compile Include="Presentation\AuthenticationPresentationService.cs" />
+    <Compile Include="Presentation\FirstLoginPasswordChangeService.cs" />
+    <Compile Include="Presentation\NetworkContextProvider.cs" />
+    <Compile Include="Presentation\SessionPresentationService.cs" />
+    <Compile Include="Presentation\StartupReadinessService.cs" />
+    <Compile Include="Projections\Student\StudentProjectionDataSource.cs" />
+    <Compile Include="Projections\Student\StudentProjectionRevisionSet.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\AuthenticationService.cs" />
+    <Compile Include="Security\JsonAuthorizationPrincipalProvider.cs" />
+    <Compile Include="Security\LoginAttemptService.cs" />
+    <Compile Include="Security\PasswordHasher.cs" />
+    <Compile Include="Security\SecurityModels.cs" />
+    <Compile Include="Security\SessionSecurityMigrationService.cs" />
+    <Compile Include="Security\SessionTokenProtector.cs" />
+    <Compile Include="SolutionFoundation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\templates\production-data\*.json">
