@@ -111,12 +111,12 @@ namespace IUIS.Tests
                 RecordSchemaVersion = 2,
                 Id = "CNS-2026-000003"
             };
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
                 new CounselingCaseJsonMapper().FromJson(
                     JsonSerializer.SerializeToElement(unsupported, options),
                     options));
 
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 CounselingCase.Rehydrate(
                     "CNS-2026-000004", StudentId, StartUtc,
                     "Support request", CounselingCaseStatus.Active,
@@ -126,7 +126,7 @@ namespace IUIS.Tests
                     1, false, StartUtc, ActorUserId,
                     StartUtc, ActorUserId, null, null));
 
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 DisciplineCase.Rehydrate(
                     "DIN-2026-000004", StudentId,
                     StartUtc.AddMinutes(-1), "Campus",
@@ -241,7 +241,7 @@ namespace IUIS.Tests
             var deniedCounseling = new RestrictedCounselingCaseQueryService(
                 Executor(AdminPrincipal("counseling.case.restricted.read")),
                 new CounselingRepository(1, new[] { counseling }));
-            Assert.ThrowsException<AuthorizationDeniedException>(() =>
+            Assert.ThrowsExactly<AuthorizationDeniedException>(() =>
                 deniedCounseling.Get("SES-2026-000301", "token",
                     counseling.Id, StartUtc.AddHours(10)));
 
@@ -258,7 +258,7 @@ namespace IUIS.Tests
             var deniedDiscipline = new RestrictedDisciplineCaseQueryService(
                 Executor(AdminPrincipal("discipline.case.restricted.read")),
                 new DisciplineRepository(1, new[] { discipline }));
-            Assert.ThrowsException<AuthorizationDeniedException>(() =>
+            Assert.ThrowsExactly<AuthorizationDeniedException>(() =>
                 deniedDiscipline.Get("SES-2026-000303", "token",
                     discipline.Id, StartUtc.AddHours(10)));
         }
@@ -275,7 +275,7 @@ namespace IUIS.Tests
                     "discipline.decision.release")),
                 repository, coordinator, new FakeAllocator());
 
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
                 service.ReleaseDecision("SES-2026-000401", "token",
                     new DisciplineReleaseDecisionRequest
                     {
@@ -284,7 +284,7 @@ namespace IUIS.Tests
                         CaseId = value.Id,
                         ReleasedDecisionSummary = "Released decision"
                     }, StartUtc.AddHours(10)));
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
                 service.ReleaseDecision("SES-2026-000401", "token",
                     new DisciplineReleaseDecisionRequest
                     {
@@ -311,7 +311,7 @@ namespace IUIS.Tests
                     "student.discipline.response.submit")),
                 repository, coordinator, new FakeAllocator());
 
-            var exception = Assert.ThrowsException<AuthorizationDeniedException>(() =>
+            var exception = Assert.ThrowsExactly<AuthorizationDeniedException>(() =>
                 service.SubmitOwnResponse("SES-2026-000501", "token",
                     new DisciplineStudentResponseRequest
                     {
@@ -406,7 +406,7 @@ namespace IUIS.Tests
                     transactions,
                     new ApplicationIdentifierAllocator(catalog, options));
 
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     service.ReleaseDecisionWithCounselingReferral(
                         "SES-2026-000701", "token",
                         new DisciplineCounselingCoordinationRequest

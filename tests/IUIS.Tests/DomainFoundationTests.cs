@@ -43,7 +43,7 @@ namespace IUIS.Tests
         [TestMethod]
         public void EntityBaseRejectsNonUtcCreationTimestamp()
         {
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 new TestEntity(
                     "TST-2026-000001",
                     new DateTime(2026, 7, 17, 1, 2, 3, DateTimeKind.Local),
@@ -77,7 +77,7 @@ namespace IUIS.Tests
         {
             var entity = NewEntity();
 
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 entity.Change(Utc(2026, 7, 16, 23, 59, 59), "USR-2026-000002"));
         }
 
@@ -97,7 +97,7 @@ namespace IUIS.Tests
         [TestMethod]
         public void PersonNameRejectsMissingRequiredFamilyName()
         {
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 new PersonName("Neil", null, "  ", null));
         }
 
@@ -128,14 +128,14 @@ namespace IUIS.Tests
         [TestMethod]
         public void ContactInformationRejectsMalformedEmail()
         {
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 new ContactInformation("invalid@example", null, null));
         }
 
         [TestMethod]
         public void ContactInformationRejectsSeparatorOnlyPhoneValue()
         {
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 new ContactInformation(null, "---", null));
         }
 
@@ -160,7 +160,7 @@ namespace IUIS.Tests
         [TestMethod]
         public void PostalAddressRejectsInvalidCountryCode()
         {
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 new PostalAddress("Line 1", null, null, "Malvar", "Batangas", null, "PHL"));
         }
 
@@ -210,7 +210,7 @@ namespace IUIS.Tests
             var pesos = Money.PhilippinePeso(100m);
             var dollars = new Money(10m, "USD");
 
-            Assert.ThrowsException<DomainValidationException>(() => pesos.Add(dollars));
+            Assert.ThrowsExactly<DomainValidationException>(() => pesos.Add(dollars));
         }
 
         [TestMethod]
@@ -228,7 +228,7 @@ namespace IUIS.Tests
         [TestMethod]
         public void MoneyNonNegativeGuardRejectsNegativeAmount()
         {
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 Money.PhilippinePeso(-0.01m).RequireNonNegative("amount"));
         }
 

@@ -74,8 +74,8 @@ foreach ($relativePath in $projectFiles) {
 $infrastructureProjectPath = Join-Path $repositoryRoot 'src\IUIS.Infrastructure\IUIS.Infrastructure.csproj'
 if (Test-Path -LiteralPath $infrastructureProjectPath -PathType Leaf) {
     $infrastructureProject = Get-Content -LiteralPath $infrastructureProjectPath -Raw
-    if (-not $infrastructureProject.Contains('<PackageReference Include="System.Text.Json" Version="8.0.5" />')) {
-        $errors += 'IUIS.Infrastructure does not lock System.Text.Json to version 8.0.5.'
+    if (-not ($infrastructureProject -match 'Reference\s+Include="Newtonsoft\.Json')) {
+        $errors += 'IUIS.Infrastructure does not reference Newtonsoft.Json.'
     }
 }
 

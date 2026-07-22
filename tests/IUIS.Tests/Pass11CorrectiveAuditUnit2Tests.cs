@@ -47,7 +47,7 @@ namespace IUIS.Tests
                     injector,
                     null);
 
-                Assert.ThrowsException<InjectedTransactionFailureException>(() =>
+                Assert.ThrowsExactly<InjectedTransactionFailureException>(() =>
                     service.MigrateAll(
                         Now.AddMinutes(1),
                         bootstrap.AdministratorUserId));
@@ -121,7 +121,7 @@ namespace IUIS.Tests
                     null,
                     new ThrowBeforeAuditRegistration());
 
-                var failure = Assert.ThrowsException<
+                var failure = Assert.ThrowsExactly<
                     RepositoryEnvelopeMigrationAuditRegistrationException>(() =>
                         service.MigrateAll(
                             Now.AddMinutes(3),
@@ -251,7 +251,7 @@ namespace IUIS.Tests
                     failingTransactions);
                 var request = ScholarshipRequest(assessment, award);
 
-                Assert.ThrowsException<InjectedTransactionFailureException>(() =>
+                Assert.ThrowsExactly<InjectedTransactionFailureException>(() =>
                     service.Apply(
                         "SES-2026-000901",
                         "token",
@@ -742,15 +742,27 @@ namespace IUIS.Tests
 
         private static string FindRepositoryRoot()
         {
-            var directory = new DirectoryInfo(
-                AppDomain.CurrentDomain.BaseDirectory);
-            while (directory != null)
+            var candidates = new[]
             {
-                if (File.Exists(Path.Combine(
-                    directory.FullName,
-                    "IUIS.sln")))
-                    return directory.FullName;
-                directory = directory.Parent;
+                AppDomain.CurrentDomain.BaseDirectory,
+                Environment.CurrentDirectory,
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+            };
+
+            foreach (var candidate in candidates)
+            {
+                if (string.IsNullOrWhiteSpace(candidate))
+                    continue;
+
+                var directory = new DirectoryInfo(candidate);
+                while (directory != null)
+                {
+                    if (File.Exists(Path.Combine(
+                        directory.FullName,
+                        "IUIS.sln")))
+                        return directory.FullName;
+                    directory = directory.Parent;
+                }
             }
 
             throw new DirectoryNotFoundException(

@@ -35,7 +35,7 @@ namespace IUIS.Tests
                     RecordSchemaVersion = version
                 };
                 var json = JsonSerializer.SerializeToElement(record, options);
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     mapper.FromJson(json, options),
                     "Schema version " + version + " must fail closed.");
             }
@@ -72,7 +72,7 @@ namespace IUIS.Tests
                     bootstrap.AdministratorUserId);
                 var service = CreatePaymentPostingService(composition);
 
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     service.Post(
                         "SES-2026-000601",
                         "token",
@@ -256,7 +256,7 @@ namespace IUIS.Tests
             var allocationId = payment.Allocations.Single().AllocationId;
             var allocatedAmount = payment.AllocatedAmount.Amount;
 
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 payment.AddAllocation(
                     new PaymentAllocation(
                         "PAL-2026-000802",
@@ -292,7 +292,7 @@ namespace IUIS.Tests
             var reason = adjustment.Reason;
             var amount = adjustment.Amount.Amount;
 
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 adjustment.CancelPrepared(
                     "A posted adjustment cannot be cancelled as prepared.",
                     Now.AddHours(3),

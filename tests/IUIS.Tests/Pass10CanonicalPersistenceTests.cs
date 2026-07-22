@@ -208,7 +208,7 @@ namespace IUIS.Tests
                     Status = CourseStatus.Draft.ToString()
                 },
                 options);
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
                 new CourseJsonMapper().FromJson(source, options));
         }
 
@@ -233,7 +233,7 @@ namespace IUIS.Tests
                     Status = CourseStatus.Draft.ToString()
                 },
                 options);
-            Assert.ThrowsException<InvalidOperationException>(() =>
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
                 new CourseJsonMapper().FromJson(source, options));
         }
 
@@ -349,7 +349,7 @@ namespace IUIS.Tests
                     credentials.Token,
                     ContactRequest(read.RepositoryRevision, read.EntityVersion, "first.change@example.edu"),
                     Now.AddMinutes(6));
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     composition.StudentContactUpdates.UpdateOwnContact(
                         credentials.SessionId,
                         credentials.Token,

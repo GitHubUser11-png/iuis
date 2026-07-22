@@ -233,7 +233,7 @@ namespace IUIS.Tests
                     new PermissionResolver()),
                 repository,
                 new RestrictedProjectionService());
-            Assert.ThrowsException<AuthorizationDeniedException>(() =>
+            Assert.ThrowsExactly<AuthorizationDeniedException>(() =>
                 service.GetEmployee(
                     "SES-2026-000001",
                     "token",
@@ -297,7 +297,7 @@ namespace IUIS.Tests
                     new TestAggregate { Id = "TST-2026-000001", Value = "Alpha" }
                 };
                 repository.Write(records, 0, bootstrap.AdministratorUserId);
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     repository.Write(records, 0, bootstrap.AdministratorUserId));
             });
         }
@@ -433,7 +433,7 @@ namespace IUIS.Tests
                 var provider = new JsonAuthorizationPrincipalProvider(
                     new ProductionRepositoryCatalog(),
                     new JsonInfrastructureOptions(root));
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     provider.Load(authentication.SessionId, authentication.SessionToken, Now.AddHours(10)));
             });
         }
@@ -451,7 +451,7 @@ namespace IUIS.Tests
                 var provider = new JsonAuthorizationPrincipalProvider(
                     new ProductionRepositoryCatalog(),
                     new JsonInfrastructureOptions(root));
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     provider.Load(authentication.SessionId, authentication.SessionToken, Now.AddMinutes(4)));
             });
         }

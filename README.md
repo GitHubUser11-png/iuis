@@ -69,7 +69,7 @@ Pass 12 excludes production-form completion, notification dispatch, operational 
 - C# 7.3
 - Windows Forms
 - .NET Framework 4.8
-- `System.Text.Json`
+- `Newtonsoft.Json`
 - separate `IUIS.UserApp.exe` and `IUIS.AdminApp.exe`
 - layered seven-project Visual Studio solution
 - shared synchronized JSON persistence

@@ -61,16 +61,18 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void BootstrapRejectsNonEmptyDataDirectory()
         {
-            var root = NewRoot();
-            try
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
             {
-                File.WriteAllText(Path.Combine(root, "existing.json"), "{}");
-                CreateBootstrapper(root).Initialize(CreateRequest());
-            }
-            finally { DeleteRoot(root); }
+                var root = NewRoot();
+                try
+                {
+                    File.WriteAllText(Path.Combine(root, "existing.json"), "{}");
+                    CreateBootstrapper(root).Initialize(CreateRequest());
+                }
+                finally { DeleteRoot(root); }
+            });
         }
 
         [TestMethod]
@@ -111,7 +113,7 @@ namespace IUIS.Tests
                 var store = new JsonRepositoryStore(catalog, new JsonInfrastructureOptions(root));
                 var envelope = store.Read<object>("courses");
                 store.Write("courses", envelope, 0);
-                Assert.ThrowsException<InvalidOperationException>(() => store.Write("courses", envelope, 0));
+                Assert.ThrowsExactly<InvalidOperationException>(() => store.Write("courses", envelope, 0));
             });
         }
 

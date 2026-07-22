@@ -114,7 +114,7 @@ namespace IUIS.Tests
                     transactions,
                     new ApplicationIdentifierAllocator(catalog, options));
 
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     service.Issue(
                         "SES-2026-010101",
                         "token",
@@ -163,7 +163,7 @@ namespace IUIS.Tests
                     root,
                     EmployeePrincipal("library.circulation.issue"));
 
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     service.Issue(
                         "SES-2026-010201",
                         "token",
@@ -178,7 +178,7 @@ namespace IUIS.Tests
                             DueDate = new InstitutionLocalDate(2026, 8, 15)
                         },
                         Now.AddMinutes(5)));
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     service.Issue(
                         "SES-2026-010201",
                         "token",

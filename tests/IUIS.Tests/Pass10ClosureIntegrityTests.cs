@@ -110,7 +110,7 @@ namespace IUIS.Tests
                     },
                     JsonOptions()));
                 store.Write("courses", envelope, envelope.Revision);
-                Assert.ThrowsException<InvalidOperationException>(() =>
+                Assert.ThrowsExactly<InvalidOperationException>(() =>
                     new IuisCompositionRoot(root).Courses.Read());
             });
         }
@@ -151,7 +151,7 @@ namespace IUIS.Tests
                 ArchivedByUserId = null
             };
             var json = JsonSerializer.SerializeToElement(persisted, JsonOptions());
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 new StudentRecordJsonMapper().FromJson(json, JsonOptions()));
         }
 
@@ -166,7 +166,7 @@ namespace IUIS.Tests
             var originalVersion = rule.Version;
             var originalUpdatedAtUtc = rule.UpdatedAtUtc;
 
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 rule.UpdateDraftDetails(
                     "Changed before validation",
                     AssessmentChargeCategory.Miscellaneous,
@@ -184,7 +184,7 @@ namespace IUIS.Tests
             rule.Archive(Now.AddMinutes(1), "USR-2026-000001");
             var archivedVersion = rule.Version;
             var archivedUpdatedAtUtc = rule.UpdatedAtUtc;
-            Assert.ThrowsException<DomainValidationException>(() =>
+            Assert.ThrowsExactly<DomainValidationException>(() =>
                 rule.Activate(Now.AddMinutes(2), "USR-2026-000001"));
             Assert.AreEqual(ChargeRuleStatus.Draft, rule.Status);
             Assert.AreEqual(archivedVersion, rule.Version);

@@ -105,17 +105,18 @@ try {
     $summary.currentStage = 'test-adapter-discovery'
     Write-Summary
 
-    $adapterPackageRoot = Join-Path $repositoryRoot 'packages\MSTest.TestAdapter.3.6.4'
+    $adapterPackageRoot = Join-Path $repositoryRoot 'packages\MSTest.TestAdapter.4.3.2'
     if (-not (Test-Path -LiteralPath $adapterPackageRoot -PathType Container)) {
         throw "MSTest adapter package was not restored: $adapterPackageRoot"
     }
 
     $adapterAssembly = Get-ChildItem -LiteralPath $adapterPackageRoot -Recurse -File |
-        Where-Object { $_.Name -eq 'Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll' } |
+        Where-Object { ($_.Name -eq 'MSTest.TestAdapter.dll' -or $_.Name -eq 'Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll') -and $_.FullName -match 'net462' } |
+        Sort-Object { $_.FullName.Length } |
         Select-Object -First 1
 
     if ($null -eq $adapterAssembly) {
-        throw "Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll was not found under $adapterPackageRoot"
+        throw "MSTest test adapter (MSTest.TestAdapter.dll or Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll) was not found under $adapterPackageRoot"
     }
 
     $adapterPath = $adapterAssembly.Directory.FullName

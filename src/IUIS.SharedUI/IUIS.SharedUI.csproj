@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props" Condition="Exists('..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props')" />
-  <Import Project="..\..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props" Condition="Exists('..\..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props')" />
+  <Import Project="..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props" Condition="Exists('..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -170,10 +170,6 @@
       <Project>{20B7E45D-A6C5-4CC8-B39C-7F84A7BA3E02}</Project>
       <Name>IUIS.Application</Name>
     </ProjectReference>
-    <ProjectReference Include="..\IUIS.Infrastructure\IUIS.Infrastructure.csproj">
-      <Project>{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}</Project>
-      <Name>IUIS.Infrastructure</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -184,15 +180,15 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets'))" />
-    <Error Condition="!Exists('..\..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets'))" />
+    <Error Condition="!Exists('..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets'))" />
     <Error Condition="!Exists('..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.props'))" />
     <Error Condition="!Exists('..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets'))" />
     <Error Condition="!Exists('..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets'))" />
   </Target>
-  <Import Project="..\..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets" Condition="Exists('..\..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets')" />
-  <Import Project="..\..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
+  <Import Project="..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets" Condition="Exists('..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets')" />
+  <Import Project="..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
   <Import Project="..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets" Condition="Exists('..\..\packages\Microsoft.Testing.Platform.2.3.2\build\netstandard2.0\Microsoft.Testing.Platform.targets')" />
   <Import Project="..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets" Condition="Exists('..\..\packages\System.ValueTuple.4.6.2\build\net471\System.ValueTuple.targets')" />
 </Project>
