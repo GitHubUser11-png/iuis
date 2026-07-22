@@ -32,7 +32,7 @@ namespace IUIS.UserApp.Forms.Shell
         /// </summary>
         private void InitializeComponent()
         {
-            this._shell = new IUIS.SharedUI.Shell.ApplicationShellPanel();
+            this._shell = new IUIS.SharedUI.Controls.ApplicationShellPanel();
             this._sessionTimer = new System.Windows.Forms.Timer();
             this.SuspendLayout();
             // 
