@@ -190,6 +190,9 @@
     <Compile Include="AdminStartupForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="AdminStartupForm.Designer.cs">
+      <DependentUpon>AdminStartupForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Application\AdministratorApplicationContext.cs" />
     <Compile Include="Configuration\AdminAppSettings.cs" />
     <Compile Include="Forms\AdminDashboardPage.cs">
@@ -199,20 +202,35 @@
     <Compile Include="Forms\Authentication\AdminLoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Authentication\AdminLoginForm.Designer.cs">
+      <DependentUpon>AdminLoginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ReportsPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\Shell\AdministratorShellForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Shell\AdministratorShellForm.Designer.cs">
+      <DependentUpon>AdministratorShellForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Startup\AdministratorBootstrapForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Startup\AdministratorBootstrapForm.Designer.cs">
+      <DependentUpon>AdministratorBootstrapForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Startup\BootstrapResultDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Startup\BootstrapResultDialog.Designer.cs">
+      <DependentUpon>BootstrapResultDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Startup\RepositoryInitializationForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Startup\RepositoryInitializationForm.Designer.cs">
+      <DependentUpon>RepositoryInitializationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\SystemAdministrationPage.cs">
       <SubType>UserControl</SubType>

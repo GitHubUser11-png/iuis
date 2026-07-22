@@ -109,17 +109,32 @@
     <Compile Include="Forms\AccountRequestForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\AccountRequestForm.Designer.cs">
+      <DependentUpon>AccountRequestForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\GeneralLoginForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GeneralLoginForm.Designer.cs">
+      <DependentUpon>GeneralLoginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Shell\UserShellForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Shell\UserShellForm.Designer.cs">
+      <DependentUpon>UserShellForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\StartupCheckForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\StartupCheckForm.Designer.cs">
+      <DependentUpon>StartupCheckForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\StartupFailureForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\StartupFailureForm.Designer.cs">
+      <DependentUpon>StartupFailureForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Student\Dialogs\AssessmentDetailsDialog.cs">
       <SubType>Form</SubType>
@@ -171,6 +186,9 @@
     <Compile Include="UserPageFactory.cs" />
     <Compile Include="UserStartupForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserStartupForm.Designer.cs">
+      <DependentUpon>UserStartupForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

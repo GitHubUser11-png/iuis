@@ -32,8 +32,8 @@ namespace IUIS.SharedUI.Forms
             this.title = new System.Windows.Forms.Label();
             this.subtitle = new System.Windows.Forms.Label();
             this._banner = new IUIS.SharedUI.Controls.StatusBannerPanel();
-            this._newPasswordField = new IUIS.SharedUI.Controls.PasswordFieldPanel();
-            this._confirmPasswordField = new IUIS.SharedUI.Controls.PasswordFieldPanel();
+            this._newPasswordField = new IUIS.SharedUI.Controls.PasswordFieldPanel("New Password", true);
+            this._confirmPasswordField = new IUIS.SharedUI.Controls.PasswordFieldPanel("Confirm New Password", true);
             this._submitButton = new System.Windows.Forms.Button();
             this._loadingOverlay = new IUIS.SharedUI.Controls.LoadingOverlayPanel();
             this.SuspendLayout();
