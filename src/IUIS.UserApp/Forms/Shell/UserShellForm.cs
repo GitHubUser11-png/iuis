@@ -19,11 +19,9 @@ using AppUserSession = IUIS.Application.Security.UserSession;
 
 namespace IUIS.UserApp.Forms.Shell
 {
-    internal sealed class UserShellForm : Form
+    internal sealed partial class UserShellForm : Form
     {
         private readonly ApplicationRuntime _runtime;
-        private readonly ApplicationShellPanel _shell;
-        private readonly Timer _sessionTimer;
         private readonly string _dashboardPageKey;
         private readonly IReadOnlyList<NavigationItemDefinition> _navigationItems;
 
@@ -38,6 +36,7 @@ namespace IUIS.UserApp.Forms.Shell
             _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
             _navigationItems = navigationItems ?? throw new ArgumentNullException(nameof(navigationItems));
             _dashboardPageKey = dashboardPageKey ?? "STU-DASH-01";
+            InitializeComponent();
 
             Text = AppIdentity.ProductName + " — " + portalLabel;
             StartPosition = FormStartPosition.CenterScreen;
@@ -45,7 +44,6 @@ namespace IUIS.UserApp.Forms.Shell
             ClientSize = new Size(UiMetrics.DefaultWindowWidth, UiMetrics.DefaultWindowHeight);
             UiTheme.ApplyBaseFormStyle(this);
 
-            _shell = new ApplicationShellPanel();
             _shell.Dock = DockStyle.Fill;
             _shell.SignOutRequested += ShellSignOutRequested;
 
@@ -68,16 +66,11 @@ namespace IUIS.UserApp.Forms.Shell
                 BuildUserDisplay(),
                 "Session active — " + AppIdentity.CampusSubtitle);
 
-            Controls.Add(_shell);
-
             var firstEntry = filtered.FirstOrDefault(item => item.AlwaysVisible)
                 ?? filtered.FirstOrDefault();
             if (firstEntry != null)
                 _shell.ShowPageByKey(firstEntry.PageKey, firstEntry.DisplayText);
 
-            _sessionTimer = new Timer();
-            _sessionTimer.Interval = 60000;
-            _sessionTimer.Tick += SessionTimerTick;
             _sessionTimer.Start();
         }
 
@@ -86,7 +79,6 @@ namespace IUIS.UserApp.Forms.Shell
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             _sessionTimer.Stop();
-            _sessionTimer.Dispose();
             base.OnFormClosed(e);
         }
 

@@ -5,10 +5,12 @@ using IUIS.SharedUI.Theme;
 
 namespace IUIS.UserApp.Forms
 {
-    internal sealed class StartupFailureForm : Form
+    internal sealed partial class StartupFailureForm : Form
     {
         public StartupFailureForm(string failureMessage, bool showRecoveryTools)
         {
+            InitializeComponent();
+            
             Text = "System could not start safely";
             FormBorderStyle = FormBorderStyle.FixedDialog;
             StartPosition = FormStartPosition.CenterParent;
@@ -17,31 +19,17 @@ namespace IUIS.UserApp.Forms
             ClientSize = new Size(520, 280);
             UiTheme.ApplyBaseFormStyle(this);
 
-            var title = new Label();
-            title.Text = "System could not start safely";
             title.Font = UiTheme.PageTitleFont;
-            title.AutoSize = true;
-            title.Location = new Point(32, 28);
+            message.Font = UiTheme.BodyFont;
+            message.ForeColor = UiTheme.TextSecondary;
+            reference.Font = UiTheme.CaptionFont;
+            reference.ForeColor = UiTheme.TextSecondary;
 
-            var message = new Label();
             message.Text = string.IsNullOrWhiteSpace(failureMessage)
                 ? "Required application data is unavailable.\r\nNo records were changed."
                 : failureMessage + "\r\nNo records were changed.";
-            message.Font = UiTheme.BodyFont;
-            message.ForeColor = UiTheme.TextSecondary;
-            message.AutoSize = false;
-            message.Location = new Point(32, 72);
-            message.Size = new Size(456, 72);
 
-            var reference = new Label();
-            reference.Text = "Error reference: REP-START-001";
-            reference.Font = UiTheme.CaptionFont;
-            reference.ForeColor = UiTheme.TextSecondary;
-            reference.AutoSize = true;
-            reference.Location = new Point(32, 152);
-
-            var retryButton = UiTheme.CreatePrimaryButton("Retry", 120, UiMetrics.StandardButtonHeight);
-            retryButton.Location = new Point(248, 200);
+            retryButton = UiTheme.CreatePrimaryButton("Retry", 120, UiMetrics.StandardButtonHeight);
             retryButton.Click += delegate
             {
                 RetryRequested = true;
@@ -49,26 +37,15 @@ namespace IUIS.UserApp.Forms
                 Close();
             };
 
-            var exitButton = UiTheme.CreateSecondaryButton("Exit", 120, UiMetrics.StandardButtonHeight);
-            exitButton.Location = new Point(376, 200);
+            exitButton = UiTheme.CreateSecondaryButton("Exit", 120, UiMetrics.StandardButtonHeight);
             exitButton.Click += delegate
             {
                 DialogResult = DialogResult.Cancel;
                 Close();
             };
 
-            Controls.Add(title);
-            Controls.Add(message);
-            Controls.Add(reference);
-            Controls.Add(retryButton);
-            Controls.Add(exitButton);
-
-            if (showRecoveryTools)
-            {
-                var recoveryButton = UiTheme.CreateSecondaryButton("Open Recovery Tools", 180, UiMetrics.StandardButtonHeight);
-                recoveryButton.Location = new Point(32, 200);
-                Controls.Add(recoveryButton);
-            }
+            recoveryButton = UiTheme.CreateSecondaryButton("Open Recovery Tools", 180, UiMetrics.StandardButtonHeight);
+            recoveryButton.Visible = showRecoveryTools;
         }
 
         public bool RetryRequested { get; private set; }

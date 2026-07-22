@@ -17,15 +17,14 @@ using AppIdentity = IUIS.SharedUI.ApplicationIdentity;
 
 namespace IUIS.AdminApp.Forms.Shell
 {
-    internal sealed class AdministratorShellForm : Form
+    internal sealed partial class AdministratorShellForm : Form
     {
         private readonly ApplicationRuntime _runtime;
-        private readonly ApplicationShellPanel _shell;
-        private readonly Timer _sessionTimer;
 
         public AdministratorShellForm(ApplicationRuntime runtime)
         {
             _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
+            InitializeComponent();
 
             Text = AppIdentity.ProductName + " — Administrator Workspace";
             StartPosition = FormStartPosition.CenterScreen;
@@ -33,7 +32,6 @@ namespace IUIS.AdminApp.Forms.Shell
             ClientSize = new Size(UiMetrics.DefaultWindowWidth, UiMetrics.DefaultWindowHeight);
             UiTheme.ApplyBaseFormStyle(this);
 
-            _shell = new ApplicationShellPanel();
             _shell.Dock = DockStyle.Fill;
             _shell.SignOutRequested += ShellSignOutRequested;
 
@@ -64,23 +62,17 @@ namespace IUIS.AdminApp.Forms.Shell
                 BuildUserDisplay(),
                 "Restricted session — " + AppIdentity.CampusSubtitle);
 
-            Controls.Add(_shell);
-
             var firstEntry = filtered.FirstOrDefault(item => item.AlwaysVisible)
                 ?? filtered.FirstOrDefault();
             if (firstEntry != null)
                 _shell.ShowPageByKey(firstEntry.PageKey, firstEntry.DisplayText);
 
-            _sessionTimer = new Timer();
-            _sessionTimer.Interval = 60000;
-            _sessionTimer.Tick += SessionTimerTick;
             _sessionTimer.Start();
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             _sessionTimer.Stop();
-            _sessionTimer.Dispose();
             base.OnFormClosed(e);
         }
 

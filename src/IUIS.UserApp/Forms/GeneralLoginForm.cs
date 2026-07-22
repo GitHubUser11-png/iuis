@@ -12,22 +12,19 @@ using AppIdentity = IUIS.SharedUI.ApplicationIdentity;
 
 namespace IUIS.UserApp.Forms
 {
-    internal sealed class GeneralLoginForm : Form
+    internal sealed partial class GeneralLoginForm : Form
     {
         private readonly ApplicationRuntime _runtime;
-        private readonly Panel _brandPanel;
-        private readonly Panel _contentHost;
-        private readonly Panel _card;
         private StatusBannerPanel _banner;
         private LabeledFieldPanel _loginIdField;
         private PasswordFieldPanel _passwordField;
         private CheckBox _rememberIdCheckBox;
         private Button _signInButton;
-        private readonly LoadingOverlayPanel _loadingOverlay;
 
         public GeneralLoginForm(ApplicationRuntime runtime)
         {
             _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
+            InitializeComponent();
 
             Text = AppIdentity.ProductName + " — Sign In";
             StartPosition = FormStartPosition.CenterScreen;
@@ -35,30 +32,13 @@ namespace IUIS.UserApp.Forms
             ClientSize = new Size(1180, 760);
             UiTheme.ApplyBaseFormStyle(this);
 
-            var root = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 2,
-                RowCount = 1,
-                Margin = Padding.Empty,
-                Padding = Padding.Empty
-            };
-            root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38f));
-            root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 62f));
-            root.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
-
             _brandPanel = BuildBrandPanel();
-            _contentHost = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = UiTheme.Surface,
-                AutoScroll = true,
-                Padding = new Padding(28)
-            };
+            _contentHost.BackColor = UiTheme.Surface;
+            _contentHost.AutoScroll = true;
+            _contentHost.Padding = new Padding(28);
             _card = BuildSignInCard();
             _contentHost.Controls.Add(_card);
-
-            _loadingOverlay = new LoadingOverlayPanel { Dock = DockStyle.Fill };
+            _loadingOverlay.Dock = DockStyle.Fill;
             _contentHost.Controls.Add(_loadingOverlay);
             _loadingOverlay.BringToFront();
 

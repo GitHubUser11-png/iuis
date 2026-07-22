@@ -8,15 +8,12 @@ using IUIS.SharedUI.Theme;
 
 namespace IUIS.UserApp.Forms
 {
-    internal sealed class AccountRequestForm : Form
+    internal sealed partial class AccountRequestForm : Form
     {
-        private readonly LabeledFieldPanel _nameField;
-        private readonly LabeledFieldPanel _emailField;
-        private readonly ComboBox _requestType;
-        private readonly StatusBannerPanel _banner;
-
         public AccountRequestForm()
         {
+            InitializeComponent();
+
             Text = "Apply for an account";
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -25,23 +22,6 @@ namespace IUIS.UserApp.Forms
             ShowInTaskbar = false;
             ClientSize = new Size(560, 590);
             UiTheme.ApplyBaseFormStyle(this);
-
-            var layout = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 1,
-                RowCount = 9,
-                Padding = new Padding(40, 30, 40, 30)
-            };
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 44f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 54f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 58f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 92f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 92f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 78f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 56f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 50f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
 
             var title = new Label
             {
@@ -57,7 +37,6 @@ namespace IUIS.UserApp.Forms
                 Font = UiTheme.BodyFont,
                 ForeColor = UiTheme.TextSecondary
             };
-            _banner = new StatusBannerPanel { Dock = DockStyle.Fill, Margin = new Padding(0, 2, 0, 6) };
             _nameField = new LabeledFieldPanel("Full name", true) { Dock = DockStyle.Fill };
             _emailField = new LabeledFieldPanel("Email address", true) { Dock = DockStyle.Fill };
 
