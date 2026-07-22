@@ -49,6 +49,14 @@ namespace IUIS.AdminApp.Forms.Shell
                 new DashboardCardModel { Title = "Repository", Value = "49", Caption = "Authoritative JSON files" },
                 new DashboardCardModel { Title = "Audit", Value = "—", Caption = "Recent administrative actions" });
 
+            var sessionToken = session?.SessionToken ?? string.Empty;
+            var pageFactory = new AdminPageFactory(_runtime.Composition, sessionToken);
+            ShellPageFactory.RegisterModulePages(
+                _shell, 
+                filtered, 
+                "ADM-DASH-01", 
+                dashboard, 
+                (pageKey, displayText, token) => pageFactory.CreatePage(pageKey, displayText));
             // Instantiate page factory with session token for secure page instantiation
             var sessionToken = session?.SessionToken ?? string.Empty;
             var pageFactory = new AdminPageFactory(sessionToken);
