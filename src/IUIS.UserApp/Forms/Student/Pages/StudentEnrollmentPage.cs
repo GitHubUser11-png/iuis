@@ -21,7 +21,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             IStudentEnrollmentService enrollmentService,
             string sessionId)
         {
-            _enrollmentService = enrollmentService ?? throw new ArgumentNullException(nameof(enrollmentService));
+            _enrollmentService = enrollmentService;
             _sessionId = sessionId ?? throw new ArgumentNullException(nameof(sessionId));
             
             InitializeComponent();

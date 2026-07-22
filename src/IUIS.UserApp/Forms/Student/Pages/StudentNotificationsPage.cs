@@ -20,7 +20,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             IStudentNotificationService notificationService,
             string sessionId)
         {
-            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+            _notificationService = notificationService;
             _sessionId = sessionId ?? throw new ArgumentNullException(nameof(sessionId));
             
             InitializeComponent();

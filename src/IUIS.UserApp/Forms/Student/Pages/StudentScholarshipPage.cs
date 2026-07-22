@@ -21,7 +21,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             IStudentScholarshipService scholarshipService,
             string sessionId)
         {
-            _scholarshipService = scholarshipService ?? throw new ArgumentNullException(nameof(scholarshipService));
+            _scholarshipService = scholarshipService;
             _sessionId = sessionId ?? throw new ArgumentNullException(nameof(sessionId));
             
             InitializeComponent();

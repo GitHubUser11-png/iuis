@@ -8,8 +8,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>IUIS.Tests</RootNamespace>
     <AssemblyName>IUIS.Tests</AssemblyName>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>7.3</LangVersion>
     <OutputPath>..\..\artifacts\bin\$(Configuration)\IUIS.Tests\</OutputPath>
     <IntermediateOutputPath>..\..\artifacts\obj\$(Configuration)\IUIS.Tests\</IntermediateOutputPath>
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
@@ -98,6 +98,10 @@
     <ProjectReference Include="..\..\src\IUIS.Infrastructure\IUIS.Infrastructure.csproj">
       <Project>{30C8F56E-B7D6-4DD9-C4AD-8095B8CB4F03}</Project>
       <Name>IUIS.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\IUIS.SharedUI\IUIS.SharedUI.csproj">
+      <Project>{40D9067F-C8E7-4EEA-D5BE-91A6C9DC5004}</Project>
+      <Name>IUIS.SharedUI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

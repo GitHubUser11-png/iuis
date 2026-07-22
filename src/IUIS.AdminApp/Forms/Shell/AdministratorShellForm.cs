@@ -57,10 +57,6 @@ namespace IUIS.AdminApp.Forms.Shell
                 "ADM-DASH-01", 
                 dashboard, 
                 (pageKey, displayText, token) => pageFactory.CreatePage(pageKey, displayText));
-            // Instantiate page factory with session token for secure page instantiation
-            var sessionToken = session?.SessionToken ?? string.Empty;
-            var pageFactory = new AdminPageFactory(sessionToken);
-            ShellPageFactory.RegisterModulePages(_shell, filtered, "ADM-DASH-01", dashboard, pageFactory.CreatePage);
 
             _shell.InitializeShell(
                 "Administrator Portal",

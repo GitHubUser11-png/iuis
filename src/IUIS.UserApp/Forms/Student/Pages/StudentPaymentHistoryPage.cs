@@ -21,7 +21,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             IStudentFinanceService financeService,
             string sessionId)
         {
-            _financeService = financeService ?? throw new ArgumentNullException(nameof(financeService));
+            _financeService = financeService;
             _sessionId = sessionId ?? throw new ArgumentNullException(nameof(sessionId));
             
             InitializeComponent();

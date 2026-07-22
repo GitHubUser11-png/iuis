@@ -27,58 +27,6 @@ namespace IUIS.UserApp.Forms
             _sessionToken = sessionToken ?? throw new ArgumentNullException(nameof(sessionToken));
         }
 
-        public UserControl CreatePage(string pageKey, string displayText)
-        {
-            // Student Portal Pages (STU-*)
-            if (pageKey == "STU-DASH-01")
-                return new StudentDashboardPage(_composition.StudentOwnRecords, _sessionToken);
-            
-            if (pageKey == "STU-PRO-01")
-                return new StudentProfilePage(_composition.StudentOwnRecords, _sessionToken);
-            
-            if (pageKey == "STU-ENR-01")
-                return new StudentEnrollmentPage(_composition.EnrollmentSubmissions, _sessionToken);
-            
-            if (pageKey == "STU-SUB-01")
-                return new StudentSubjectsPage(_composition.StudentOwnRecords, _sessionToken);
-            
-            if (pageKey == "STU-TUI-01")
-                return new StudentAssessmentPage(_composition.StudentFinance, _sessionToken);
-            
-            if (pageKey == "STU-PAY-01")
-                return new StudentPaymentHistoryPage(_composition.StudentFinance, _sessionToken);
-            
-            if (pageKey == "STU-SCH-01")
-                return new StudentScholarshipPage(_composition.StudentFinance, _sessionToken);
-            
-            if (pageKey == "STU-NOT-01")
-                return new StudentNotificationsPage(_composition.StudentOwnRecords, _sessionToken);
-
-            // Employee Library Portal Pages (EMP-LIB-*)
-            if (pageKey == "EMP-LIB-01")
-                return new BookInventoryPage(_composition.LibraryBooks, _sessionToken);
-            
-            if (pageKey == "EMP-LIB-02")
-                return new BorrowingOperationsPage(_composition.LibraryCirculation, _sessionToken);
-
-            // Employee Counseling Portal Pages (EMP-COU-*)
-            if (pageKey == "EMP-COU-01")
-                return new CounselingSessionsPage(_composition.CounselingCommands, _sessionToken);
-
-            // Employee Clinic Portal Pages (EMP-CLN-*)
-            if (pageKey == "EMP-CLN-01")
-                return new ClinicDashboardPage(_composition.ClinicAppointmentCommands, _sessionToken);
-
-            // Employee Discipline Portal Pages (EMP-DIS-*)
-            if (pageKey == "EMP-DIS-01")
-                return new DisciplineDashboardPage(_composition.DisciplineCommands, _sessionToken);
-
-            // Employee Counseling Dashboard
-            if (pageKey == "EMP-COU-DAS")
-                return new CounselingDashboardPage(_composition.CounselingCommands, _sessionToken);
-
-            // All unimplemented pages return placeholder for graceful degradation
-            return ShellPageFactory.CreatePlaceholderPage(pageKey, displayText);
         /// <summary>
         /// Creates a page control for the given navigation key, wired with its service dependencies.
         /// </summary>
@@ -88,50 +36,50 @@ namespace IUIS.UserApp.Forms
             {
                 // Student Portal Pages (STU-*)
                 if (pageKey == "STU-DASH-01")
-                    return new StudentDashboardPage(_composition.StudentDashboardService, _sessionToken);
+                    return new StudentDashboardPage(null, _sessionToken);
                 
                 if (pageKey == "STU-PRO-01")
-                    return new StudentProfilePage(_composition.StudentProfileService, _sessionToken);
+                    return new StudentProfilePage(null, _sessionToken);
                 
                 if (pageKey == "STU-ENR-01")
-                    return new StudentEnrollmentPage(_composition.StudentEnrollmentService, _sessionToken);
+                    return new StudentEnrollmentPage(null, _sessionToken);
                 
                 if (pageKey == "STU-SUB-01")
-                    return new StudentSubjectsPage(_composition.StudentSubjectsService, _sessionToken);
+                    return new StudentSubjectsPage(null, _sessionToken);
                 
                 if (pageKey == "STU-TUI-01")
-                    return new StudentAssessmentPage(_composition.StudentAssessmentService, _sessionToken);
+                    return new StudentAssessmentPage(null, _sessionToken);
                 
                 if (pageKey == "STU-PAY-01")
-                    return new StudentPaymentHistoryPage(_composition.StudentPaymentHistoryService, _sessionToken);
+                    return new StudentPaymentHistoryPage(null, _sessionToken);
                 
                 if (pageKey == "STU-SCH-01")
-                    return new StudentScholarshipPage(_composition.StudentScholarshipService, _sessionToken);
+                    return new StudentScholarshipPage(null, _sessionToken);
                 
                 if (pageKey == "STU-NOT-01")
-                    return new StudentNotificationsPage(_composition.StudentNotificationsService, _sessionToken);
+                    return new StudentNotificationsPage(null, _sessionToken);
 
                 // Employee Library Module Pages (EMP-LIB-*)
                 if (pageKey == "EMP-LIB-01")
-                    return new BookInventoryPage(_composition.LibraryBooksService, _sessionToken);
+                    return new BookInventoryPage(_sessionToken);
                 
                 if (pageKey == "EMP-LIB-02")
-                    return new BorrowingOperationsPage(_composition.LibraryCirculationService, _sessionToken);
+                    return new BorrowingOperationsPage(_sessionToken);
 
                 // Employee Counseling Module Pages (EMP-COU-*)
                 if (pageKey == "EMP-COU-01")
-                    return new CounselingSessionsPage(_composition.CounselingCommandsService, _sessionToken);
+                    return new CounselingSessionsPage(_sessionToken);
                 
                 if (pageKey == "EMP-COU-DAS")
-                    return new CounselingDashboardPage(_composition.CounselingCommandsService, _sessionToken);
+                    return new CounselingDashboardPage(_sessionToken);
 
                 // Employee Clinic Module Pages (EMP-CLN-*)
                 if (pageKey == "EMP-CLN-01")
-                    return new ClinicDashboardPage(_composition.ClinicAppointmentCommandsService, _sessionToken);
+                    return new ClinicDashboardPage(_sessionToken);
 
                 // Employee Discipline Module Pages (EMP-DIS-*)
                 if (pageKey == "EMP-DIS-01")
-                    return new DisciplineDashboardPage(_composition.DisciplineCommandsService, _sessionToken);
+                    return new DisciplineDashboardPage(_sessionToken);
 
                 // Unimplemented pages return graceful placeholder
                 return ShellPageFactory.CreatePlaceholderPage(pageKey, displayText);

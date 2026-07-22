@@ -22,7 +22,7 @@ namespace IUIS.AdminApp.Forms.Authentication
         private StatusBannerPanel _banner;
         private LabeledFieldPanel _loginIdField;
         private PasswordFieldPanel _passwordField;
-        private readonly Button _signInButton;
+        private Button _signInButton;
         private readonly LoadingOverlayPanel _loadingOverlay;
 
         public AdminLoginForm(ApplicationRuntime runtime)

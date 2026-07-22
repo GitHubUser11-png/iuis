@@ -22,7 +22,7 @@ namespace IUIS.UserApp.Forms
         private LabeledFieldPanel _loginIdField;
         private PasswordFieldPanel _passwordField;
         private CheckBox _rememberIdCheckBox;
-        private readonly Button _signInButton;
+        private Button _signInButton;
         private readonly LoadingOverlayPanel _loadingOverlay;
 
         public GeneralLoginForm(ApplicationRuntime runtime)

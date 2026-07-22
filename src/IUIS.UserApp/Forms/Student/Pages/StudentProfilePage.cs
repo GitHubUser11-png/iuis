@@ -23,7 +23,7 @@ namespace IUIS.UserApp.Forms.Student.Pages
             IStudentProfileService profileService,
             string sessionId)
         {
-            _profileService = profileService ?? throw new ArgumentNullException(nameof(profileService));
+            _profileService = profileService;
             _sessionId = sessionId ?? throw new ArgumentNullException(nameof(sessionId));
             
             InitializeComponent();
