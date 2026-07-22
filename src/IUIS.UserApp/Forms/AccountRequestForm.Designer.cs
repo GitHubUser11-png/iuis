@@ -29,8 +29,8 @@ namespace IUIS.UserApp.Forms
         private void InitializeComponent()
         {
             this.layout = new System.Windows.Forms.TableLayoutPanel();
-            this._nameField = new IUIS.SharedUI.Controls.LabeledFieldPanel();
-            this._emailField = new IUIS.SharedUI.Controls.LabeledFieldPanel();
+            this._nameField = new IUIS.SharedUI.Controls.LabeledFieldPanel("Full name", true);
+            this._emailField = new IUIS.SharedUI.Controls.LabeledFieldPanel("Email address", true);
             this._requestType = new System.Windows.Forms.ComboBox();
             this._banner = new IUIS.SharedUI.Controls.StatusBannerPanel();
             this.SuspendLayout();

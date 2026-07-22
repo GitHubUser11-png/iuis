@@ -31,14 +31,14 @@ namespace IUIS.AdminApp.Forms.Startup
             this.title = new System.Windows.Forms.Label();
             this.subtitle = new System.Windows.Forms.Label();
             this._banner = new IUIS.SharedUI.Controls.StatusBannerPanel();
-            this._loginIdField = new IUIS.SharedUI.Controls.LabeledFieldPanel();
-            this._passwordField = new IUIS.SharedUI.Controls.LabeledFieldPanel();
-            this._givenNameField = new IUIS.SharedUI.Controls.LabeledFieldPanel();
-            this._familyNameField = new IUIS.SharedUI.Controls.LabeledFieldPanel();
-            this._emailField = new IUIS.SharedUI.Controls.LabeledFieldPanel();
-            this._birthDateField = new IUIS.SharedUI.Controls.LabeledFieldPanel();
-            this._departmentField = new IUIS.SharedUI.Controls.LabeledFieldPanel();
-            this._positionField = new IUIS.SharedUI.Controls.LabeledFieldPanel();
+            this._loginIdField = new IUIS.SharedUI.Controls.LabeledFieldPanel("Administrator Login ID", true);
+            this._passwordField = new IUIS.SharedUI.Controls.LabeledFieldPanel("Temporary Password", true);
+            this._givenNameField = new IUIS.SharedUI.Controls.LabeledFieldPanel("Given Name", true);
+            this._familyNameField = new IUIS.SharedUI.Controls.LabeledFieldPanel("Family Name", true);
+            this._emailField = new IUIS.SharedUI.Controls.LabeledFieldPanel("Email Address", true);
+            this._birthDateField = new IUIS.SharedUI.Controls.LabeledFieldPanel("Birth Date (YYYY-MM-DD)", true);
+            this._departmentField = new IUIS.SharedUI.Controls.LabeledFieldPanel("Department ID", true);
+            this._positionField = new IUIS.SharedUI.Controls.LabeledFieldPanel("Position Title", true);
             this._submitButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
