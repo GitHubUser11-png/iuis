@@ -89,8 +89,8 @@
       "repositoryName": "employees",
       "fileName": "employees.json",
       "schemaVersion": 1,
-      "revision": 1,
-      "sha256": "594290fac31d45d83e0a84881b9c95a3cde0f0b567f606e64797e22c8662fca4",
+      "revision": 0,
+      "sha256": "63667e03fc95339a52f9cc685eeb6bd11a38bd3e60daa89980471eb1f5fe838c",
       "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
     },
     {
@@ -113,8 +113,8 @@
       "repositoryName": "users",
       "fileName": "users.json",
       "schemaVersion": 1,
-      "revision": 1,
-      "sha256": "164029afe64968bace1fdc0fb23a0257dbc34f132b1e1918b2eaba6c0ea18cdf",
+      "revision": 0,
+      "sha256": "1542094b517a1546a7e7ef5b2cff292126064ba366be45a409201d5be2f35a0c",
       "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
     },
     {
@@ -233,8 +233,8 @@
       "repositoryName": "security_policy",
       "fileName": "security_policy.json",
       "schemaVersion": 1,
-      "revision": 1,
-      "sha256": "3547766b32362c56f1d304fe04bbc22b4f3f7740ef5ec708c9f2c09ae641fd60",
+      "revision": 0,
+      "sha256": "d49e31d7ae167e77eeb07595a17951afcddde23f294f2565e61fcdd2267c790c",
       "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
     },
     {
@@ -337,8 +337,8 @@
       "repositoryName": "id_sequences",
       "fileName": "id_sequences.json",
       "schemaVersion": 1,
-      "revision": 1,
-      "sha256": "52d277aa664aa4c4093da8b06421ca4aacf00d1e8821f2634e9def04b414137f",
+      "revision": 0,
+      "sha256": "a8c9f0f6aef03f9ad7272a8097e6e77e0bf437c859a196f7e8da23baaf3f053e",
       "verifiedAtUtc": "2026-07-22T03:11:03.5034648Z"
     },
     {
