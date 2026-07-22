@@ -31,12 +31,14 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void CourseCannotReactivateAfterRetirement()
         {
-            var course = CreateCourse();
-            course.ChangeStatus(CourseStatus.Retired, CreatedAtUtc.AddMinutes(1), ActorId);
-            course.ChangeStatus(CourseStatus.Active, CreatedAtUtc.AddMinutes(2), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var course = CreateCourse();
+                course.ChangeStatus(CourseStatus.Retired, CreatedAtUtc.AddMinutes(1), ActorId);
+                course.ChangeStatus(CourseStatus.Active, CreatedAtUtc.AddMinutes(2), ActorId);
+            });
         }
 
         [TestMethod]
@@ -60,52 +62,60 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void CurriculumRejectsDuplicateSubject()
         {
-            var curriculum = CreateCurriculum();
-            curriculum.AddSubject(
-                new CurriculumSubject("SUB-2026-000001", 1, 1, 3.00m, true),
-                CreatedAtUtc.AddMinutes(1),
-                ActorId);
-            curriculum.AddSubject(
-                new CurriculumSubject("SUB-2026-000001", 2, 1, 3.00m, true),
-                CreatedAtUtc.AddMinutes(2),
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var curriculum = CreateCurriculum();
+                curriculum.AddSubject(
+                    new CurriculumSubject("SUB-2026-000001", 1, 1, 3.00m, true),
+                    CreatedAtUtc.AddMinutes(1),
+                    ActorId);
+                curriculum.AddSubject(
+                    new CurriculumSubject("SUB-2026-000001", 2, 1, 3.00m, true),
+                    CreatedAtUtc.AddMinutes(2),
+                    ActorId);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void CurriculumApprovalRequiresSubject()
         {
-            CreateCurriculum().Approve(CreatedAtUtc.AddMinutes(1), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                CreateCurriculum().Approve(CreatedAtUtc.AddMinutes(1), ActorId);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void ApprovedCurriculumCannotChangeSubjects()
         {
-            var curriculum = CreateCurriculum();
-            curriculum.AddSubject(
-                new CurriculumSubject("SUB-2026-000001", 1, 1, 3.00m, true),
-                CreatedAtUtc.AddMinutes(1),
-                ActorId);
-            curriculum.Approve(CreatedAtUtc.AddMinutes(2), ActorId);
-            curriculum.AddSubject(
-                new CurriculumSubject("SUB-2026-000002", 1, 1, 3.00m, true),
-                CreatedAtUtc.AddMinutes(3),
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var curriculum = CreateCurriculum();
+                curriculum.AddSubject(
+                    new CurriculumSubject("SUB-2026-000001", 1, 1, 3.00m, true),
+                    CreatedAtUtc.AddMinutes(1),
+                    ActorId);
+                curriculum.Approve(CreatedAtUtc.AddMinutes(2), ActorId);
+                curriculum.AddSubject(
+                    new CurriculumSubject("SUB-2026-000002", 1, 1, 3.00m, true),
+                    CreatedAtUtc.AddMinutes(3),
+                    ActorId);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void SubjectRejectsSelfPrerequisite()
         {
-            var subject = CreateSubject(1, "IT101", "Introduction to Computing", 3.00m);
-            subject.AddPrerequisite(
-                new SubjectPrerequisite(subject.Id),
-                CreatedAtUtc.AddMinutes(1),
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var subject = CreateSubject(1, "IT101", "Introduction to Computing", 3.00m);
+                subject.AddPrerequisite(
+                    new SubjectPrerequisite(subject.Id),
+                    CreatedAtUtc.AddMinutes(1),
+                    ActorId);
+            });
         }
 
         [TestMethod]
@@ -128,56 +138,62 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void PrerequisiteGraphRejectsCycle()
         {
-            var first = CreateSubject(1, "IT101", "Introduction to Computing", 3.00m);
-            var second = CreateSubject(2, "IT102", "Programming Fundamentals", 3.00m);
-            var third = CreateSubject(3, "IT201", "Data Structures", 3.00m);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var first = CreateSubject(1, "IT101", "Introduction to Computing", 3.00m);
+                var second = CreateSubject(2, "IT102", "Programming Fundamentals", 3.00m);
+                var third = CreateSubject(3, "IT201", "Data Structures", 3.00m);
 
-            first.AddPrerequisite(
-                new SubjectPrerequisite(third.Id),
-                CreatedAtUtc.AddMinutes(1),
-                ActorId);
-            second.AddPrerequisite(
-                new SubjectPrerequisite(first.Id),
-                CreatedAtUtc.AddMinutes(1),
-                ActorId);
-            third.AddPrerequisite(
-                new SubjectPrerequisite(second.Id),
-                CreatedAtUtc.AddMinutes(1),
-                ActorId);
+                first.AddPrerequisite(
+                    new SubjectPrerequisite(third.Id),
+                    CreatedAtUtc.AddMinutes(1),
+                    ActorId);
+                second.AddPrerequisite(
+                    new SubjectPrerequisite(first.Id),
+                    CreatedAtUtc.AddMinutes(1),
+                    ActorId);
+                third.AddPrerequisite(
+                    new SubjectPrerequisite(second.Id),
+                    CreatedAtUtc.AddMinutes(1),
+                    ActorId);
 
-            SubjectPrerequisiteGraph.ValidateAcyclic(new[] { first, second, third });
+                SubjectPrerequisiteGraph.ValidateAcyclic(new[] { first, second, third });
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void PrerequisiteGraphRejectsMissingSubjectReference()
         {
-            var subject = CreateSubject(1, "IT201", "Data Structures", 3.00m);
-            subject.AddPrerequisite(
-                new SubjectPrerequisite("SUB-2026-000999"),
-                CreatedAtUtc.AddMinutes(1),
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var subject = CreateSubject(1, "IT201", "Data Structures", 3.00m);
+                subject.AddPrerequisite(
+                    new SubjectPrerequisite("SUB-2026-000999"),
+                    CreatedAtUtc.AddMinutes(1),
+                    ActorId);
 
-            SubjectPrerequisiteGraph.ValidateAcyclic(new[] { subject });
+                SubjectPrerequisiteGraph.ValidateAcyclic(new[] { subject });
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void AcademicPeriodRejectsInvalidDateOrder()
         {
-            new AcademicPeriod(
-                "APD-2026-000001",
-                "AY2026-T1",
-                "Academic Year 2026 First Term",
-                new InstitutionLocalDate(2026, 6, 1),
-                new InstitutionLocalDate(2026, 5, 31),
-                new InstitutionLocalDate(2026, 8, 1),
-                new InstitutionLocalDate(2026, 12, 15),
-                CreatedAtUtc,
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                new AcademicPeriod(
+                    "APD-2026-000001",
+                    "AY2026-T1",
+                    "Academic Year 2026 First Term",
+                    new InstitutionLocalDate(2026, 6, 1),
+                    new InstitutionLocalDate(2026, 5, 31),
+                    new InstitutionLocalDate(2026, 8, 1),
+                    new InstitutionLocalDate(2026, 12, 15),
+                    CreatedAtUtc,
+                    ActorId);
+            });
         }
 
         [TestMethod]
@@ -211,35 +227,41 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void AcademicPeriodCannotSkipLifecycleStages()
         {
-            CreateAcademicPeriod().TransitionTo(
-                AcademicPeriodStatus.EnrollmentOpen,
-                CreatedAtUtc.AddMinutes(1),
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                CreateAcademicPeriod().TransitionTo(
+                    AcademicPeriodStatus.EnrollmentOpen,
+                    CreatedAtUtc.AddMinutes(1),
+                    ActorId);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void EnrollmentRequiresSubjectBeforeSubmission()
         {
-            CreateEnrollment().Submit(CreatedAtUtc.AddMinutes(1), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                CreateEnrollment().Submit(CreatedAtUtc.AddMinutes(1), ActorId);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void EnrollmentRejectsDuplicateSubjectLine()
         {
-            var enrollment = CreateEnrollment();
-            enrollment.AddSubjectLine(
-                CreateEnrollmentLine(1, "IT101", "Introduction to Computing", 3.00m),
-                CreatedAtUtc.AddMinutes(1),
-                ActorId);
-            enrollment.AddSubjectLine(
-                CreateEnrollmentLine(1, "IT101", "Introduction to Computing", 3.00m),
-                CreatedAtUtc.AddMinutes(2),
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var enrollment = CreateEnrollment();
+                enrollment.AddSubjectLine(
+                    CreateEnrollmentLine(1, "IT101", "Introduction to Computing", 3.00m),
+                    CreatedAtUtc.AddMinutes(1),
+                    ActorId);
+                enrollment.AddSubjectLine(
+                    CreateEnrollmentLine(1, "IT101", "Introduction to Computing", 3.00m),
+                    CreatedAtUtc.AddMinutes(2),
+                    ActorId);
+            });
         }
 
         [TestMethod]
@@ -272,12 +294,14 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void EnrollmentApprovalRequiresReview()
         {
-            var enrollment = CreateEnrollmentWithOneLine();
-            enrollment.Submit(CreatedAtUtc.AddMinutes(2), ActorId);
-            enrollment.Approve(null, CreatedAtUtc.AddMinutes(3), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var enrollment = CreateEnrollmentWithOneLine();
+                enrollment.Submit(CreatedAtUtc.AddMinutes(2), ActorId);
+                enrollment.Approve(null, CreatedAtUtc.AddMinutes(3), ActorId);
+            });
         }
 
         [TestMethod]
@@ -319,34 +343,38 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void StudentRecordRejectsNonCanonicalCourseIdentifier()
         {
-            new StudentRecord(
-                "STU-2026-000001",
-                "STU-2026-000001",
-                new PersonName("Juan", null, "Dela Cruz", null),
-                new ContactInformation("juan@example.edu", "+639171234567", null),
-                new PostalAddress(
-                    "1 Main Street",
-                    null,
-                    "Poblacion",
-                    "Malvar",
-                    "Batangas",
-                    "4233",
-                    "PH"),
-                new InstitutionLocalDate(2005, 1, 1),
-                "CRS-BSIT",
-                StudentStatus.Active,
-                CreatedAtUtc,
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                new StudentRecord(
+                    "STU-2026-000001",
+                    "STU-2026-000001",
+                    new PersonName("Juan", null, "Dela Cruz", null),
+                    new ContactInformation("juan@example.edu", "+639171234567", null),
+                    new PostalAddress(
+                        "1 Main Street",
+                        null,
+                        "Poblacion",
+                        "Malvar",
+                        "Batangas",
+                        "4233",
+                        "PH"),
+                    new InstitutionLocalDate(2005, 1, 1),
+                    "CRS-BSIT",
+                    StudentStatus.Active,
+                    CreatedAtUtc,
+                    ActorId);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void AcademicUnitsRejectMoreThanTwoFractionalDigits()
         {
-            AcademicUnitRules.RequireValid(3.125m, "units");
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                AcademicUnitRules.RequireValid(3.125m, "units");
+            });
         }
 
         private static Course CreateCourse()

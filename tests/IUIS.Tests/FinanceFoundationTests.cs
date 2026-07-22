@@ -28,10 +28,12 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void InactiveChargeRuleCannotCalculateAmount()
         {
-            CreateChargeRule(ChargeCalculationKind.FixedAmount, 500m).Calculate(1m);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                CreateChargeRule(ChargeCalculationKind.FixedAmount, 500m).Calculate(1m);
+            });
         }
 
         [TestMethod]
@@ -52,36 +54,42 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void PostedAssessmentCannotAcceptAdditionalCharge()
         {
-            var assessment = CreatePostedAssessment();
-            assessment.AddChargeLine(
-                CreateChargeLine(2, 500m),
-                CreatedAtUtc.AddMinutes(3),
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var assessment = CreatePostedAssessment();
+                assessment.AddChargeLine(
+                    CreateChargeLine(2, 500m),
+                    CreatedAtUtc.AddMinutes(3),
+                    ActorId);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void PostedAssessmentCannotBeArchived()
         {
-            CreatePostedAssessment().Archive(CreatedAtUtc.AddMinutes(3), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                CreatePostedAssessment().Archive(CreatedAtUtc.AddMinutes(3), ActorId);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void AssessmentRejectsDuplicateChargeLineIdentifier()
         {
-            var assessment = CreateDraftAssessment();
-            assessment.AddChargeLine(
-                CreateChargeLine(1, 3000m),
-                CreatedAtUtc.AddMinutes(1),
-                ActorId);
-            assessment.AddChargeLine(
-                CreateChargeLine(1, 500m),
-                CreatedAtUtc.AddMinutes(2),
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var assessment = CreateDraftAssessment();
+                assessment.AddChargeLine(
+                    CreateChargeLine(1, 3000m),
+                    CreatedAtUtc.AddMinutes(1),
+                    ActorId);
+                assessment.AddChargeLine(
+                    CreateChargeLine(1, 500m),
+                    CreatedAtUtc.AddMinutes(2),
+                    ActorId);
+            });
         }
 
         [TestMethod]
@@ -99,21 +107,23 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void AppliedScholarshipAwardCannotBeAppliedTwice()
         {
-            var award = CreateFixedScholarshipAward(1000m);
-            award.Approve(CreatedAtUtc.AddMinutes(1), ActorId);
-            award.MarkApplied(
-                "ASM-2026-000001",
-                "FAD-2026-000001",
-                CreatedAtUtc.AddMinutes(2),
-                ActorId);
-            award.MarkApplied(
-                "ASM-2026-000001",
-                "FAD-2026-000002",
-                CreatedAtUtc.AddMinutes(3),
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var award = CreateFixedScholarshipAward(1000m);
+                award.Approve(CreatedAtUtc.AddMinutes(1), ActorId);
+                award.MarkApplied(
+                    "ASM-2026-000001",
+                    "FAD-2026-000001",
+                    CreatedAtUtc.AddMinutes(2),
+                    ActorId);
+                award.MarkApplied(
+                    "ASM-2026-000001",
+                    "FAD-2026-000002",
+                    CreatedAtUtc.AddMinutes(3),
+                    ActorId);
+            });
         }
 
         [TestMethod]
@@ -144,29 +154,33 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void PostedFinancialAdjustmentCannotBeArchived()
         {
-            var adjustment = CreatePostedScholarshipAdjustment();
-            adjustment.Archive(CreatedAtUtc.AddMinutes(4), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var adjustment = CreatePostedScholarshipAdjustment();
+                adjustment.Archive(CreatedAtUtc.AddMinutes(4), ActorId);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void PaymentMustBeFullyAllocatedBeforePosting()
         {
-            var payment = CreateDraftPayment(3000m);
-            payment.AddAllocation(
-                new PaymentAllocation(
-                    "PAL-2026-000001",
-                    "ASM-2026-000001",
-                    Money.PhilippinePeso(2000m)),
-                CreatedAtUtc.AddMinutes(1),
-                ActorId);
-            payment.Post(
-                "RCT-2026-000001",
-                CreatedAtUtc.AddMinutes(2),
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var payment = CreateDraftPayment(3000m);
+                payment.AddAllocation(
+                    new PaymentAllocation(
+                        "PAL-2026-000001",
+                        "ASM-2026-000001",
+                        Money.PhilippinePeso(2000m)),
+                    CreatedAtUtc.AddMinutes(1),
+                    ActorId);
+                payment.Post(
+                    "RCT-2026-000001",
+                    CreatedAtUtc.AddMinutes(2),
+                    ActorId);
+            });
         }
 
         [TestMethod]
@@ -182,17 +196,19 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void PostedPaymentCannotAcceptAnotherAllocation()
         {
-            var payment = CreatePostedPayment(3000m);
-            payment.AddAllocation(
-                new PaymentAllocation(
-                    "PAL-2026-000002",
-                    "ASM-2026-000002",
-                    Money.PhilippinePeso(100m)),
-                CreatedAtUtc.AddMinutes(3),
-                ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var payment = CreatePostedPayment(3000m);
+                payment.AddAllocation(
+                    new PaymentAllocation(
+                        "PAL-2026-000002",
+                        "ASM-2026-000002",
+                        Money.PhilippinePeso(100m)),
+                    CreatedAtUtc.AddMinutes(3),
+                    ActorId);
+            });
         }
 
         [TestMethod]
@@ -212,10 +228,12 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void PostedPaymentCannotBeArchived()
         {
-            CreatePostedPayment(3000m).Archive(CreatedAtUtc.AddMinutes(3), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                CreatePostedPayment(3000m).Archive(CreatedAtUtc.AddMinutes(3), ActorId);
+            });
         }
 
         [TestMethod]
@@ -264,16 +282,18 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void StudentLedgerRejectsSourceCurrencyMismatch()
         {
-            var assessment = CreatePostedAssessment();
-            StudentLedgerDeriver.Derive(
-                "STU-2026-000001",
-                "USD",
-                new[] { assessment },
-                new FinancialAdjustment[0],
-                new Payment[0]);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var assessment = CreatePostedAssessment();
+                StudentLedgerDeriver.Derive(
+                    "STU-2026-000001",
+                    "USD",
+                    new[] { assessment },
+                    new FinancialAdjustment[0],
+                    new Payment[0]);
+            });
         }
 
         private static AssessmentChargeRule CreateChargeRule(

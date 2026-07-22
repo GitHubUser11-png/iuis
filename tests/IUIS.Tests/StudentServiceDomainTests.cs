@@ -45,12 +45,14 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void LibraryBookRejectsLoanForMaintenanceCopy()
         {
-            var book = CreateBook();
-            book.SendCopyToMaintenance("LCP-2026-000001", CreatedAtUtc.AddMinutes(2), LibrarianId);
-            book.MarkCopyOnLoan("LCP-2026-000001", CreatedAtUtc.AddMinutes(3), LibrarianId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var book = CreateBook();
+                book.SendCopyToMaintenance("LCP-2026-000001", CreatedAtUtc.AddMinutes(2), LibrarianId);
+                book.MarkCopyOnLoan("LCP-2026-000001", CreatedAtUtc.AddMinutes(3), LibrarianId);
+            });
         }
 
         [TestMethod]
@@ -70,13 +72,15 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void BorrowingCannotBeMarkedOverdueOnDueDate()
         {
-            var borrowing = CreateBorrowing(new InstitutionLocalDate(2026, 1, 10));
-            borrowing.Issue(CreatedAtUtc.AddMinutes(1), LibrarianId);
-            borrowing.MarkOverdue(new InstitutionLocalDate(2026, 1, 10),
-                CreatedAtUtc.AddMinutes(2), LibrarianId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var borrowing = CreateBorrowing(new InstitutionLocalDate(2026, 1, 10));
+                borrowing.Issue(CreatedAtUtc.AddMinutes(1), LibrarianId);
+                borrowing.MarkOverdue(new InstitutionLocalDate(2026, 1, 10),
+                    CreatedAtUtc.AddMinutes(2), LibrarianId);
+            });
         }
 
         [TestMethod]
@@ -92,12 +96,14 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void CounselingSessionRequiresAssignedCounselor()
         {
-            CreateCounselingCase().RecordSession("CSN-2026-000001",
-                CreatedAtUtc.AddHours(2), CounselingRiskLevel.Routine,
-                "Internal session notes.", CreatedAtUtc.AddHours(2), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                CreateCounselingCase().RecordSession("CSN-2026-000001",
+                    CreatedAtUtc.AddHours(2), CounselingRiskLevel.Routine,
+                    "Internal session notes.", CreatedAtUtc.AddHours(2), ActorId);
+            });
         }
 
         [TestMethod]
@@ -172,25 +178,29 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void DisciplineDecisionRequiresRecordedFinding()
         {
-            CreateNoticeReleasedDisciplineCase().PrepareDecision("DDC-2026-000001",
-                DisciplineDecisionOutcome.Warning, "Internal rationale.", "Written warning.",
-                CreatedAtUtc.AddHours(4), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                CreateNoticeReleasedDisciplineCase().PrepareDecision("DDC-2026-000001",
+                    DisciplineDecisionOutcome.Warning, "Internal rationale.", "Written warning.",
+                    CreatedAtUtc.AddHours(4), ActorId);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void DismissedDisciplineCaseCannotOpenViolation()
         {
-            var disciplineCase = CreateDisciplineCase();
-            disciplineCase.BeginReview(CreatedAtUtc.AddHours(1), ActorId);
-            disciplineCase.Dismiss("Report was not substantiated.",
-                CreatedAtUtc.AddHours(2), ActorId);
-            disciplineCase.ConvertToViolation("VIO-2026-000001", "CODE-1",
-                "Violation description.", DisciplineSeverity.Minor,
-                CreatedAtUtc.AddHours(3), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var disciplineCase = CreateDisciplineCase();
+                disciplineCase.BeginReview(CreatedAtUtc.AddHours(1), ActorId);
+                disciplineCase.Dismiss("Report was not substantiated.",
+                    CreatedAtUtc.AddHours(2), ActorId);
+                disciplineCase.ConvertToViolation("VIO-2026-000001", "CODE-1",
+                    "Violation description.", DisciplineSeverity.Minor,
+                    CreatedAtUtc.AddHours(3), ActorId);
+            });
         }
 
         [TestMethod]
@@ -212,15 +222,17 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void DisciplineCaseRejectsDuplicateEvidenceIdentifier()
         {
-            var disciplineCase = CreateDisciplineCase();
-            disciplineCase.BeginReview(CreatedAtUtc.AddHours(1), ActorId);
-            disciplineCase.AddEvidenceReference("DEV-2026-000001", "evidence-a",
-                "First evidence.", CreatedAtUtc.AddHours(2), ActorId);
-            disciplineCase.AddEvidenceReference("DEV-2026-000001", "evidence-b",
-                "Duplicate ID.", CreatedAtUtc.AddHours(3), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var disciplineCase = CreateDisciplineCase();
+                disciplineCase.BeginReview(CreatedAtUtc.AddHours(1), ActorId);
+                disciplineCase.AddEvidenceReference("DEV-2026-000001", "evidence-a",
+                    "First evidence.", CreatedAtUtc.AddHours(2), ActorId);
+                disciplineCase.AddEvidenceReference("DEV-2026-000001", "evidence-b",
+                    "Duplicate ID.", CreatedAtUtc.AddHours(3), ActorId);
+            });
         }
 
         [TestMethod]
@@ -239,10 +251,12 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void ClinicAppointmentCannotCheckInBeforeConfirmation()
         {
-            CreateClinicAppointment().CheckIn(CreatedAtUtc.AddHours(1), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                CreateClinicAppointment().CheckIn(CreatedAtUtc.AddHours(1), ActorId);
+            });
         }
 
         [TestMethod]
@@ -260,22 +274,26 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void ClosedMedicalRecordRejectsAdditionalConsultation()
         {
-            var record = CreateMedicalRecord();
-            AddConsultation(record);
-            record.Close(CreatedAtUtc.AddHours(3), ActorId);
-            record.AddConsultation("CON-2026-000002", "CAP-2026-000002",
-                ClinicianEmployeeId, CreatedAtUtc.AddHours(4), "More notes.",
-                "More assessment.", null, CreatedAtUtc.AddHours(4), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var record = CreateMedicalRecord();
+                AddConsultation(record);
+                record.Close(CreatedAtUtc.AddHours(3), ActorId);
+                record.AddConsultation("CON-2026-000002", "CAP-2026-000002",
+                    ClinicianEmployeeId, CreatedAtUtc.AddHours(4), "More notes.",
+                    "More assessment.", null, CreatedAtUtc.AddHours(4), ActorId);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void MedicalRecordCannotBeArchived()
         {
-            CreateMedicalRecord().Archive(CreatedAtUtc.AddHours(1), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                CreateMedicalRecord().Archive(CreatedAtUtc.AddHours(1), ActorId);
+            });
         }
 
         [TestMethod]
@@ -296,12 +314,14 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void MedicalClearanceCannotIssueBeforeReview()
         {
-            CreateMedicalClearance().Issue("MCH-2026-000002", "MCN-2026-000001",
-                new InstitutionLocalDate(2026, 1, 2), null,
-                "Released clearance summary.", CreatedAtUtc.AddHours(1), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                CreateMedicalClearance().Issue("MCH-2026-000002", "MCN-2026-000001",
+                    new InstitutionLocalDate(2026, 1, 2), null,
+                    "Released clearance summary.", CreatedAtUtc.AddHours(1), ActorId);
+            });
         }
 
         [TestMethod]
@@ -323,15 +343,17 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void MedicalClearanceRejectsNonClearanceNumberPrefix()
         {
-            var clearance = CreateMedicalClearance();
-            clearance.BeginReview("MCH-2026-000002", ClinicianEmployeeId,
-                CreatedAtUtc.AddHours(1), ActorId);
-            clearance.Issue("MCH-2026-000003", "MCL-2026-000099",
-                new InstitutionLocalDate(2026, 1, 2), null,
-                "Released clearance summary.", CreatedAtUtc.AddHours(2), ActorId);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                var clearance = CreateMedicalClearance();
+                clearance.BeginReview("MCH-2026-000002", ClinicianEmployeeId,
+                    CreatedAtUtc.AddHours(1), ActorId);
+                clearance.Issue("MCH-2026-000003", "MCL-2026-000099",
+                    new InstitutionLocalDate(2026, 1, 2), null,
+                    "Released clearance summary.", CreatedAtUtc.AddHours(2), ActorId);
+            });
         }
 
         private static LibraryBook CreateBook()

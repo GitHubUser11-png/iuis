@@ -23,10 +23,12 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void InstitutionIdentifierRejectsZeroSequence()
         {
-            InstitutionIdentifier.Create("STU", 2026, 0);
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                InstitutionIdentifier.Create("STU", 2026, 0);
+            });
         }
 
         [TestMethod]
@@ -49,19 +51,21 @@ namespace IUIS.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DomainValidationException))]
         public void StudentAccountRejectsEmployeeRecordLink()
         {
-            new UserAccount(
-                "USR-2026-000001",
-                "student.one",
-                PrimaryRole.Student,
-                PersonRecordKind.EmployeeFaculty,
-                "EMP-2026-000001",
-                "credential-hash",
-                "security-stamp",
-                CreatedAtUtc,
-                "USR-2026-999999");
+            Assert.ThrowsExactly<DomainValidationException>(() =>
+            {
+                new UserAccount(
+                    "USR-2026-000001",
+                    "student.one",
+                    PrimaryRole.Student,
+                    PersonRecordKind.EmployeeFaculty,
+                    "EMP-2026-000001",
+                    "credential-hash",
+                    "security-stamp",
+                    CreatedAtUtc,
+                    "USR-2026-999999");
+            });
         }
 
         [TestMethod]
