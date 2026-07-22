@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.UserApp", "src\IUIS.Us
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.AdminApp", "src\IUIS.AdminApp\IUIS.AdminApp.csproj", "{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IUIS.Tests", "tests\IUIS.Tests\IUIS.Tests.csproj", "{710C39A2-FB1A-411D-A8E1-C4D9FC0F8307}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A903B22-5C9E-4594-803E-F4499C8CE6EF}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -53,6 +55,10 @@ Global
 		{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60FB2891-EA09-400C-F7D0-B3C8EBFE7206}.Release|Any CPU.Build.0 = Release|Any CPU
+		{710C39A2-FB1A-411D-A8E1-C4D9FC0F8307}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{710C39A2-FB1A-411D-A8E1-C4D9FC0F8307}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{710C39A2-FB1A-411D-A8E1-C4D9FC0F8307}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{710C39A2-FB1A-411D-A8E1-C4D9FC0F8307}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
