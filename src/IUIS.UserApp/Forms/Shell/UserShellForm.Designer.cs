@@ -61,7 +61,7 @@ namespace IUIS.UserApp.Forms.Shell
 
         #endregion
 
-        private IUIS.SharedUI.Shell.ApplicationShellPanel _shell;
+        private IUIS.SharedUI.Controls.ApplicationShellPanel _shell;
         private System.Windows.Forms.Timer _sessionTimer;
     }
 }
