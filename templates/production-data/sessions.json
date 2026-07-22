@@ -1,8 +1,54 @@
 {
   "repositoryName": "sessions",
   "schemaVersion": 1,
-  "revision": 0,
-  "updatedAtUtc": "1970-01-01T00:00:00Z",
-  "updatedByUserId": "SYSTEM",
-  "records": []
+  "revision": 3,
+  "updatedAtUtc": "2026-07-22T12:59:21.1326155Z",
+  "updatedByUserId": "USR-2026-000001",
+  "records": [
+    {
+      "id": "SES-2026-000001",
+      "userId": "USR-2026-000001",
+      "tokenDigestVersion": 1,
+      "tokenDigest": "sha256:kITTBAChW7UBo4O9Wq\u002BcghDjKO3i7zdmAASTDqS82xo=",
+      "securityStampSnapshot": "e0a6788572c44e9e8c1c40e303c74a79",
+      "applicationKind": "AdministratorApplication",
+      "purpose": "FirstLoginPasswordChange",
+      "status": "Active",
+      "issuedAtUtc": "2026-07-22T08:00:41.7712416Z",
+      "lastActivityAtUtc": "2026-07-22T08:00:41.7712416Z",
+      "inactivityExpiresAtUtc": "2026-07-22T08:10:41.7712416Z",
+      "absoluteExpiresAtUtc": "2026-07-22T09:00:41.7712416Z",
+      "revokedAtUtc": null
+    },
+    {
+      "id": "SES-2026-000002",
+      "userId": "USR-2026-000001",
+      "tokenDigestVersion": 1,
+      "tokenDigest": "sha256:9Z03ciMAdo8BjtKv/FwKQEXkzou7kgCh8GHg/GP1aZg=",
+      "securityStampSnapshot": "e0a6788572c44e9e8c1c40e303c74a79",
+      "applicationKind": "AdministratorApplication",
+      "purpose": "FirstLoginPasswordChange",
+      "status": "Active",
+      "issuedAtUtc": "2026-07-22T10:04:00.1368837Z",
+      "lastActivityAtUtc": "2026-07-22T10:04:00.1368837Z",
+      "inactivityExpiresAtUtc": "2026-07-22T10:14:00.1368837Z",
+      "absoluteExpiresAtUtc": "2026-07-22T11:04:00.1368837Z",
+      "revokedAtUtc": null
+    },
+    {
+      "id": "SES-2026-000003",
+      "userId": "USR-2026-000001",
+      "tokenDigestVersion": 1,
+      "tokenDigest": "sha256:nTYjoOvGXSyXJL0bxQt2WASodytKwVhcavFRLejec\u002BU=",
+      "securityStampSnapshot": "e0a6788572c44e9e8c1c40e303c74a79",
+      "applicationKind": "AdministratorApplication",
+      "purpose": "FirstLoginPasswordChange",
+      "status": "Active",
+      "issuedAtUtc": "2026-07-22T12:59:18.121553Z",
+      "lastActivityAtUtc": "2026-07-22T12:59:18.121553Z",
+      "inactivityExpiresAtUtc": "2026-07-22T13:09:18.121553Z",
+      "absoluteExpiresAtUtc": "2026-07-22T13:59:18.121553Z",
+      "revokedAtUtc": null
+    }
+  ]
 }

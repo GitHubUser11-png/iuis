@@ -56,6 +56,9 @@
   <ItemGroup>
     <PackageReference Include="MSTest.TestAdapter" Version="4.3.2" />
     <PackageReference Include="MSTest.TestFramework" Version="4.3.2" />
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.4</Version>
+    </PackageReference>
     <PackageReference Include="System.Text.Json" Version="10.0.10" />
     <PackageReference Include="System.ValueTuple" Version="4.6.2" />
   </ItemGroup>

@@ -1,8 +1,8 @@
 {
   "repositoryName": "id_sequences",
   "schemaVersion": 1,
-  "revision": 0,
-  "updatedAtUtc": "2026-07-22T03:11:03.5034648Z",
+  "revision": 8,
+  "updatedAtUtc": "2026-07-22T12:59:21.0530234Z",
   "updatedByUserId": "USR-2026-000001",
   "records": [
     {
@@ -17,6 +17,20 @@
       "year": 2026,
       "lastAllocatedSequence": 1,
       "updatedAtUtc": "2026-07-22T03:11:03.5034648Z",
+      "updatedByUserId": "USR-2026-000001"
+    },
+    {
+      "prefix": "LAT",
+      "year": 2026,
+      "lastAllocatedSequence": 5,
+      "updatedAtUtc": "2026-07-22T12:59:18.5997392Z",
+      "updatedByUserId": "USR-2026-000001"
+    },
+    {
+      "prefix": "SES",
+      "year": 2026,
+      "lastAllocatedSequence": 3,
+      "updatedAtUtc": "2026-07-22T12:59:21.0530234Z",
       "updatedByUserId": "USR-2026-000001"
     }
   ]

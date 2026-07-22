@@ -1,8 +1,54 @@
 {
   "repositoryName": "login_attempts",
   "schemaVersion": 1,
-  "revision": 0,
-  "updatedAtUtc": "1970-01-01T00:00:00Z",
+  "revision": 5,
+  "updatedAtUtc": "2026-07-22T12:59:21.0110104Z",
   "updatedByUserId": "SYSTEM",
-  "records": []
+  "records": [
+    {
+      "id": "LAT-2026-000001",
+      "normalizedLoginId": "1234",
+      "userId": "USR-2026-000001",
+      "succeeded": false,
+      "failureReason": "Invalid credentials.",
+      "attemptedAtUtc": "2026-07-22T08:00:13.5202805Z",
+      "applicationKind": "AdministratorApplication"
+    },
+    {
+      "id": "LAT-2026-000002",
+      "normalizedLoginId": "1234",
+      "userId": "USR-2026-000001",
+      "succeeded": true,
+      "failureReason": null,
+      "attemptedAtUtc": "2026-07-22T08:00:41.7712416Z",
+      "applicationKind": "AdministratorApplication"
+    },
+    {
+      "id": "LAT-2026-000003",
+      "normalizedLoginId": "1234",
+      "userId": "USR-2026-000001",
+      "succeeded": true,
+      "failureReason": null,
+      "attemptedAtUtc": "2026-07-22T10:04:00.1368837Z",
+      "applicationKind": "AdministratorApplication"
+    },
+    {
+      "id": "LAT-2026-000004",
+      "normalizedLoginId": "stu-2026-000001",
+      "userId": null,
+      "succeeded": false,
+      "failureReason": "Invalid credentials.",
+      "attemptedAtUtc": "2026-07-22T12:50:54.2499563Z",
+      "applicationKind": "UserApplication"
+    },
+    {
+      "id": "LAT-2026-000005",
+      "normalizedLoginId": "1234",
+      "userId": "USR-2026-000001",
+      "succeeded": true,
+      "failureReason": null,
+      "attemptedAtUtc": "2026-07-22T12:59:18.121553Z",
+      "applicationKind": "AdministratorApplication"
+    }
+  ]
 }
