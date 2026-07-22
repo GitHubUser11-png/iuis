@@ -105,7 +105,7 @@ try {
     $summary.currentStage = 'test-adapter-discovery'
     Write-Summary
 
-    $adapterPackageRoot = Join-Path $repositoryRoot 'packages\MSTest.TestAdapter.3.6.4'
+    $adapterPackageRoot = Join-Path $repositoryRoot 'packages\MSTest.TestAdapter.4.3.2'
     if (-not (Test-Path -LiteralPath $adapterPackageRoot -PathType Container)) {
         throw "MSTest adapter package was not restored: $adapterPackageRoot"
     }
