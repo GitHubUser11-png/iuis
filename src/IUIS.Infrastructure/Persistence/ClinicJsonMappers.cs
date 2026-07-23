@@ -10,15 +10,19 @@ using IUIS.Domain.Time;
 namespace IUIS.Infrastructure.Persistence
 {
     public sealed class ClinicAppointmentJsonMapper :
-        IJsonRecordMapper<ClinicAppointment>
+        JsonConverter<ClinicAppointment>
     {
-        public ClinicAppointment FromJson(
-            JsonElement element,
-            JsonSerializerOptions options)
+        public override ClinicAppointment ReadJson(
+            JsonReader reader,
+            Type objectType,
+            ClinicAppointment existingValue,
+            bool hasExistingValue,
+            JsonSerializer serializer)
         {
+            var obj = JObject.Load(reader);
             var record = PersistedRecordMapperGuard.Read<PersistedClinicAppointmentRecord>(
-                element,
-                options,
+                obj,
+                serializer,
                 "ClinicAppointment");
             return ClinicAppointment.Rehydrate(
                 record.Id,
@@ -45,48 +49,52 @@ namespace IUIS.Infrastructure.Persistence
                 record.ArchivedByUserId);
         }
 
-        public JsonElement ToJson(
+        public override void WriteJson(
+            JsonWriter writer,
             ClinicAppointment value,
-            JsonSerializerOptions options)
+            JsonSerializer serializer)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            return PersistedRecordMapperGuard.Write(
-                new PersistedClinicAppointmentRecord
-                {
-                    Id = value.Id,
-                    Version = value.Version,
-                    IsArchived = value.IsArchived,
-                    CreatedAtUtc = value.CreatedAtUtc,
-                    CreatedByUserId = value.CreatedByUserId,
-                    UpdatedAtUtc = value.UpdatedAtUtc,
-                    UpdatedByUserId = value.UpdatedByUserId,
-                    ArchivedAtUtc = value.ArchivedAtUtc,
-                    ArchivedByUserId = value.ArchivedByUserId,
-                    StudentId = value.StudentId,
-                    RequestedAppointmentAtUtc = value.RequestedAppointmentAtUtc,
-                    ReleasedReasonSummary = value.ReleasedReasonSummary,
-                    Status = value.Status.ToString(),
-                    ScheduledAtUtc = value.ScheduledAtUtc,
-                    ClinicianEmployeeId = value.ClinicianEmployeeId,
-                    CheckedInAtUtc = value.CheckedInAtUtc,
-                    CompletedAtUtc = value.CompletedAtUtc,
-                    ConsultationId = value.ConsultationId,
-                    CancellationReason = value.CancellationReason
-                },
-                options);
+            var record = new PersistedClinicAppointmentRecord
+            {
+                Id = value.Id,
+                Version = value.Version,
+                IsArchived = value.IsArchived,
+                CreatedAtUtc = value.CreatedAtUtc,
+                CreatedByUserId = value.CreatedByUserId,
+                UpdatedAtUtc = value.UpdatedAtUtc,
+                UpdatedByUserId = value.UpdatedByUserId,
+                ArchivedAtUtc = value.ArchivedAtUtc,
+                ArchivedByUserId = value.ArchivedByUserId,
+                StudentId = value.StudentId,
+                RequestedAppointmentAtUtc = value.RequestedAppointmentAtUtc,
+                ReleasedReasonSummary = value.ReleasedReasonSummary,
+                Status = value.Status.ToString(),
+                ScheduledAtUtc = value.ScheduledAtUtc,
+                ClinicianEmployeeId = value.ClinicianEmployeeId,
+                CheckedInAtUtc = value.CheckedInAtUtc,
+                CompletedAtUtc = value.CompletedAtUtc,
+                ConsultationId = value.ConsultationId,
+                CancellationReason = value.CancellationReason
+            };
+            PersistedRecordMapperGuard.Write(writer, record, serializer);
         }
     }
 
     public sealed class MedicalRecordJsonMapper :
-        IJsonRecordMapper<MedicalRecord>
+        JsonConverter<MedicalRecord>
     {
-        public MedicalRecord FromJson(
-            JsonElement element,
-            JsonSerializerOptions options)
+        public override MedicalRecord ReadJson(
+            JsonReader reader,
+            Type objectType,
+            MedicalRecord existingValue,
+            bool hasExistingValue,
+            JsonSerializer serializer)
         {
+            var obj = JObject.Load(reader);
             var record = PersistedRecordMapperGuard.Read<PersistedMedicalRecord>(
-                element,
-                options,
+                obj,
+                serializer,
                 "MedicalRecord");
             var consultations = (record.ConfidentialConsultations
                 ?? new List<PersistedMedicalConfidentialConsultationRecord>())
@@ -145,61 +153,65 @@ namespace IUIS.Infrastructure.Persistence
                 record.ArchivedByUserId);
         }
 
-        public JsonElement ToJson(
+        public override void WriteJson(
+            JsonWriter writer,
             MedicalRecord value,
-            JsonSerializerOptions options)
+            JsonSerializer serializer)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            return PersistedRecordMapperGuard.Write(
-                new PersistedMedicalRecord
-                {
-                    Id = value.Id,
-                    Version = value.Version,
-                    IsArchived = value.IsArchived,
-                    CreatedAtUtc = value.CreatedAtUtc,
-                    CreatedByUserId = value.CreatedByUserId,
-                    UpdatedAtUtc = value.UpdatedAtUtc,
-                    UpdatedByUserId = value.UpdatedByUserId,
-                    ArchivedAtUtc = value.ArchivedAtUtc,
-                    ArchivedByUserId = value.ArchivedByUserId,
-                    StudentId = value.StudentId,
-                    Status = value.Status.ToString(),
-                    ClosedAtUtc = value.ClosedAtUtc,
-                    ConfidentialConsultations = value.ConfidentialConsultations
-                        .Select(item => new PersistedMedicalConfidentialConsultationRecord
-                        {
-                            ConsultationId = item.ConsultationId,
-                            AppointmentId = item.AppointmentId,
-                            ClinicianEmployeeId = item.ClinicianEmployeeId,
-                            OccurredAtUtc = item.OccurredAtUtc,
-                            InternalClinicalNotes = item.InternalClinicalNotes,
-                            InternalAssessment = item.InternalAssessment,
-                            InternalTreatmentPlan = item.InternalTreatmentPlan
-                        }).ToList(),
-                    ReleasedSummaries = value.ReleasedSummaries
-                        .Select(item => new PersistedMedicalReleasedSummaryRecord
-                        {
-                            SummaryId = item.SummaryId,
-                            ConsultationId = item.ConsultationId,
-                            ReleasedSummary = item.ReleasedSummary,
-                            ReleasedAtUtc = item.ReleasedAtUtc,
-                            ReleasedByUserId = item.ReleasedByUserId
-                        }).ToList()
-                },
-                options);
+            var record = new PersistedMedicalRecord
+            {
+                Id = value.Id,
+                Version = value.Version,
+                IsArchived = value.IsArchived,
+                CreatedAtUtc = value.CreatedAtUtc,
+                CreatedByUserId = value.CreatedByUserId,
+                UpdatedAtUtc = value.UpdatedAtUtc,
+                UpdatedByUserId = value.UpdatedByUserId,
+                ArchivedAtUtc = value.ArchivedAtUtc,
+                ArchivedByUserId = value.ArchivedByUserId,
+                StudentId = value.StudentId,
+                Status = value.Status.ToString(),
+                ClosedAtUtc = value.ClosedAtUtc,
+                ConfidentialConsultations = value.ConfidentialConsultations
+                    .Select(item => new PersistedMedicalConfidentialConsultationRecord
+                    {
+                        ConsultationId = item.ConsultationId,
+                        AppointmentId = item.AppointmentId,
+                        ClinicianEmployeeId = item.ClinicianEmployeeId,
+                        OccurredAtUtc = item.OccurredAtUtc,
+                        InternalClinicalNotes = item.InternalClinicalNotes,
+                        InternalAssessment = item.InternalAssessment,
+                        InternalTreatmentPlan = item.InternalTreatmentPlan
+                    }).ToList(),
+                ReleasedSummaries = value.ReleasedSummaries
+                    .Select(item => new PersistedMedicalReleasedSummaryRecord
+                    {
+                        SummaryId = item.SummaryId,
+                        ConsultationId = item.ConsultationId,
+                        ReleasedSummary = item.ReleasedSummary,
+                        ReleasedAtUtc = item.ReleasedAtUtc,
+                        ReleasedByUserId = item.ReleasedByUserId
+                    }).ToList()
+            };
+            PersistedRecordMapperGuard.Write(writer, record, serializer);
         }
     }
 
     public sealed class MedicalClearanceJsonMapper :
-        IJsonRecordMapper<MedicalClearance>
+        JsonConverter<MedicalClearance>
     {
-        public MedicalClearance FromJson(
-            JsonElement element,
-            JsonSerializerOptions options)
+        public override MedicalClearance ReadJson(
+            JsonReader reader,
+            Type objectType,
+            MedicalClearance existingValue,
+            bool hasExistingValue,
+            JsonSerializer serializer)
         {
+            var obj = JObject.Load(reader);
             var record = PersistedRecordMapperGuard.Read<PersistedMedicalClearanceRecord>(
-                element,
-                options,
+                obj,
+                serializer,
                 "MedicalClearance");
             var history = (record.RestrictedHistory
                 ?? new List<PersistedMedicalClearanceHistoryRecord>())
@@ -256,50 +268,50 @@ namespace IUIS.Infrastructure.Persistence
                 record.ArchivedByUserId);
         }
 
-        public JsonElement ToJson(
+        public override void WriteJson(
+            JsonWriter writer,
             MedicalClearance value,
-            JsonSerializerOptions options)
+            JsonSerializer serializer)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            return PersistedRecordMapperGuard.Write(
-                new PersistedMedicalClearanceRecord
-                {
-                    Id = value.Id,
-                    Version = value.Version,
-                    IsArchived = value.IsArchived,
-                    CreatedAtUtc = value.CreatedAtUtc,
-                    CreatedByUserId = value.CreatedByUserId,
-                    UpdatedAtUtc = value.UpdatedAtUtc,
-                    UpdatedByUserId = value.UpdatedByUserId,
-                    ArchivedAtUtc = value.ArchivedAtUtc,
-                    ArchivedByUserId = value.ArchivedByUserId,
-                    StudentId = value.StudentId,
-                    MedicalRecordId = value.MedicalRecordId,
-                    RequestReason = value.RequestReason,
-                    Status = value.Status.ToString(),
-                    ReviewingClinicianEmployeeId = value.ReviewingClinicianEmployeeId,
-                    ClearanceNumber = value.ClearanceNumber,
-                    ValidFrom = value.ValidFrom.HasValue
-                        ? value.ValidFrom.Value.ToString()
-                        : null,
-                    ValidUntil = value.ValidUntil.HasValue
-                        ? value.ValidUntil.Value.ToString()
-                        : null,
-                    ReleasedSummary = value.ReleasedSummary,
-                    RevocationReason = value.RevocationReason,
-                    RestrictedHistory = value.History
-                        .Select(item => new PersistedMedicalClearanceHistoryRecord
-                        {
-                            HistoryId = item.HistoryId,
-                            Action = item.Action.ToString(),
-                            FromStatus = item.FromStatus.ToString(),
-                            ToStatus = item.ToStatus.ToString(),
-                            Reason = item.Reason,
-                            OccurredAtUtc = item.OccurredAtUtc,
-                            ActorUserId = item.ActorUserId
-                        }).ToList()
-                },
-                options);
+            var record = new PersistedMedicalClearanceRecord
+            {
+                Id = value.Id,
+                Version = value.Version,
+                IsArchived = value.IsArchived,
+                CreatedAtUtc = value.CreatedAtUtc,
+                CreatedByUserId = value.CreatedByUserId,
+                UpdatedAtUtc = value.UpdatedAtUtc,
+                UpdatedByUserId = value.UpdatedByUserId,
+                ArchivedAtUtc = value.ArchivedAtUtc,
+                ArchivedByUserId = value.ArchivedByUserId,
+                StudentId = value.StudentId,
+                MedicalRecordId = value.MedicalRecordId,
+                RequestReason = value.RequestReason,
+                Status = value.Status.ToString(),
+                ReviewingClinicianEmployeeId = value.ReviewingClinicianEmployeeId,
+                ClearanceNumber = value.ClearanceNumber,
+                ValidFrom = value.ValidFrom.HasValue
+                    ? value.ValidFrom.Value.ToString()
+                    : null,
+                ValidUntil = value.ValidUntil.HasValue
+                    ? value.ValidUntil.Value.ToString()
+                    : null,
+                ReleasedSummary = value.ReleasedSummary,
+                RevocationReason = value.RevocationReason,
+                RestrictedHistory = value.History
+                    .Select(item => new PersistedMedicalClearanceHistoryRecord
+                    {
+                        HistoryId = item.HistoryId,
+                        Action = item.Action.ToString(),
+                        FromStatus = item.FromStatus.ToString(),
+                        ToStatus = item.ToStatus.ToString(),
+                        Reason = item.Reason,
+                        OccurredAtUtc = item.OccurredAtUtc,
+                        ActorUserId = item.ActorUserId
+                    }).ToList()
+            };
+            PersistedRecordMapperGuard.Write(writer, record, serializer);
         }
 
         private static InstitutionLocalDate? ParseOptionalDate(string value)
