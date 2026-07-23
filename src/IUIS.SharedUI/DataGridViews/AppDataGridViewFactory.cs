@@ -24,8 +24,14 @@ namespace IUIS.SharedUI.DataGridViews
                 EnableHeadersVisualStyles = false,
                 BackgroundColor = UiTheme.Surface,
                 GridColor = UiTheme.BorderNeutral,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
+                RowTemplateHeight = UiMetrics.GridRowHeight
             };
+
+            // Enable double buffering to prevent flickering
+            grid.DoubleBuffered(true);
 
             DataGridViewStyleManager.ApplyStandardStyle(grid);
 
@@ -40,7 +46,8 @@ namespace IUIS.SharedUI.DataGridViews
             {
                 DataPropertyName = dataPropertyName,
                 HeaderText = headerText,
-                Width = width
+                Width = width,
+                SortMode = DataGridViewColumnSortMode.Automatic
             };
 
             DataGridViewStyleManager.ConfigureColumn(column, headerText, width);
@@ -55,15 +62,18 @@ namespace IUIS.SharedUI.DataGridViews
             {
                 DataPropertyName = dataPropertyName,
                 HeaderText = headerText,
-                Width = width
+                Width = width,
+                SortMode = DataGridViewColumnSortMode.Automatic
             };
 
             if (column.DefaultCellStyle != null)
             {
                 column.DefaultCellStyle.Format = format;
+                column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
             DataGridViewStyleManager.ConfigureColumn(column, headerText, width);
+            DataGridViewStyleManager.SetColumnAlignment(column, DataGridViewContentAlignment.MiddleCenter);
             grid.Columns.Add(column);
         }
 
@@ -77,7 +87,8 @@ namespace IUIS.SharedUI.DataGridViews
                 HeaderText = headerText,
                 Text = text,
                 UseColumnTextForButtonValue = true,
-                Width = width
+                Width = width,
+                SortMode = DataGridViewColumnSortMode.NotSortable
             };
 
             DataGridViewStyleManager.ConfigureColumn(column, headerText, width);
@@ -92,7 +103,8 @@ namespace IUIS.SharedUI.DataGridViews
             {
                 DataPropertyName = dataPropertyName,
                 HeaderText = headerText,
-                Width = width
+                Width = width,
+                SortMode = DataGridViewColumnSortMode.Automatic
             };
 
             DataGridViewStyleManager.ConfigureColumn(column, headerText, width);
@@ -107,7 +119,8 @@ namespace IUIS.SharedUI.DataGridViews
             {
                 DataPropertyName = dataPropertyName,
                 HeaderText = headerText,
-                Width = width
+                Width = width,
+                SortMode = DataGridViewColumnSortMode.Automatic
             };
 
             DataGridViewStyleManager.ConfigureColumn(column, headerText, width);
@@ -122,7 +135,8 @@ namespace IUIS.SharedUI.DataGridViews
             {
                 DataPropertyName = dataPropertyName,
                 HeaderText = headerText,
-                Width = width
+                Width = width,
+                SortMode = DataGridViewColumnSortMode.Automatic
             };
 
             if (column.DefaultCellStyle != null)
@@ -144,7 +158,8 @@ namespace IUIS.SharedUI.DataGridViews
             {
                 DataPropertyName = dataPropertyName,
                 HeaderText = headerText,
-                Width = width
+                Width = width,
+                SortMode = DataGridViewColumnSortMode.Automatic
             };
 
             if (column.DefaultCellStyle != null)
@@ -166,11 +181,23 @@ namespace IUIS.SharedUI.DataGridViews
             {
                 DataPropertyName = dataPropertyName,
                 HeaderText = headerText,
-                Width = width
+                Width = width,
+                SortMode = DataGridViewColumnSortMode.Automatic
             };
 
             DataGridViewStyleManager.ConfigureColumn(column, headerText, width);
             grid.Columns.Add(column);
+        }
+        
+        /// <summary>
+        /// Enables or disables double buffering on the DataGridView to prevent flickering.
+        /// Uses reflection since DoubleBuffered is a protected property.
+        /// </summary>
+        public static void DoubleBuffered(this DataGridView dgv, bool enable)
+        {
+            var type = typeof(DataGridView);
+            var property = type.GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            property?.SetValue(dgv, enable, null);
         }
     }
 }
