@@ -96,36 +96,22 @@ namespace IUIS.Infrastructure.Persistence
 
     public sealed class RepositoryManifestRecordJsonConverter : JsonConverter<RepositoryManifestRecord>
     {
-        public override RepositoryManifestRecord Read(
-            ref Utf8JsonReader reader,
-            Type typeToConvert,
-            JsonSerializerOptions options)
+        public override RepositoryManifestRecord ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            if (reader.TokenType != JsonTokenType.StartObject)
-                throw new JsonException("Repository manifest record must be an object.");
+            if (reader.TokenType == JsonToken.Null) return null;
 
-            string canonicalName = null;
-            string legacyName = null;
-            var record = new RepositoryManifestRecord();
-            while (reader.Read())
+            JObject jo = JObject.Load(reader);
+            
+            string canonicalName = jo.Value<string>("repositoryName");
+            string legacyName = jo.Value<string>("repository");
+            var record = new RepositoryManifestRecord
             {
-                if (reader.TokenType == JsonTokenType.EndObject) break;
-                var propertyName = reader.GetString();
-                if (!reader.Read()) throw new JsonException("Repository manifest value is missing.");
-                switch (propertyName)
-                {
-                    case "repositoryName": canonicalName = reader.GetString(); break;
-                    case "repository": legacyName = reader.GetString(); break;
-                    case "fileName": record.FileName = reader.GetString(); break;
-                    case "schemaVersion": record.SchemaVersion = reader.GetInt32(); break;
-                    case "revision": record.Revision = reader.GetInt64(); break;
-                    case "sha256": record.Sha256 = reader.GetString(); break;
-                    case "verifiedAtUtc": record.VerifiedAtUtc = reader.GetDateTime(); break;
-                    default:
-                        using (JsonDocument.ParseValue(ref reader)) { }
-                        break;
-                }
-            }
+                FileName = jo.Value<string>("fileName"),
+                SchemaVersion = jo.Value<int>("schemaVersion"),
+                Revision = jo.Value<long>("revision"),
+                Sha256 = jo.Value<string>("sha256"),
+                VerifiedAtUtc = jo.Value<DateTime?>("verifiedAtUtc") ?? default(DateTime)
+            };
 
             if (!string.IsNullOrWhiteSpace(canonicalName)
                 && !string.IsNullOrWhiteSpace(legacyName)
@@ -137,19 +123,25 @@ namespace IUIS.Infrastructure.Persistence
             return record;
         }
 
-        public override void Write(
-            Utf8JsonWriter writer,
-            RepositoryManifestRecord value,
-            JsonSerializerOptions options)
+        public override void WriteJson(JsonWriter writer, RepositoryManifestRecord value, JsonSerializer serializer)
         {
-            writer.WriteStartObject();
-            writer.WriteString("repositoryName", value.RepositoryName);
-            writer.WriteString("fileName", value.FileName);
-            writer.WriteNumber("schemaVersion", value.SchemaVersion);
-            writer.WriteNumber("revision", value.Revision);
-            writer.WriteString("sha256", value.Sha256);
-            writer.WriteString("verifiedAtUtc", value.VerifiedAtUtc);
-            writer.WriteEndObject();
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+
+            JObject jo = new JObject
+            {
+                ["repositoryName"] = value.RepositoryName,
+                ["fileName"] = value.FileName,
+                ["schemaVersion"] = value.SchemaVersion,
+                ["revision"] = value.Revision,
+                ["sha256"] = value.Sha256,
+                ["verifiedAtUtc"] = value.VerifiedAtUtc.ToString("o")
+            };
+
+            jo.WriteTo(writer);
         }
     }
 
@@ -157,13 +149,13 @@ namespace IUIS.Infrastructure.Persistence
     {
         public static RepositoryEnvelope<T> Deserialize<T>(
             string json,
-            JsonSerializerOptions options)
+            JsonSerializerSettings settings)
         {
             if (string.IsNullOrWhiteSpace(json))
                 throw new InvalidDataException("Repository JSON is required.");
             try
             {
-                return JsonSerializer.Deserialize<RepositoryEnvelope<T>>(json, options);
+                return JsonConvert.DeserializeObject<RepositoryEnvelope<T>>(json, settings);
             }
             catch (JsonException exception)
             {
@@ -173,33 +165,32 @@ namespace IUIS.Infrastructure.Persistence
 
         public static string Serialize<T>(
             RepositoryEnvelope<T> envelope,
-            JsonSerializerOptions options)
+            JsonSerializerSettings settings)
         {
             if (envelope == null) throw new ArgumentNullException(nameof(envelope));
-            return JsonSerializer.Serialize(envelope, options);
+            return JsonConvert.SerializeObject(envelope, settings);
         }
 
         public static bool IsLegacy(string json)
         {
-            using (var document = JsonDocument.Parse(json))
-            {
-                var root = document.RootElement;
-                return root.TryGetProperty("repository", out _)
-                    || root.TryGetProperty("createdAtUtc", out _)
-                    || !root.TryGetProperty("repositoryName", out _);
-            }
+            var jo = JObject.Parse(json);
+            return jo["repository"] != null
+                || jo["createdAtUtc"] != null
+                || jo["repositoryName"] == null;
         }
 
         public static string CanonicalizeRaw(
             string json,
             ProductionRepositoryDescriptor descriptor,
-            JsonSerializerOptions options)
+            JsonSerializerSettings settings)
         {
             if (descriptor == null) throw new ArgumentNullException(nameof(descriptor));
-            var envelope = Deserialize<JsonElement>(json, options);
-            Validate(descriptor, envelope);
-            envelope.RepositoryName = descriptor.Name;
-            return Serialize(envelope, options);
+            var envelope = Deserialize<JObject>(json, settings);
+            // Validate basic structure
+            if (envelope == null) throw new InvalidDataException("Repository envelope is missing.");
+            // Set canonical name
+            envelope["repositoryName"] = descriptor.Name;
+            return JsonConvert.SerializeObject(envelope, settings);
         }
 
         public static void Validate<T>(
