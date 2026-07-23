@@ -1,90 +1,37 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace IUIS.Infrastructure.Persistence
 {
-    public sealed class RepositoryEnvelopeJsonConverterFactory : JsonConverterFactory
+    public sealed class RepositoryEnvelopeJsonConverter : JsonConverter
     {
-        public override bool CanConvert(Type typeToConvert)
+        public override bool CanConvert(Type objectType)
         {
-            return typeToConvert.IsGenericType
-                && typeToConvert.GetGenericTypeDefinition() == typeof(RepositoryEnvelope<>);
+            return objectType.IsGenericType
+                && objectType.GetGenericTypeDefinition() == typeof(RepositoryEnvelope<>);
         }
 
-        public override JsonConverter CreateConverter(
-            Type typeToConvert,
-            JsonSerializerOptions options)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var recordType = typeToConvert.GetGenericArguments()[0];
-            return (JsonConverter)Activator.CreateInstance(
-                typeof(RepositoryEnvelopeJsonConverter<>).MakeGenericType(recordType));
-        }
-    }
+            var recordType = objectType.GetGenericArguments()[0];
+            var envelopeType = typeof(RepositoryEnvelope<>).MakeGenericType(recordType);
+            var envelope = Activator.CreateInstance(envelopeType);
 
-    public sealed class RepositoryEnvelopeJsonConverter<T> : JsonConverter<RepositoryEnvelope<T>>
-    {
-        public override RepositoryEnvelope<T> Read(
-            ref Utf8JsonReader reader,
-            Type typeToConvert,
-            JsonSerializerOptions options)
-        {
-            if (reader.TokenType != JsonTokenType.StartObject)
-                throw new JsonException("Repository envelope must be a JSON object.");
+            if (reader.TokenType == JsonToken.Null) return null;
 
-            string canonicalName = null;
-            string legacyName = null;
-            var schemaVersion = 0;
-            var revision = -1L;
-            DateTime? updatedAtUtc = null;
-            string updatedByUserId = null;
-            List<T> records = null;
-
-            while (reader.Read())
-            {
-                if (reader.TokenType == JsonTokenType.EndObject) break;
-                if (reader.TokenType != JsonTokenType.PropertyName)
-                    throw new JsonException("Repository envelope property name is invalid.");
-
-                var propertyName = reader.GetString();
-                if (!reader.Read()) throw new JsonException("Repository envelope value is missing.");
-
-                switch (propertyName)
-                {
-                    case "repositoryName":
-                        canonicalName = reader.TokenType == JsonTokenType.Null
-                            ? null
-                            : reader.GetString();
-                        break;
-                    case "repository":
-                        legacyName = reader.TokenType == JsonTokenType.Null
-                            ? null
-                            : reader.GetString();
-                        break;
-                    case "schemaVersion":
-                        schemaVersion = reader.GetInt32();
-                        break;
-                    case "revision":
-                        revision = reader.GetInt64();
-                        break;
-                    case "updatedAtUtc":
-                        updatedAtUtc = reader.GetDateTime();
-                        break;
-                    case "updatedByUserId":
-                        updatedByUserId = reader.TokenType == JsonTokenType.Null
-                            ? null
-                            : reader.GetString();
-                        break;
-                    case "records":
-                        records = JsonSerializer.Deserialize<List<T>>(ref reader, options);
-                        break;
-                    default:
-                        using (JsonDocument.ParseValue(ref reader)) { }
-                        break;
-                }
-            }
+            JObject jo = JObject.Load(reader);
+            
+            string canonicalName = jo.Value<string>("repositoryName");
+            string legacyName = jo.Value<string>("repository");
+            int schemaVersion = jo.Value<int>("schemaVersion");
+            long revision = jo.Value<long>("revision");
+            DateTime updatedAtUtc = jo.Value<DateTime?>("updatedAtUtc") ?? default(DateTime);
+            string updatedByUserId = jo.Value<string>("updatedByUserId");
+            JArray recordsArray = jo["records"] as JArray;
+            var records = recordsArray?.ToObject(typeof(List<>).MakeGenericType(recordType), serializer);
 
             if (!string.IsNullOrWhiteSpace(canonicalName)
                 && !string.IsNullOrWhiteSpace(legacyName)
@@ -93,37 +40,57 @@ namespace IUIS.Infrastructure.Persistence
                 throw new JsonException("Canonical and legacy repository names conflict.");
             }
 
-            return new RepositoryEnvelope<T>
-            {
-                RepositoryName = string.IsNullOrWhiteSpace(canonicalName)
-                    ? legacyName
-                    : canonicalName,
-                SchemaVersion = schemaVersion,
-                Revision = revision,
-                UpdatedAtUtc = updatedAtUtc ?? default(DateTime),
-                UpdatedByUserId = updatedByUserId,
-                Records = records
-            };
+            var nameProperty = envelopeType.GetProperty("RepositoryName");
+            var schemaProperty = envelopeType.GetProperty("SchemaVersion");
+            var revisionProperty = envelopeType.GetProperty("Revision");
+            var updatedAtProperty = envelopeType.GetProperty("UpdatedAtUtc");
+            var updatedByProperty = envelopeType.GetProperty("UpdatedByUserId");
+            var recordsProperty = envelopeType.GetProperty("Records");
+
+            nameProperty.SetValue(envelope, string.IsNullOrWhiteSpace(canonicalName) ? legacyName : canonicalName);
+            schemaProperty.SetValue(envelope, schemaVersion);
+            revisionProperty.SetValue(envelope, revision);
+            updatedAtProperty.SetValue(envelope, updatedAtUtc);
+            updatedByProperty.SetValue(envelope, updatedByUserId);
+            recordsProperty.SetValue(envelope, records);
+
+            return envelope;
         }
 
-        public override void Write(
-            Utf8JsonWriter writer,
-            RepositoryEnvelope<T> value,
-            JsonSerializerOptions options)
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            if (value == null) throw new ArgumentNullException(nameof(value));
-            writer.WriteStartObject();
-            writer.WriteString("repositoryName", value.RepositoryName);
-            writer.WriteNumber("schemaVersion", value.SchemaVersion);
-            writer.WriteNumber("revision", value.Revision);
-            writer.WriteString("updatedAtUtc", value.UpdatedAtUtc);
-            if (value.UpdatedByUserId == null)
-                writer.WriteNull("updatedByUserId");
-            else
-                writer.WriteString("updatedByUserId", value.UpdatedByUserId);
-            writer.WritePropertyName("records");
-            JsonSerializer.Serialize(writer, value.Records, options);
-            writer.WriteEndObject();
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+
+            var envelopeType = value.GetType();
+            var nameProperty = envelopeType.GetProperty("RepositoryName");
+            var schemaProperty = envelopeType.GetProperty("SchemaVersion");
+            var revisionProperty = envelopeType.GetProperty("Revision");
+            var updatedAtProperty = envelopeType.GetProperty("UpdatedAtUtc");
+            var updatedByProperty = envelopeType.GetProperty("UpdatedByUserId");
+            var recordsProperty = envelopeType.GetProperty("Records");
+
+            var name = (string)nameProperty.GetValue(value);
+            var schema = (int)schemaProperty.GetValue(value);
+            var revision = (long)revisionProperty.GetValue(value);
+            var updatedAt = (DateTime)updatedAtProperty.GetValue(value);
+            var updatedBy = (string)updatedByProperty.GetValue(value);
+            var records = recordsProperty.GetValue(value);
+
+            JObject jo = new JObject
+            {
+                ["repositoryName"] = name,
+                ["schemaVersion"] = schema,
+                ["revision"] = revision,
+                ["updatedAtUtc"] = updatedAt.ToString("o"),
+                ["updatedByUserId"] = updatedBy != null ? (JToken)updatedBy : JValue.CreateNull(),
+                ["records"] = records != null ? JToken.FromObject(records, serializer) : JValue.CreateNull()
+            };
+
+            jo.WriteTo(writer);
         }
     }
 
