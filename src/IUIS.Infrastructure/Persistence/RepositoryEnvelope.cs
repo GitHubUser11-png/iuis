@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace IUIS.Infrastructure.Persistence
 {
-    [JsonConverter(typeof(RepositoryEnvelopeJsonConverterFactory))]
+    [JsonConverter(typeof(RepositoryEnvelopeJsonConverter))]
     public sealed class RepositoryEnvelope<T>
     {
         public RepositoryEnvelope()
