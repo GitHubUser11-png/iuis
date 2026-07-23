@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using IUIS.SharedUI.Theme;
+using IUIS.Application.Models;
 
 namespace IUIS.SharedUI.Controls
 {
@@ -22,6 +22,7 @@ namespace IUIS.SharedUI.Controls
             this.Size = new Size(400, 200);
             this.BackColor = Color.Transparent;
             this.Visible = false;
+            this.Dock = DockStyle.Top;
 
             _containerPanel = new Panel
             {
@@ -34,9 +35,10 @@ namespace IUIS.SharedUI.Controls
             _titleLabel = new Label
             {
                 Text = "⚠️ Please fix the following errors:",
-                Font = UiTheme.FieldLabelFont,
-                ForeColor = UiTheme.Error,
-                AutoSize = true
+                Font = Theme.UiTheme.FieldLabelFont,
+                ForeColor = Theme.UiTheme.Error,
+                AutoSize = true,
+                Margin = new Padding(0, 0, 0, 8)
             };
 
             _errorsPanel = new FlowLayoutPanel
@@ -45,15 +47,21 @@ namespace IUIS.SharedUI.Controls
                 FlowDirection = FlowDirection.TopDown,
                 WrapContents = false,
                 AutoScroll = true,
-                BackColor = Color.Transparent
+                BackColor = Color.Transparent,
+                MinimumSize = new Size(0, 50)
             };
 
             _containerPanel.Controls.Add(_titleLabel);
             _containerPanel.Controls.Add(_errorsPanel);
             this.Controls.Add(_containerPanel);
+            
+            // Enable double buffering to prevent flicker
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+                         ControlStyles.UserPaint |
+                         ControlStyles.OptimizedDoubleBuffer, true);
         }
 
-        public void ShowErrors(IEnumerable<string> errors)
+        public void SetErrors(IEnumerable<string> errors)
         {
             _errorsPanel.Controls.Clear();
 
@@ -62,27 +70,59 @@ namespace IUIS.SharedUI.Controls
                 var errorLabel = new Label
                 {
                     Text = $"• {error}",
-                    Font = UiTheme.BodyFont,
-                    ForeColor = UiTheme.Error,
+                    Font = Theme.UiTheme.BodyFont,
+                    ForeColor = Theme.UiTheme.Error,
                     AutoSize = true,
-                    Margin = new Padding(0, 4, 0, 4)
+                    Margin = new Padding(0, 4, 0, 4),
+                    MaximumSize = new Size(this.Width - 40, 0)
                 };
                 _errorsPanel.Controls.Add(errorLabel);
             }
 
-            this.Visible = errorsPanelHasItems();
-            _titleLabel.Visible = errorsPanelHasItems();
+            UpdateVisibility();
         }
 
-        public void Clear()
+        public void SetErrors(OperationResult result)
+        {
+            if (result == null || result.IsSuccess)
+            {
+                ClearErrors();
+                return;
+            }
+            
+            SetErrors(result.Errors);
+        }
+
+        public void ClearErrors()
         {
             _errorsPanel.Controls.Clear();
-            this.Visible = false;
+            UpdateVisibility();
         }
 
-        private bool errorsPanelHasItems()
+        private void UpdateVisibility()
         {
-            return _errorsPanel.Controls.Count > 0;
+            bool hasErrors = _errorsPanel.Controls.Count > 0;
+            this.Visible = hasErrors;
+            _titleLabel.Visible = hasErrors;
+            _containerPanel.Visible = hasErrors;
+            
+            if (hasErrors)
+            {
+                this.BringToFront();
+            }
+        }
+        
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            // Update label maximum size on resize for proper word wrapping
+            foreach (Control ctrl in _errorsPanel.Controls)
+            {
+                if (ctrl is Label label)
+                {
+                    label.MaximumSize = new Size(this.Width - 40, 0);
+                }
+            }
         }
     }
 }
