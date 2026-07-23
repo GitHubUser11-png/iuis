@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace IUIS.Infrastructure.Persistence
 {
@@ -9,17 +9,17 @@ namespace IUIS.Infrastructure.Persistence
         private readonly ProductionRepositoryCatalog _catalog;
         private readonly JsonInfrastructureOptions _options;
         private readonly AtomicFileWriter _writer;
-        private readonly JsonSerializerOptions _json;
+        private readonly JsonSerializerSettings _json;
 
         public JsonRepositoryStore(ProductionRepositoryCatalog catalog, JsonInfrastructureOptions options)
         {
             _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _writer = new AtomicFileWriter();
-            _json = new JsonSerializerOptions
+            _json = new JsonSerializerSettings
             {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                Formatting = Formatting.Indented,
+                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
             };
         }
 
