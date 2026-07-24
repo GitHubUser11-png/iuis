@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using IUIS.SharedUI.Theme;
 using IUIS.Application.Models;
@@ -9,6 +10,10 @@ namespace IUIS.SharedUI.Forms
     {
         protected LoadingOverlayPanel? _loadingOverlay;
         protected ValidationSummaryControl? _validationSummary;
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsBusy { get; private set; }
 
         public AppDialogBase()
         {
@@ -26,11 +31,18 @@ namespace IUIS.SharedUI.Forms
             this.BackColor = UiTheme.Surface;
             this.ForeColor = UiTheme.TextPrimary;
             this.AutoScaleMode = AutoScaleMode.Dpi;
+            this.MinimumSize = new Size(400, 300);
+            
+            // Prevent designer crashes
+            if (!DesignMode)
+            {
+                this.Load += AppDialogBase_Load;
+            }
         }
 
-        protected override void OnLoad(EventArgs e)
+        private void AppDialogBase_Load(object? sender, EventArgs e)
         {
-            base.OnLoad(e);
+            if (DesignMode) return;
             SetupLoadingOverlay();
             SetupValidationSummary();
         }
@@ -40,7 +52,8 @@ namespace IUIS.SharedUI.Forms
             _loadingOverlay = new LoadingOverlayPanel
             {
                 Dock = DockStyle.Fill,
-                Visible = false
+                Visible = false,
+                BackColor = UiTheme.OverlayBackground
             };
             Controls.Add(_loadingOverlay);
             _loadingOverlay.BringToFront();
@@ -54,43 +67,45 @@ namespace IUIS.SharedUI.Forms
                 Visible = false
             };
             Controls.Add(_validationSummary);
-            _validationSummary.BringToFront();
+            _validationSummary.SendToBack();
         }
 
         protected void ShowBusyOverlay()
         {
-            if (_loadingOverlay != null)
+            if (_loadingOverlay != null && !DesignMode)
             {
+                IsBusy = true;
                 _loadingOverlay.Visible = true;
                 _loadingOverlay.BringToFront();
                 this.Cursor = Cursors.WaitCursor;
+                this.Enabled = false;
             }
         }
 
         protected void HideBusyOverlay()
         {
-            if (_loadingOverlay != null)
+            if (_loadingOverlay != null && !DesignMode)
             {
+                IsBusy = false;
                 _loadingOverlay.Visible = false;
                 this.Cursor = Cursors.Default;
+                this.Enabled = true;
             }
         }
 
-        protected void DisplayValidationErrors(OperationResult result)
+        protected void DisplayValidationResult(OperationResult result)
         {
-            if (_validationSummary != null && !result.IsSuccess)
+            if (_validationSummary == null || DesignMode) return;
+
+            if (!result.IsSuccess)
             {
-                _validationSummary.SetErrors(result.Errors);
+                _validationSummary.ShowErrors(result.Errors);
                 _validationSummary.Visible = true;
             }
-        }
-
-        protected void ClearValidationErrors()
-        {
-            if (_validationSummary != null)
+            else
             {
-                _validationSummary.ClearErrors();
                 _validationSummary.Visible = false;
+                _validationSummary.Clear();
             }
         }
 
@@ -99,13 +114,23 @@ namespace IUIS.SharedUI.Forms
             base.OnKeyDown(e);
             if (e.KeyCode == Keys.Escape && this.DialogResult == DialogResult.None)
             {
-                // Allow Escape to close only if not already processing
-                if (_loadingOverlay == null || !_loadingOverlay.Visible)
+                // Allow Escape to close only if not busy
+                if (!IsBusy)
                 {
                     this.DialogResult = DialogResult.Cancel;
                     this.Close();
                 }
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _loadingOverlay?.Dispose();
+                _validationSummary?.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }
