@@ -1,61 +1,69 @@
 using System;
 using System.Windows.Forms;
-using System.Threading;
-
 using Microsoft.Extensions.DependencyInjection;
-
-using IUIS.UserApp.Application;
 using IUIS.UserApp.Composition;
-using IUIS.Infrastructure.Presentation;
-using IUIS.SharedUI.Forms;
+using IUIS.UserApp;
 
 namespace IUIS.UserApp
 {
     internal static class Program
     {
         [STAThread]
-        private static void Main()
+        static void Main()
         {
-            System.Windows.Forms.Application.EnableVisualStyles();
-            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-            
-            // Build DI container
-            var serviceProvider = UserAppCompositionRoot.BuildServiceProvider();
-            
-            // Set up global exception handling
-            System.Windows.Forms.Application.ThreadException += (sender, e) =>
-            {
-                var runtime = serviceProvider.GetService<ApplicationRuntime>();
-                runtime?.LogError("UserApp", "UnhandledException", e.Exception.ToString());
-                
-                MessageBox.Show(
-                    $"An unexpected error occurred: {e.Exception.Message}\n\n" +
-                    "The application will now close. Please contact support if this issue persists.",
-                    "IUIS - Unexpected Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            };
-            
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-            {
-                var runtime = serviceProvider.GetService<ApplicationRuntime>();
-                runtime?.LogError("UserApp", "FatalException", e.ExceptionObject?.ToString() ?? "Unknown exception");
-            };
-            
+            // Enable Visual Styles
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            // Build the Dependency Injection Container
+            IServiceProvider serviceProvider;
             try
             {
-                // Resolve and run the application context
-                var appContext = serviceProvider.GetRequiredService<UserApplicationContext>();
-                System.Windows.Forms.Application.Run(appContext);
+                serviceProvider = UserAppCompositionRoot.BuildServiceProvider();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"Failed to start application: {ex.Message}\n\n" +
-                    "Please ensure all required files are present and you have appropriate permissions.",
-                    "IUIS - Startup Failed",
+                    $"Failed to initialize application services:\n\n{ex.Message}\n\nPlease ensure all data files are present and valid.",
+                    "IUIS Startup Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+                return;
+            }
+
+            // Set up Global Exception Handling
+            Application.ThreadException += (sender, e) =>
+            {
+                MessageBox.Show(
+                    $"An unexpected error occurred:\n\n{e.Exception.Message}",
+                    "Application Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                // Optional: Log to audit log here
+            };
+
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            {
+                MessageBox.Show(
+                    $"A critical fatal error occurred:\n\n{(e.ExceptionObject as Exception)?.Message}",
+                    "Fatal Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Stop);
+            };
+
+            // Resolve and Run the ApplicationContext
+            try
+            {
+                var context = serviceProvider.GetRequiredService<UserApplicationContext>();
+                Application.Run(context);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Failed to start application context:\n\n{ex.Message}",
+                    "Critical Startup Failure",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Stop);
             }
         }
     }
