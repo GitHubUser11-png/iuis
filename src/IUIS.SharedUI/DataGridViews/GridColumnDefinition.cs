@@ -1,46 +1,45 @@
-using System;
+// Ensure this class exists and allows defining custom column types
+// If the file already exists, just verify it doesn't conflict with the Factory above.
+using System.Windows.Forms;
 
-namespace IUIS.SharedUI.DataGridViews
+namespace IUIS.SharedUI.DataGrids
 {
-    public sealed class GridColumnDefinition
+    public class GridColumnDefinition
     {
-        public string DataPropertyName { get; set; }
-        
         public string HeaderText { get; set; }
-        
+        public string DataPropertyName { get; set; }
         public int Width { get; set; }
+        public bool Visible { get; set; } = true;
         
-        public bool Visible { get; set; }
-        
-        public string Format { get; set; }
-        
-        public bool IsSortable { get; set; }
-        
-        public bool IsFilterable { get; set; }
-        
-        public GridColumnType ColumnType { get; set; }
+        // Add specific types if needed (Badge, Currency, Date)
+        public enum ColumnType { Standard, Currency, Date, StatusBadge }
+        public ColumnType Type { get; set; } = ColumnType.Standard;
 
-        public GridColumnDefinition()
+        public DataGridViewColumn CreateColumn()
         {
-            DataPropertyName = string.Empty;
-            HeaderText = string.Empty;
-            Width = 100;
-            Visible = true;
-            Format = string.Empty;
-            IsSortable = true;
-            IsFilterable = true;
-            ColumnType = GridColumnType.Text;
-        }
-    }
+            var col = new DataGridViewTextBoxColumn
+            {
+                HeaderText = this.HeaderText,
+                DataPropertyName = this.DataPropertyName,
+                Width = this.Width,
+                Visible = this.Visible,
+                SortMode = DataGridViewColumnSortMode.Automatic
+            };
 
-    public enum GridColumnType
-    {
-        Text,
-        Number,
-        Currency,
-        Date,
-        DateTime,
-        Boolean,
-        Button
+            if (Type == ColumnType.Currency)
+            {
+                AppDataGridViewFactory.ConfigureCurrencyColumn(col);
+            }
+            else if (Type == ColumnType.Date)
+            {
+                AppDataGridViewFactory.ConfigureDateColumn(col);
+            }
+            else if (Type == ColumnType.StatusBadge)
+            {
+                AppDataGridViewFactory.ConfigureStatusColumn(col);
+            }
+
+            return col;
+        }
     }
 }
