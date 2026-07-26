@@ -1,94 +1,98 @@
 using System;
-using System.Drawing;
 using System.Windows.Forms;
+using System.Drawing;
 using IUIS.SharedUI.Theme;
+using System.Timers;
 
 namespace IUIS.SharedUI.Controls
 {
-    public class SearchBarControl : UserControl
+    public partial class SearchBarControl : UserControl
     {
-        private TextBox _searchTextBox;
-        private Button _searchButton;
-        private Panel _containerPanel;
+        private TextBox _txtSearch;
+        private Button _btnClear;
+        private System.Timers.Timer _debounceTimer;
 
-        public string SearchText
-        {
-            get => _searchTextBox.Text;
-            set => _searchTextBox.Text = value;
-        }
-
-        public string PlaceholderText { get; set; } = "Search...";
-
-        public event EventHandler SearchClicked;
+        public event EventHandler<string> SearchChanged;
 
         public SearchBarControl()
         {
             InitializeComponent();
+            SetupDebounce();
         }
 
         private void InitializeComponent()
         {
-            this.Size = new Size(400, 42);
-            this.BackColor = Color.Transparent;
-
-            _containerPanel = new Panel
+            this.SuspendLayout();
+            
+            _txtSearch = new TextBox
             {
                 Dock = DockStyle.Fill,
-                BackColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle
-            };
-
-            _searchTextBox = new TextBox
-            {
-                Dock = DockStyle.Fill,
-                Font = UiTheme.BodyFont,
                 BorderStyle = BorderStyle.None,
-                Padding = new Padding(8, 0, 0, 0),
-                ForeColor = UiTheme.TextPrimary
+                Font = new Font("Segoe UI", 10F),
+                ForeColor = UiTheme.TextPrimary,
+                BackColor = UiTheme.Surface,
+                Padding = new Padding(10, 8, 10, 8)
             };
-            _searchTextBox.GotFocus += (s, e) => 
-            {
-                if (_searchTextBox.Text == PlaceholderText)
-                    _searchTextBox.Text = "";
-            };
-            _searchTextBox.LostFocus += (s, e) => 
-            {
-                if (string.IsNullOrWhiteSpace(_searchTextBox.Text))
-                    _searchTextBox.Text = PlaceholderText;
-            };
-            _searchTextBox.KeyDown += (s, e) => 
-            {
-                if (e.KeyCode == Keys.Enter)
-                    OnSearchClicked();
-            };
+            _txtSearch.TextChanged += TxtSearch_TextChanged;
 
-            _searchButton = new Button
+            _btnClear = new Button
             {
-                Text = "🔍",
-                Width = 42,
                 Dock = DockStyle.Right,
+                Width = 40,
                 FlatStyle = FlatStyle.Flat,
-                BackColor = UiTheme.InstitutionalPrimary,
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 14F),
+                Text = "✕",
+                Font = new Font("Segoe UI", 12F),
+                ForeColor = UiTheme.TextSecondary,
+                BackColor = Color.Transparent,
                 Cursor = Cursors.Hand
             };
-            _searchButton.FlatAppearance.BorderSize = 0;
-            _searchButton.Click += (s, e) => OnSearchClicked();
+            _btnClear.FlatAppearance.BorderSize = 0;
+            _btnClear.Click += BtnClear_Click;
 
-            _containerPanel.Controls.Add(_searchTextBox);
-            _containerPanel.Controls.Add(_searchButton);
-            this.Controls.Add(_containerPanel);
+            this.Controls.Add(_txtSearch);
+            this.Controls.Add(_btnClear);
+            this.BackColor = UiTheme.Surface;
+            this.Padding = new Padding(10, 0, 0, 0);
+            
+            this.ResumeLayout(false);
         }
 
-        private void OnSearchClicked()
+        private void SetupDebounce()
         {
-            SearchClicked?.Invoke(this, EventArgs.Empty);
+            _debounceTimer = new System.Timers.Timer(300); // 300ms debounce
+            _debounceTimer.Elapsed += (s, e) =>
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(() => SearchChanged?.Invoke(this, _txtSearch.Text)));
+                }
+                else
+                {
+                    SearchChanged?.Invoke(this, _txtSearch.Text);
+                }
+                _debounceTimer.Stop();
+            };
+            _debounceTimer.AutoReset = false;
         }
 
-        public void Clear()
+        private void TxtSearch_TextChanged(object sender, EventArgs e)
         {
-            _searchTextBox.Text = PlaceholderText;
+            _btnClear.Visible = !string.IsNullOrEmpty(_txtSearch.Text);
+            _debounceTimer.Stop();
+            _debounceTimer.Start();
+        }
+
+        private void BtnClear_Click(object sender, EventArgs e)
+        {
+            _txtSearch.Clear();
+            _btnClear.Visible = false;
+            SearchChanged?.Invoke(this, string.Empty);
+        }
+
+        public string SearchText
+        {
+            get => _txtSearch.Text;
+            set => _txtSearch.Text = value;
         }
     }
 }
