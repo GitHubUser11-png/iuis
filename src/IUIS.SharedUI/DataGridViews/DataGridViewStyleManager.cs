@@ -1,93 +1,47 @@
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 using IUIS.SharedUI.Theme;
 
-namespace IUIS.SharedUI.DataGridViews
+namespace IUIS.SharedUI.DataGrids
 {
     public static class DataGridViewStyleManager
     {
-        public static void ApplyStandardStyle(DataGridView grid)
+        public static void ApplyBaseStyles(DataGridView grid)
         {
-            if (grid == null) return;
-
-            grid.BackgroundColor = UiTheme.Surface;
-            grid.BorderStyle = BorderStyle.FixedSingle;
-            grid.GridColor = UiTheme.BorderNeutral;
-            grid.DefaultCellStyle.BackColor = Color.White;
-            grid.DefaultCellStyle.ForeColor = UiTheme.TextPrimary;
-            grid.DefaultCellStyle.SelectionBackColor = UiTheme.InstitutionalPrimary;
-            grid.DefaultCellStyle.SelectionForeColor = Color.White;
-            grid.DefaultCellStyle.Font = UiTheme.BodyFont;
-            grid.DefaultCellStyle.Padding = new Padding(8);
-            grid.AlternatingRowsDefaultCellStyle.BackColor = UiTheme.ElevatedSurface;
-            grid.ColumnHeadersDefaultCellStyle.BackColor = UiTheme.Surface;
-            grid.ColumnHeadersDefaultCellStyle.ForeColor = UiTheme.TextPrimary;
-            grid.ColumnHeadersDefaultCellStyle.Font = UiTheme.FieldLabelFont;
-            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(8);
+            // Header Styles
+            grid.ColumnHeadersDefaultCellStyle.Font = UiTheme.Fonts.HeaderSmall;
+            grid.ColumnHeadersDefaultCellStyle.BackColor = UiTheme.Colors.SurfaceCard;
+            grid.ColumnHeadersDefaultCellStyle.ForeColor = UiTheme.Colors.TextPrimary;
+            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(0, UiMetrics.Spacing12, 0, UiMetrics.Spacing12);
+            grid.ColumnHeadersHeight = UiMetrics.Spacing56;
             grid.EnableHeadersVisualStyles = false;
-            grid.RowHeadersDefaultCellStyle.BackColor = UiTheme.Surface;
-            grid.RowHeadersDefaultCellStyle.ForeColor = UiTheme.TextSecondary;
-            grid.RowHeadersDefaultCellStyle.Padding = new Padding(8);
-            grid.RowHeadersWidth = 50;
-            grid.RowTemplate.Height = 40;
-            grid.AllowUserToAddRows = false;
-            grid.AllowUserToDeleteRows = false;
-            grid.ReadOnly = true;
-            grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            grid.MultiSelect = false;
-            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            grid.ColumnHeaderDefaultCellStyle.SelectionBackColor = UiTheme.Colors.SurfaceCard;
+            grid.ColumnHeaderDefaultCellStyle.SelectionForeColor = UiTheme.Colors.TextPrimary;
+
+            // Row Styles
+            grid.DefaultCellStyle.BackColor = UiTheme.Colors.SurfaceBackground;
+            grid.DefaultCellStyle.ForeColor = UiTheme.Colors.TextPrimary;
+            grid.DefaultCellStyle.SelectionBackColor = UiTheme.Colors.PrimaryLight;
+            grid.DefaultCellStyle.SelectionForeColor = UiTheme.Colors.TextPrimary;
+            grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(250, 250, 252); // Slight variation
+            grid.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            
+            // Borders
+            grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            grid.AdvancedColumnHeadersBorderStyle.All = DataGridViewAdvancedCellBorderStyle.Single;
         }
 
-        public static void ApplyCompactStyle(DataGridView grid)
+        public static void ApplyCurrencyStyle(DataGridViewCell cell)
         {
-            if (grid == null) return;
-
-            ApplyStandardStyle(grid);
-            grid.RowTemplate.Height = 32;
-            grid.DefaultCellStyle.Padding = new Padding(4);
-            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(4);
+            cell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+            cell.Style.Format = "C2";
         }
 
-        public static void ApplyStripedStyle(DataGridView grid)
+        public static void ApplyDateStyle(DataGridViewCell cell)
         {
-            if (grid == null) return;
-
-            ApplyStandardStyle(grid);
-            grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(249, 250, 251);
-        }
-
-        public static void ConfigureColumn(DataGridViewColumn column, string headerText, int width, bool visible = true)
-        {
-            if (column == null) return;
-
-            column.HeaderText = headerText;
-            column.Width = width;
-            column.Visible = visible;
-            column.HeaderCell.Style.Padding = new Padding(8);
-            column.DefaultCellStyle.Padding = new Padding(8);
-        }
-
-        public static void SetColumnAlignment(DataGridViewColumn column, DataGridViewContentAlignment alignment)
-        {
-            if (column == null) return;
-
-            column.HeaderCell.Style.Alignment = alignment;
-            column.DefaultCellStyle.Alignment = alignment;
-        }
-
-        public static void FreezeColumn(DataGridViewColumn column)
-        {
-            if (column == null) return;
-
-            column.Frozen = true;
-        }
-
-        public static void SetColumnReadOnly(DataGridViewColumn column, bool readOnly)
-        {
-            if (column == null) return;
-
-            column.ReadOnly = readOnly;
+            cell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            cell.Style.Format = "MMM dd, yyyy";
         }
     }
 }
