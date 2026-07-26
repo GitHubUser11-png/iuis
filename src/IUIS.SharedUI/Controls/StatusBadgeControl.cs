@@ -5,117 +5,62 @@ using IUIS.SharedUI.Theme;
 
 namespace IUIS.SharedUI.Controls
 {
-    public class StatusBadgeControl : UserControl
+    public class StatusBadgeControl : Label
     {
-        private Label _badgeLabel;
-        private Panel _badgePanel;
+        public enum BadgeStatus { Success, Warning, Error, Info }
 
-        public enum StatusType
+        private BadgeStatus _status = BadgeStatus.Info;
+
+        public StatusBadgeControl()
         {
-            Active,
-            Inactive,
-            Pending,
-            Completed,
-            Error,
-            Warning,
-            Success,
-            Info
+            AutoSize = true;
+            Padding = new Padding(8, 4, 8, 4);
+            Font = new Font("Segoe UI", 8.5F, FontStyle.SemiBold);
+            BackColor = UiTheme.InfoLight;
+            ForeColor = UiTheme.Info;
+            BorderStyle = BorderStyle.None;
+            TextAlign = ContentAlignment.MiddleCenter;
         }
 
-        private StatusType _status = StatusType.Info;
-
-        public StatusType Status
+        public BadgeStatus Status
         {
             get => _status;
             set
             {
                 _status = value;
-                UpdateAppearance();
+                UpdateColors();
+                Invalidate();
             }
         }
 
-        public new string Text
-        {
-            get => _badgeLabel.Text;
-            set => _badgeLabel.Text = value;
-        }
-
-        public StatusBadgeControl()
-        {
-            InitializeComponent();
-        }
-
-        private void InitializeComponent()
-        {
-            this.Size = new Size(100, 28);
-            this.BackColor = Color.Transparent;
-
-            _badgePanel = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = UiTheme.Information
-            };
-
-            _badgeLabel = new Label
-            {
-                Dock = DockStyle.Fill,
-                Text = "Status",
-                Font = UiTheme.CaptionFont,
-                ForeColor = Color.White,
-                TextAlign = ContentAlignment.MiddleCenter,
-                BackColor = Color.Transparent
-            };
-
-            _badgePanel.Controls.Add(_badgeLabel);
-            this.Controls.Add(_badgePanel);
-        }
-
-        private void UpdateAppearance()
+        private void UpdateColors()
         {
             switch (_status)
             {
-                case StatusType.Active:
-                    _badgePanel.BackColor = UiTheme.Success;
+                case BadgeStatus.Success:
+                    BackColor = UiTheme.SuccessLight;
+                    ForeColor = UiTheme.Success;
                     break;
-                case StatusType.Inactive:
-                    _badgePanel.BackColor = UiTheme.TextSecondary;
+                case BadgeStatus.Warning:
+                    BackColor = UiTheme.WarningLight;
+                    ForeColor = UiTheme.Warning;
                     break;
-                case StatusType.Pending:
-                    _badgePanel.BackColor = UiTheme.Warning;
+                case BadgeStatus.Error:
+                    BackColor = UiTheme.ErrorLight;
+                    ForeColor = UiTheme.Error;
                     break;
-                case StatusType.Completed:
-                    _badgePanel.BackColor = UiTheme.InstitutionalPrimary;
-                    break;
-                case StatusType.Error:
-                    _badgePanel.BackColor = UiTheme.Error;
-                    break;
-                case StatusType.Warning:
-                    _badgePanel.BackColor = UiTheme.Warning;
-                    break;
-                case StatusType.Success:
-                    _badgePanel.BackColor = UiTheme.Success;
-                    break;
-                case StatusType.Info:
+                case BadgeStatus.Info:
                 default:
-                    _badgePanel.BackColor = UiTheme.Information;
+                    BackColor = UiTheme.InfoLight;
+                    ForeColor = UiTheme.Info;
                     break;
             }
         }
-
+        
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            using (var path = new System.Drawing.Drawing2D.GraphicsPath())
-            {
-                var radius = 14;
-                var rect = new Rectangle(0, 0, this.Width - 1, this.Height - 1);
-                path.AddArc(rect.X, rect.Y, radius, radius, 180, 90);
-                path.AddArc(rect.Right - radius, rect.Y, radius, radius, 270, 90);
-                path.AddArc(rect.Right - radius, rect.Bottom - radius, radius, radius, 0, 90);
-                path.AddArc(rect.X, rect.Bottom - radius, radius, radius, 90, 90);
-                path.CloseAllFigures();
-                this.Region = new Region(path);
-            }
+            // Optional: Add rounded corners here if desired
         }
     }
 }
