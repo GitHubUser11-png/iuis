@@ -1,126 +1,96 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-
 using IUIS.SharedUI.Theme;
 
 namespace IUIS.SharedUI.Controls
 {
-    /// <summary>
-    /// Rounded bordered container for a borderless TextBox/ComboBox.
-    /// Paints a navy border on focus and a red border in error state —
-    /// the standard WinForms approach since TextBox itself cannot be rounded.
-    /// </summary>
-    public sealed class RoundedInputHost : Panel
+    public class RoundedInputHost : UserControl
     {
-        private readonly Control _input;
-        private bool _hasFocus;
-        private bool _hasError;
+        private TextBox _textBox;
+        private bool _isError = false;
+        private int _radius = UiMetrics.RadiusSmall;
 
-        public RoundedInputHost(Control input)
+        public RoundedInputHost()
         {
-            if (input == null)
-                throw new ArgumentNullException("input");
-
-            SetStyle(
-                ControlStyles.AllPaintingInWmPaint |
-                ControlStyles.UserPaint |
-                ControlStyles.OptimizedDoubleBuffer |
-                ControlStyles.ResizeRedraw,
-                true);
-
-            _input = input;
-            BackColor = UiTheme.ElevatedSurface;
-            Height = UiMetrics.StandardFieldHeight;
-            Padding = new Padding(12, 0, 12, 0);
-
-            var textBox = input as TextBox;
-            if (textBox != null)
+            SetStyle(ControlStyles.SupportsTransparentBackColor | ControlStyles.OptimizedDoubleBuffer, true);
+            BackColor = Color.Transparent;
+            Size = new Size(200, 40);
+            
+            _textBox = new TextBox
             {
-                textBox.BorderStyle = BorderStyle.None;
-            }
-
-            var comboBox = input as ComboBox;
-            if (comboBox != null)
-            {
-                comboBox.FlatStyle = FlatStyle.Flat;
-            }
-
-            _input.BackColor = UiTheme.ElevatedSurface;
-            _input.Font = UiTheme.BodyFont;
-            _input.GotFocus += InputGotFocus;
-            _input.LostFocus += InputLostFocus;
-
-            Controls.Add(_input);
-            CenterInput();
-            Resize += delegate { CenterInput(); };
-            Click += delegate { _input.Focus(); };
+                Dock = DockStyle.Fill,
+                BorderStyle = BorderStyle.None,
+                Font = new Font("Segoe UI", 10F),
+                ForeColor = UiTheme.TextPrimary,
+                BackColor = UiTheme.Surface,
+                Multiline = false
+            };
+            // Adjust padding to prevent text overlap with border
+            _textBox.Padding = new Padding(12, 8, 12, 8); 
+            
+            Controls.Add(_textBox);
         }
 
-        public Control Input
+        [Browsable(true)]
+        [Category("Behavior")]
+        public string Text
         {
-            get { return _input; }
+            get => _textBox.Text;
+            set => _textBox.Text = value;
         }
 
-        public bool HasError
+        [Browsable(true)]
+        [Category("Appearance")]
+        public bool IsError
         {
-            get { return _hasError; }
-            set
-            {
-                _hasError = value;
-                _input.BackColor = value ? Color.FromArgb(255, 245, 245) : UiTheme.ElevatedSurface;
-                BackColor = _input.BackColor;
-                Invalidate();
-            }
+            get => _isError;
+            set { _isError = value; Invalidate(); }
         }
 
-        private void InputGotFocus(object sender, EventArgs e)
+        [Browsable(true)]
+        [Category("Appearance")]
+        public int CornerRadius
         {
-            _hasFocus = true;
-            Invalidate();
-        }
-
-        private void InputLostFocus(object sender, EventArgs e)
-        {
-            _hasFocus = false;
-            Invalidate();
-        }
-
-        private void CenterInput()
-        {
-            int innerWidth = Width - Padding.Left - Padding.Right;
-            if (innerWidth < 10)
-                innerWidth = 10;
-            _input.Width = innerWidth;
-            _input.Location = new Point(Padding.Left, (Height - _input.Height) / 2);
+            get => _radius;
+            set { _radius = value; Invalidate(); }
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            var g = e.Graphics;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            Color border = _hasError
-                ? UiTheme.Error
-                : _hasFocus ? UiTheme.BorderFocus : UiTheme.BorderNeutral;
-
-            UiPainting.PaintRoundedSurface(
-                e.Graphics,
-                ClientRectangle,
-                UiMetrics.InputCornerRadius,
-                Color.Empty,
-                border);
-
-            if (_hasFocus && !_hasError)
+            using (var path = GetRoundedRectPath(ClientRectangle, _radius))
             {
-                // Slightly stronger inner line for a focus emphasis.
-                var inner = new Rectangle(1, 1, Width - 2, Height - 2);
-                UiPainting.PaintRoundedSurface(
-                    e.Graphics,
-                    inner,
-                    UiMetrics.InputCornerRadius,
-                    Color.Empty,
-                    Color.FromArgb(120, UiTheme.BorderFocus));
+                // Determine border color based on state
+                Color borderColor = _isError ? UiTheme.Error : UiTheme.Border;
+                
+                using (var pen = new Pen(borderColor, _isError ? 2 : 1))
+                {
+                    g.DrawPath(pen, path);
+                }
             }
+        }
+
+        private GraphicsPath GetRoundedRectPath(Rectangle rect, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            int diameter = radius * 2;
+            Size size = new Size(diameter, diameter);
+            Rectangle arc = new Rectangle(rect.Location, size);
+            path.AddArc(arc, 180, 90);
+            arc.X = rect.Right - diameter;
+            path.AddArc(arc, 270, 90);
+            arc.Y = rect.Bottom - diameter;
+            path.AddArc(arc, 0, 90);
+            arc.X = rect.Left;
+            path.AddArc(arc, 90, 90);
+            path.CloseFigure();
+            return path;
         }
     }
 }
