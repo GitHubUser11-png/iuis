@@ -96,6 +96,10 @@ namespace IUIS.UserApp.Composition
             // SharedUI - Application Runtime Context
             services.AddSingleton(sp => sp.GetRequiredService<ApplicationRuntime>());
             
+            // Register the Resolver itself so it can be injected into the Shell
+            services.AddSingleton<IFormServiceResolver>(sp => 
+                new ServiceProviderFormResolver(sp));
+
             return services.BuildServiceProvider();
         }
     }

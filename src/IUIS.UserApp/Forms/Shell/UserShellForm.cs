@@ -27,6 +27,7 @@ namespace IUIS.UserApp.Forms.Shell
 
         public UserShellForm(
             ApplicationRuntime runtime,
+            IFormServiceResolver serviceResolver, // <--- NEW PARAMETER
             string portalLabel,
             IReadOnlyList<NavigationItemDefinition> navigationItems,
             string dashboardPageKey,
@@ -52,7 +53,7 @@ namespace IUIS.UserApp.Forms.Shell
             var dashboard = ShellPageFactory.CreateDashboard(greeting, cards);
             
             var sessionToken = _runtime.CurrentUser.Session?.SessionToken ?? string.Empty;
-            var pageFactory = new UserPageFactory(_runtime.Composition, sessionToken);
+            var pageFactory = new UserPageFactory(_runtime.Composition, sessionToken, serviceResolver); // <--- PASSING THE RESOLVER
             ShellPageFactory.RegisterModulePages(
                 _shell, 
                 filtered, 
